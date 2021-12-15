@@ -2,18 +2,17 @@
 using System.Xml.Linq;
 
 
-namespace mRemoteNG.Config.Serializers
+namespace mRemoteNG.Config.Serializers;
+
+public class ConfConsEnsureConnectionsHaveIds
 {
-    public class ConfConsEnsureConnectionsHaveIds
+    public void EnsureElementsHaveIds(XDocument xdoc)
     {
-        public void EnsureElementsHaveIds(XDocument xdoc)
+        foreach (var element in xdoc.Descendants("Node"))
         {
-            foreach (var element in xdoc.Descendants("Node"))
-            {
-                if (element.Attribute("Id") != null) continue;
-                var id = Guid.NewGuid();
-                element.Add(new XAttribute("Id", id));
-            }
+            if (element.Attribute("Id") != null) continue;
+            var id = Guid.NewGuid();
+            element.Add(new XAttribute("Id", id));
         }
     }
 }

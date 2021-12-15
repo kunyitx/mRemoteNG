@@ -7,89 +7,88 @@ using mRemoteNG.App;
 using mRemoteNG.App.Info;
 using mRemoteNG.Resources.Language;
 
-namespace mRemoteNG.UI.Forms
+namespace mRemoteNG.UI.Forms;
+
+public partial class FrmUnhandledException : Form
 {
-    public partial class FrmUnhandledException : Form
+    private readonly bool _isFatal;
+
+    public FrmUnhandledException()
+        : this(null, false)
     {
-        private readonly bool _isFatal;
+    }
 
-        public FrmUnhandledException()
-            : this(null, false)
-        {
-        }
+    public FrmUnhandledException(Exception exception, bool isFatal)
+    {
+        _isFatal = isFatal;
+        InitializeComponent();
+        SetLanguage();
 
-        public FrmUnhandledException(Exception exception, bool isFatal)
-        {
-            _isFatal = isFatal;
-            InitializeComponent();
-            SetLanguage();
+        if (exception == null)
+            return;
 
-            if (exception == null)
-                return;
+        textBoxExceptionMessage.Text = exception.Message;
+        textBoxStackTrace.Text = exception.StackTrace;
+        SetEnvironmentText();
+    }
 
-            textBoxExceptionMessage.Text = exception.Message;
-            textBoxStackTrace.Text = exception.StackTrace;
-            SetEnvironmentText();
-        }
+    private void SetEnvironmentText()
+    {
+        textBoxEnvironment.Text = new StringBuilder()
+            .AppendLine($"OS: {Environment.OSVersion}")
+            .AppendLine($"{GeneralAppInfo.ProductName} Version: {GeneralAppInfo.ApplicationVersion}")
+            .AppendLine("Edition: " + (Runtime.IsPortableEdition ? "Portable" : "MSI"))
+            .AppendLine("Cmd line args: " + string.Join(" ", Environment.GetCommandLineArgs().Skip(1)))
+            .ToString();
+    }
 
-        private void SetEnvironmentText()
-        {
-            textBoxEnvironment.Text = new StringBuilder()
-                .AppendLine($"OS: {Environment.OSVersion}")
-                .AppendLine($"{GeneralAppInfo.ProductName} Version: {GeneralAppInfo.ApplicationVersion}")
-                .AppendLine("Edition: " + (Runtime.IsPortableEdition ? "Portable" : "MSI"))
-                .AppendLine("Cmd line args: " + string.Join(" ", Environment.GetCommandLineArgs().Skip(1)))
-                .ToString();
-        }
+    private void SetLanguage()
+    {
+        Text = Language.mRemoteNGUnhandledException;
+        labelExceptionCaught.Text = Language.UnhandledExceptionOccured;
 
-        private void SetLanguage()
-        {
-            Text = Language.mRemoteNGUnhandledException;
-            labelExceptionCaught.Text = Language.UnhandledExceptionOccured;
+        labelExceptionIsFatalHeader.Text = _isFatal
+            ? Language.ExceptionForcesmRemoteNGToClose
+            : string.Empty;
 
-            labelExceptionIsFatalHeader.Text = _isFatal
-                ? Language.ExceptionForcesmRemoteNGToClose
-                : string.Empty;
+        labelExceptionMessageHeader.Text = Language.ExceptionMessage;
+        labelStackTraceHeader.Text = Language.StackTrace;
+        labelEnvironment.Text = Language.Environment;
+        buttonCreateBug.Text = Language.ReportBug;
+        buttonCopyAll.Text = Language.CopyAll;
+        buttonClose.Text = _isFatal
+            ? Language.Exit
+            : Language._Close;
+    }
 
-            labelExceptionMessageHeader.Text = Language.ExceptionMessage;
-            labelStackTraceHeader.Text = Language.StackTrace;
-            labelEnvironment.Text = Language.Environment;
-            buttonCreateBug.Text = Language.ReportBug;
-            buttonCopyAll.Text = Language.CopyAll;
-            buttonClose.Text = _isFatal
-                ? Language.Exit
-                : Language._Close;
-        }
+    private void buttonCopyAll_Click(object sender, EventArgs e)
+    {
+        var text = new StringBuilder()
+            .AppendLine("```")
+            .AppendLine(labelExceptionMessageHeader.Text)
+            .AppendLine("\"" + textBoxExceptionMessage.Text + "\"")
+            .AppendLine()
+            .AppendLine(labelStackTraceHeader.Text)
+            .AppendLine(textBoxStackTrace.Text)
+            .AppendLine()
+            .AppendLine(labelEnvironment.Text)
+            .AppendLine(textBoxEnvironment.Text)
+            .AppendLine("```")
+            .ToString();
 
-        private void buttonCopyAll_Click(object sender, EventArgs e)
-        {
-            var text = new StringBuilder()
-               .AppendLine("```")
-               .AppendLine(labelExceptionMessageHeader.Text)
-               .AppendLine("\"" + textBoxExceptionMessage.Text + "\"")
-               .AppendLine()
-               .AppendLine(labelStackTraceHeader.Text)
-               .AppendLine(textBoxStackTrace.Text)
-               .AppendLine()
-               .AppendLine(labelEnvironment.Text)
-               .AppendLine(textBoxEnvironment.Text)
-               .AppendLine("```")
-               .ToString();
+        Clipboard.SetText(text);
+    }
 
-            Clipboard.SetText(text);
-        }
+    private void buttonClose_Click(object sender, EventArgs e)
+    {
+        if (_isFatal)
+            Shutdown.Quit();
 
-        private void buttonClose_Click(object sender, EventArgs e)
-        {
-            if (_isFatal)
-                Shutdown.Quit();
+        Close();
+    }
 
-            Close();
-        }
-
-        private void buttonCreateBug_Click(object sender, EventArgs e)
-        {
-            Process.Start(GeneralAppInfo.UrlBugs);
-        }
+    private void buttonCreateBug_Click(object sender, EventArgs e)
+    {
+        Process.Start(GeneralAppInfo.UrlBugs);
     }
 }

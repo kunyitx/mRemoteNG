@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace mRemoteNG.Credential.Repositories
+namespace mRemoteNG.Credential.Repositories;
+
+public class CredentialRepositoryChangedArgs : EventArgs
 {
-    public class CredentialRepositoryChangedArgs : EventArgs
+    public ICredentialRepository Repository { get; }
+
+    public CredentialRepositoryChangedArgs(ICredentialRepository repository)
     {
-        public ICredentialRepository Repository { get; }
+        if (repository == null)
+            throw new ArgumentNullException(nameof(repository));
 
-        public CredentialRepositoryChangedArgs(ICredentialRepository repository)
-        {
-            if (repository == null)
-                throw new ArgumentNullException(nameof(repository));
-
-            Repository = repository;
-        }
+        Repository = repository;
     }
 }

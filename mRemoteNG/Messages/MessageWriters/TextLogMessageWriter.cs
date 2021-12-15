@@ -1,39 +1,38 @@
 ﻿using System;
 using mRemoteNG.App;
 
-namespace mRemoteNG.Messages.MessageWriters
+namespace mRemoteNG.Messages.MessageWriters;
+
+public class TextLogMessageWriter : IMessageWriter
 {
-    public class TextLogMessageWriter : IMessageWriter
+    private readonly Logger _logger;
+
+    public TextLogMessageWriter(Logger logger)
     {
-        private readonly Logger _logger;
+        if (logger == null)
+            throw new ArgumentNullException(nameof(logger));
 
-        public TextLogMessageWriter(Logger logger)
+        _logger = logger;
+    }
+
+    public void Write(IMessage message)
+    {
+        switch (message.Class)
         {
-            if (logger == null)
-                throw new ArgumentNullException(nameof(logger));
-
-            _logger = logger;
-        }
-
-        public void Write(IMessage message)
-        {
-            switch (message.Class)
-            {
-                case MessageClass.InformationMsg:
-                    _logger.Log.Info(message.Text);
-                    break;
-                case MessageClass.DebugMsg:
-                    _logger.Log.Debug(message.Text);
-                    break;
-                case MessageClass.WarningMsg:
-                    _logger.Log.Warn(message.Text);
-                    break;
-                case MessageClass.ErrorMsg:
-                    _logger.Log.Error(message.Text);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            case MessageClass.InformationMsg:
+                _logger.Log.Info(message.Text);
+                break;
+            case MessageClass.DebugMsg:
+                _logger.Log.Debug(message.Text);
+                break;
+            case MessageClass.WarningMsg:
+                _logger.Log.Warn(message.Text);
+                break;
+            case MessageClass.ErrorMsg:
+                _logger.Log.Error(message.Text);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 }

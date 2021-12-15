@@ -5,26 +5,25 @@ using System.Text;
 using System.Xml.Linq;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace mRemoteNG.Config.Settings
+namespace mRemoteNG.Config.Settings;
+
+public class DockPanelLayoutSerializer : ISerializer<DockPanel, string>
 {
-    public class DockPanelLayoutSerializer : ISerializer<DockPanel, string>
+    public Version Version { get; } = new(1, 0);
+
+    public string Serialize(DockPanel dockPanel)
     {
-        public Version Version { get; } = new Version(1, 0);
+        if (dockPanel == null)
+            throw new ArgumentNullException(nameof(dockPanel));
 
-        public string Serialize(DockPanel dockPanel)
+        XDocument xdoc;
+        using (var memoryStream = new MemoryStream())
         {
-            if (dockPanel == null)
-                throw new ArgumentNullException(nameof(dockPanel));
-
-            XDocument xdoc;
-            using (var memoryStream = new MemoryStream())
-            {
-                dockPanel.SaveAsXml(memoryStream, Encoding.UTF8);
-                memoryStream.Position = 0;
-                xdoc = XDocument.Load(memoryStream, LoadOptions.SetBaseUri);
-            }
-
-            return $"{xdoc.Declaration}{Environment.NewLine}{xdoc}";
+            dockPanel.SaveAsXml(memoryStream, Encoding.UTF8);
+            memoryStream.Position = 0;
+            xdoc = XDocument.Load(memoryStream, LoadOptions.SetBaseUri);
         }
+
+        return $"{xdoc.Declaration}{Environment.NewLine}{xdoc}";
     }
 }

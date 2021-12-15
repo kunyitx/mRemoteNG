@@ -3,121 +3,120 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
-namespace mRemoteNG.UI.Controls
+namespace mRemoteNG.UI.Controls;
+
+public partial class MrngAdTree : UserControl
 {
-    public partial class MrngAdTree : UserControl
+    #region Public Methods
+
+    public MrngAdTree()
     {
-        #region Public Methods
+        InitializeComponent();
+    }
 
-        public MrngAdTree()
+    public event AdPathChangedEventHandler AdPathChanged;
+
+    public delegate void AdPathChangedEventHandler(object sender);
+
+    public string AdPath { get; set; }
+
+    public string Domain
+    {
+        private get => string.IsNullOrEmpty(_domain) == false ? _domain : Environment.UserDomainName;
+        set => _domain = value;
+    }
+
+    public object SelectedNode { get; internal set; }
+
+    #endregion Public Methods
+
+    #region Private Methods
+
+    private string _domain;
+
+    private void TvActiveDirectory_AfterExpand(object sender, TreeViewEventArgs e)
+    {
+        try
         {
-            InitializeComponent();
+            foreach (TreeNode node in e.Node.Nodes)
+                AddTreeNodes(node);
         }
-
-        public event AdPathChangedEventHandler AdPathChanged;
-
-        public delegate void AdPathChangedEventHandler(object sender);
-
-        public string AdPath { get; set; }
-
-        public string Domain
+        catch (Exception ex)
         {
-            private get => string.IsNullOrEmpty(_domain) == false ? _domain : Environment.UserDomainName;
-            set => _domain = value;
+            Console.WriteLine(ex.StackTrace);
         }
+    }
 
-        public object SelectedNode { get; internal set; }
+    private void TvActiveDirectory_AfterSelect(object sender, TreeViewEventArgs e)
+    {
+        AdPath = e.Node.Tag.ToString();
+        var pathChangedEvent = AdPathChanged;
+        pathChangedEvent?.Invoke(this);
+    }
 
-        #endregion Public Methods
+    private void AdTree_Load(object sender, EventArgs e)
+    {
+        tvActiveDirectory.Nodes.Clear();
+        var treeNode = new TreeNode(Domain) { Tag = "" };
+        tvActiveDirectory.Nodes.Add(treeNode);
+        AddTreeNodes(treeNode);
+        tvActiveDirectory.Nodes[0].Expand();
+    }
 
-        #region Private Methods
-
-        private string _domain;
-
-        private void TvActiveDirectory_AfterExpand(object sender, TreeViewEventArgs e)
+    private void AddTreeNodes(TreeNode tNode)
+    {
+        var adhelper = new AdHelper(Domain);
+        adhelper.GetChildEntries(tNode.Tag.ToString());
+        var enumerator = adhelper.Children.GetEnumerator();
+        tvActiveDirectory.BeginUpdate();
+        while (enumerator.MoveNext())
         {
-            try
+            var flag1 = false;
+            if (enumerator.Key == null) continue;
+            var node1 = new TreeNode(enumerator.Key.ToString().Substring(3))
             {
-                foreach (TreeNode node in e.Node.Nodes)
-                    AddTreeNodes(node);
-            }
-            catch (Exception ex)
+                Tag = RuntimeHelpers.GetObjectValue(enumerator.Value)
+            };
+            if (!enumerator.Key.ToString().Substring(0, 2).Equals("CN") ||
+                enumerator.Key.ToString().Equals("CN=Computers") ||
+                enumerator.Key.ToString().Equals("CN=Users"))
+                flag1 = true;
+
+            if (flag1)
             {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        private void TvActiveDirectory_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            AdPath = e.Node.Tag.ToString();
-            var pathChangedEvent = AdPathChanged;
-            pathChangedEvent?.Invoke(this);
-        }
-
-        private void AdTree_Load(object sender, EventArgs e)
-        {
-            tvActiveDirectory.Nodes.Clear();
-            var treeNode = new TreeNode(Domain) { Tag = "" };
-            tvActiveDirectory.Nodes.Add(treeNode);
-            AddTreeNodes(treeNode);
-            tvActiveDirectory.Nodes[0].Expand();
-        }
-
-        private void AddTreeNodes(TreeNode tNode)
-        {
-            var adhelper = new AdHelper(Domain);
-            adhelper.GetChildEntries(tNode.Tag.ToString());
-            var enumerator = adhelper.Children.GetEnumerator();
-            tvActiveDirectory.BeginUpdate();
-            while (enumerator.MoveNext())
-            {
-                var flag1 = false;
-                if (enumerator.Key == null) continue;
-                var node1 = new TreeNode(enumerator.Key.ToString().Substring(3))
+                var flag2 = false;
+                try
                 {
-                    Tag = RuntimeHelpers.GetObjectValue(enumerator.Value)
-                };
-                if (!enumerator.Key.ToString().Substring(0, 2).Equals("CN") ||
-                    enumerator.Key.ToString().Equals("CN=Computers") ||
-                    enumerator.Key.ToString().Equals("CN=Users"))
-                    flag1 = true;
-
-                if (flag1)
+                    foreach (TreeNode node2 in tNode.Nodes)
+                    {
+                        if (!node2.Text.Equals(node1.Text)) continue;
+                        flag2 = true;
+                        break;
+                    }
+                }
+                catch (Exception ex)
                 {
-                    var flag2 = false;
-                    try
-                    {
-                        foreach (TreeNode node2 in tNode.Nodes)
-                        {
-                            if (!node2.Text.Equals(node1.Text)) continue;
-                            flag2 = true;
-                            break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.StackTrace);
-                    }
-
-                    if (!flag2)
-                        tNode.Nodes.Add(node1);
+                    Console.WriteLine(ex.StackTrace);
                 }
 
-                var imageIndex = GetImageIndex(enumerator.Key.ToString().Substring(0, 2));
-                node1.ImageIndex = imageIndex;
-                node1.SelectedImageIndex = imageIndex;
+                if (!flag2)
+                    tNode.Nodes.Add(node1);
             }
 
-            tvActiveDirectory.EndUpdate();
+            var imageIndex = GetImageIndex(enumerator.Key.ToString().Substring(0, 2));
+            node1.ImageIndex = imageIndex;
+            node1.SelectedImageIndex = imageIndex;
         }
 
-        private static int GetImageIndex(string objType)
-        {
-            if (objType.Equals("CN"))
-                return 2;
-            return objType.Equals("OU") ? 1 : 3;
-        }
-
-        #endregion Private Methods
+        tvActiveDirectory.EndUpdate();
     }
+
+    private static int GetImageIndex(string objType)
+    {
+        if (objType.Equals("CN"))
+            return 2;
+        return objType.Equals("OU") ? 1 : 3;
+    }
+
+    #endregion Private Methods
 }

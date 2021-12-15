@@ -4,51 +4,50 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 
-namespace mRemoteNG.Security.Factories
+namespace mRemoteNG.Security.Factories;
+
+public class CryptoProviderFactory : ICryptoProviderFactory
 {
-    public class CryptoProviderFactory : ICryptoProviderFactory
+    private readonly IAeadBlockCipher _aeadBlockCipher;
+
+    public CryptoProviderFactory(BlockCipherEngines engine, BlockCipherModes mode)
     {
-        private readonly IAeadBlockCipher _aeadBlockCipher;
+        var cipherEngine = ChooseBlockCipherEngine(engine);
+        _aeadBlockCipher = ChooseBlockCipherMode(mode, cipherEngine);
+    }
 
-        public CryptoProviderFactory(BlockCipherEngines engine, BlockCipherModes mode)
+    public ICryptographyProvider Build()
+    {
+        return new AeadCryptographyProvider(_aeadBlockCipher);
+    }
+
+    private IBlockCipher ChooseBlockCipherEngine(BlockCipherEngines engine)
+    {
+        switch (engine)
         {
-            var cipherEngine = ChooseBlockCipherEngine(engine);
-            _aeadBlockCipher = ChooseBlockCipherMode(mode, cipherEngine);
+            case BlockCipherEngines.AES:
+                return new AesEngine();
+            case BlockCipherEngines.Twofish:
+                return new TwofishEngine();
+            case BlockCipherEngines.Serpent:
+                return new SerpentEngine();
+            default:
+                throw new ArgumentOutOfRangeException(nameof(engine), engine, null);
         }
+    }
 
-        public ICryptographyProvider Build()
+    private IAeadBlockCipher ChooseBlockCipherMode(BlockCipherModes mode, IBlockCipher blockCipher)
+    {
+        switch (mode)
         {
-            return new AeadCryptographyProvider(_aeadBlockCipher);
-        }
-
-        private IBlockCipher ChooseBlockCipherEngine(BlockCipherEngines engine)
-        {
-            switch (engine)
-            {
-                case BlockCipherEngines.AES:
-                    return new AesEngine();
-                case BlockCipherEngines.Twofish:
-                    return new TwofishEngine();
-                case BlockCipherEngines.Serpent:
-                    return new SerpentEngine();
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(engine), engine, null);
-            }
-        }
-
-        private IAeadBlockCipher ChooseBlockCipherMode(BlockCipherModes mode, IBlockCipher blockCipher)
-        {
-            switch (mode)
-            {
-                case BlockCipherModes.GCM:
-                    return new GcmBlockCipher(blockCipher);
-                case BlockCipherModes.CCM:
-                    return new CcmBlockCipher(blockCipher);
-                case BlockCipherModes.EAX:
-                    return new EaxBlockCipher(blockCipher);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
-            }
+            case BlockCipherModes.GCM:
+                return new GcmBlockCipher(blockCipher);
+            case BlockCipherModes.CCM:
+                return new CcmBlockCipher(blockCipher);
+            case BlockCipherModes.EAX:
+                return new EaxBlockCipher(blockCipher);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
         }
     }
 }

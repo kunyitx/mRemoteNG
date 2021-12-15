@@ -7,69 +7,69 @@ using mRemoteNG.Credential;
 using mRemoteNG.Security;
 using mRemoteNG.Security.Factories;
 
-namespace mRemoteNG.Config
+namespace mRemoteNG.Config;
+
+public class CredentialHarvester
 {
-    public class CredentialHarvester
+    private readonly IEqualityComparer<ICredentialRecord> _credentialComparer = new CredentialDomainUserComparer();
+
+    // maps a connectioninfo (by its id) to the credential object that was harvested
+    public Dictionary<Guid, ICredentialRecord> ConnectionToCredentialMap { get; } = new();
+
+    public IEnumerable<ICredentialRecord> Harvest(XDocument xDocument, SecureString decryptionKey)
     {
-        private readonly IEqualityComparer<ICredentialRecord> _credentialComparer = new CredentialDomainUserComparer();
+        if (xDocument == null)
+            throw new ArgumentNullException(nameof(xDocument));
 
-        // maps a connectioninfo (by its id) to the credential object that was harvested
-        public Dictionary<Guid, ICredentialRecord> ConnectionToCredentialMap { get; } =
-            new Dictionary<Guid, ICredentialRecord>();
+        var cryptoProvider = new CryptoProviderFactoryFromXml(xDocument.Root).Build();
 
-        public IEnumerable<ICredentialRecord> Harvest(XDocument xDocument, SecureString decryptionKey)
+        foreach (var element in xDocument.Descendants("Node"))
         {
-            if (xDocument == null)
-                throw new ArgumentNullException(nameof(xDocument));
+            if (!EntryHasSomeCredentialData(element)) continue;
+            var newCredential = BuildCredential(element, cryptoProvider, decryptionKey);
 
-            var cryptoProvider = new CryptoProviderFactoryFromXml(xDocument.Root).Build();
-
-            foreach (var element in xDocument.Descendants("Node"))
+            Guid connectionId;
+            Guid.TryParse(element.Attribute("Id")?.Value, out connectionId);
+            if (connectionId == Guid.Empty)
             {
-                if (!EntryHasSomeCredentialData(element)) continue;
-                var newCredential = BuildCredential(element, cryptoProvider, decryptionKey);
-
-                Guid connectionId;
-                Guid.TryParse(element.Attribute("Id")?.Value, out connectionId);
-                if (connectionId == Guid.Empty)
-                {
-                    //error
-                }
-
-                if (ConnectionToCredentialMap.Values.Contains(newCredential, _credentialComparer))
-                {
-                    var existingCredential =
-                        ConnectionToCredentialMap.Values.First(record =>
-                                                                   _credentialComparer.Equals(newCredential, record));
-                    ConnectionToCredentialMap.Add(connectionId, existingCredential);
-                }
-                else
-                    ConnectionToCredentialMap.Add(connectionId, newCredential);
+                //error
             }
 
-            return ConnectionToCredentialMap.Values.Distinct(_credentialComparer);
-        }
-
-        private ICredentialRecord BuildCredential(XElement element,
-                                                  ICryptographyProvider cryptographyProvider,
-                                                  SecureString decryptionKey)
-        {
-            var credential = new CredentialRecord
+            if (ConnectionToCredentialMap.Values.Contains(newCredential, _credentialComparer))
             {
-                Title = $"{element.Attribute("Username")?.Value}\\{element.Attribute("Domain")?.Value}",
-                Username = element.Attribute("Username")?.Value,
-                Domain = element.Attribute("Domain")?.Value,
-                Password = cryptographyProvider.Decrypt(element.Attribute("Password")?.Value, decryptionKey)
-                                               .ConvertToSecureString()
-            };
-            return credential;
+                var existingCredential =
+                    ConnectionToCredentialMap.Values.First(record =>
+                        _credentialComparer.Equals(newCredential, record));
+                ConnectionToCredentialMap.Add(connectionId, existingCredential);
+            }
+            else
+            {
+                ConnectionToCredentialMap.Add(connectionId, newCredential);
+            }
         }
 
-        private static bool EntryHasSomeCredentialData(XElement e)
+        return ConnectionToCredentialMap.Values.Distinct(_credentialComparer);
+    }
+
+    private ICredentialRecord BuildCredential(XElement element,
+        ICryptographyProvider cryptographyProvider,
+        SecureString decryptionKey)
+    {
+        var credential = new CredentialRecord
         {
-            return e.Attribute("Username")?.Value != "" ||
-                   e.Attribute("Domain")?.Value != "" ||
-                   e.Attribute("Password")?.Value != "";
-        }
+            Title = $"{element.Attribute("Username")?.Value}\\{element.Attribute("Domain")?.Value}",
+            Username = element.Attribute("Username")?.Value,
+            Domain = element.Attribute("Domain")?.Value,
+            Password = cryptographyProvider.Decrypt(element.Attribute("Password")?.Value, decryptionKey)
+                .ConvertToSecureString()
+        };
+        return credential;
+    }
+
+    private static bool EntryHasSomeCredentialData(XElement e)
+    {
+        return e.Attribute("Username")?.Value != "" ||
+               e.Attribute("Domain")?.Value != "" ||
+               e.Attribute("Password")?.Value != "";
     }
 }

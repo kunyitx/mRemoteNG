@@ -8,47 +8,46 @@ using mRemoteNG.Security.Factories;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 
-namespace mRemoteNG.Config.Connections
+namespace mRemoteNG.Config.Connections;
+
+public class XmlConnectionsSaver : ISaver<ConnectionTreeModel>
 {
-    public class XmlConnectionsSaver : ISaver<ConnectionTreeModel>
+    private readonly string _connectionFileName;
+    private readonly SaveFilter _saveFilter;
+
+    public XmlConnectionsSaver(string connectionFileName, SaveFilter saveFilter)
     {
-        private readonly string _connectionFileName;
-        private readonly SaveFilter _saveFilter;
+        if (string.IsNullOrEmpty(connectionFileName))
+            throw new ArgumentException($"Argument '{nameof(connectionFileName)}' cannot be null or empty");
+        if (saveFilter == null)
+            throw new ArgumentNullException(nameof(saveFilter));
 
-        public XmlConnectionsSaver(string connectionFileName, SaveFilter saveFilter)
+        _connectionFileName = connectionFileName;
+        _saveFilter = saveFilter;
+    }
+
+    public void Save(ConnectionTreeModel connectionTreeModel, string propertyNameTrigger = "")
+    {
+        try
         {
-            if (string.IsNullOrEmpty(connectionFileName))
-                throw new ArgumentException($"Argument '{nameof(connectionFileName)}' cannot be null or empty");
-            if (saveFilter == null)
-                throw new ArgumentNullException(nameof(saveFilter));
+            var cryptographyProvider = new CryptoProviderFactoryFromSettings().Build();
+            var serializerFactory = new XmlConnectionSerializerFactory();
 
-            _connectionFileName = connectionFileName;
-            _saveFilter = saveFilter;
+            var xmlConnectionsSerializer = serializerFactory.Build(
+                cryptographyProvider,
+                connectionTreeModel,
+                _saveFilter,
+                Properties.Settings.Default.EncryptCompleteConnectionsFile);
+
+            var rootNode = connectionTreeModel.RootNodes.OfType<RootNodeInfo>().First();
+            var xml = xmlConnectionsSerializer.Serialize(rootNode);
+
+            var fileDataProvider = new FileDataProviderWithRollingBackup(_connectionFileName);
+            fileDataProvider.Save(xml);
         }
-
-        public void Save(ConnectionTreeModel connectionTreeModel, string propertyNameTrigger = "")
+        catch (Exception ex)
         {
-            try
-            {
-                var cryptographyProvider = new CryptoProviderFactoryFromSettings().Build();
-                var serializerFactory = new XmlConnectionSerializerFactory();
-                
-                var xmlConnectionsSerializer = serializerFactory.Build(
-                    cryptographyProvider,
-                    connectionTreeModel,
-                    _saveFilter,
-                    Properties.Settings.Default.EncryptCompleteConnectionsFile);
-
-                var rootNode = connectionTreeModel.RootNodes.OfType<RootNodeInfo>().First();
-                var xml = xmlConnectionsSerializer.Serialize(rootNode);
-
-                var fileDataProvider = new FileDataProviderWithRollingBackup(_connectionFileName);
-                fileDataProvider.Save(xml);
-            }
-            catch (Exception ex)
-            {
-                Runtime.MessageCollector?.AddExceptionStackTrace("SaveToXml failed", ex);
-            }
+            Runtime.MessageCollector?.AddExceptionStackTrace("SaveToXml failed", ex);
         }
     }
 }

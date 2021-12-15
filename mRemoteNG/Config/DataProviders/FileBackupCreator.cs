@@ -4,42 +4,41 @@ using mRemoteNG.App;
 using mRemoteNG.Messages;
 using mRemoteNG.Resources.Language;
 
-namespace mRemoteNG.Config.DataProviders
+namespace mRemoteNG.Config.DataProviders;
+
+public class FileBackupCreator
 {
-    public class FileBackupCreator
+    public void CreateBackupFile(string fileName)
     {
-        public void CreateBackupFile(string fileName)
+        try
         {
-            try
-            {
-                if (WeDontNeedToBackup(fileName))
-                    return;
+            if (WeDontNeedToBackup(fileName))
+                return;
 
-                var backupFileName =
-                    string.Format(Properties.Settings.Default.BackupFileNameFormat, fileName, DateTime.Now);
-                File.Copy(fileName, backupFileName);
-            }
-            catch (Exception ex)
-            {
-                Runtime.MessageCollector.AddExceptionMessage(Language.ConnectionsFileBackupFailed, ex,
-                                                             MessageClass.WarningMsg);
-                throw;
-            }
+            var backupFileName =
+                string.Format(Properties.Settings.Default.BackupFileNameFormat, fileName, DateTime.Now);
+            File.Copy(fileName, backupFileName);
         }
-
-        private bool WeDontNeedToBackup(string filePath)
+        catch (Exception ex)
         {
-            return FeatureIsTurnedOff() || FileDoesntExist(filePath);
+            Runtime.MessageCollector.AddExceptionMessage(Language.ConnectionsFileBackupFailed, ex,
+                MessageClass.WarningMsg);
+            throw;
         }
+    }
 
-        private bool FileDoesntExist(string filePath)
-        {
-            return !File.Exists(filePath);
-        }
+    private bool WeDontNeedToBackup(string filePath)
+    {
+        return FeatureIsTurnedOff() || FileDoesntExist(filePath);
+    }
 
-        private bool FeatureIsTurnedOff()
-        {
-            return Properties.Settings.Default.BackupFileKeepCount == 0;
-        }
+    private bool FileDoesntExist(string filePath)
+    {
+        return !File.Exists(filePath);
+    }
+
+    private bool FeatureIsTurnedOff()
+    {
+        return Properties.Settings.Default.BackupFileKeepCount == 0;
     }
 }

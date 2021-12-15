@@ -1,12 +1,11 @@
 ﻿using mRemoteNG.Security.SymmetricEncryption;
 
-namespace mRemoteNG.Security.Factories
+namespace mRemoteNG.Security.Factories;
+
+public class LegacyInsecureCryptoProviderFactory : ICryptoProviderFactory
 {
-    public class LegacyInsecureCryptoProviderFactory : ICryptoProviderFactory
+    public ICryptographyProvider Build()
     {
-        public ICryptographyProvider Build()
-        {
-            return new LegacyRijndaelCryptographyProvider();
-        }
+        return new LegacyRijndaelCryptographyProvider();
     }
 }

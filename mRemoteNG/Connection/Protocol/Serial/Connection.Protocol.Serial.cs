@@ -1,15 +1,14 @@
-namespace mRemoteNG.Connection.Protocol.Serial
-{
-    public class ProtocolSerial : PuttyBase
-    {
-        public ProtocolSerial()
-        {
-            this.PuttyProtocol = Putty_Protocol.serial;
-        }
+namespace mRemoteNG.Connection.Protocol.Serial;
 
-        public enum Defaults
-        {
-            Port = 9600
-        }
+public class ProtocolSerial : PuttyBase
+{
+    public ProtocolSerial()
+    {
+        PuttyProtocol = Putty_Protocol.serial;
+    }
+
+    public enum Defaults
+    {
+        Port = 9600
     }
 }

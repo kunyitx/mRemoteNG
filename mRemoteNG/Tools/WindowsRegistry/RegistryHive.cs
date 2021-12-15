@@ -1,11 +1,10 @@
-﻿namespace mRemoteNG.Tools.WindowsRegistry
+﻿namespace mRemoteNG.Tools.WindowsRegistry;
+
+public enum RegistryHive
 {
-    public enum RegistryHive
-    {
-        ClassesRoot,
-        CurrentConfig,
-        CurrentUser,
-        Users,
-        LocalMachine
-    }
+    ClassesRoot,
+    CurrentConfig,
+    CurrentUser,
+    Users,
+    LocalMachine
 }

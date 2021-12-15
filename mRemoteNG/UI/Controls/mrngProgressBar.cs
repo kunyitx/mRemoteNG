@@ -2,43 +2,42 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace mRemoteNG.UI.Controls
+namespace mRemoteNG.UI.Controls;
+
+// Repaint of a ProgressBar on a flat style
+internal class MrngProgressBar : ProgressBar
 {
-    // Repaint of a ProgressBar on a flat style
-    internal class MrngProgressBar : ProgressBar
+    private ThemeManager _themeManager;
+
+
+    public MrngProgressBar()
     {
-        private ThemeManager _themeManager;
+        ThemeManager.getInstance().ThemeChanged += OnCreateControl;
+    }
 
+    protected override void OnCreateControl()
+    {
+        base.OnCreateControl();
+        _themeManager = ThemeManager.getInstance();
+        if (!_themeManager.ThemingActive) return;
+        SetStyle(ControlStyles.UserPaint, true);
+        SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+        Invalidate();
+    }
 
-        public MrngProgressBar()
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        if (!_themeManager.ActiveAndExtended)
         {
-            ThemeManager.getInstance().ThemeChanged += OnCreateControl;
+            base.OnPaint(e);
+            return;
         }
 
-        protected override void OnCreateControl()
-        {
-            base.OnCreateControl();
-            _themeManager = ThemeManager.getInstance();
-            if (!_themeManager.ThemingActive) return;
-            SetStyle(ControlStyles.UserPaint, true);
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            Invalidate();
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            if (!_themeManager.ActiveAndExtended)
-            {
-                base.OnPaint(e);
-                return;
-            }
-
-            var progressFill = _themeManager.ActiveTheme.ExtendedPalette.getColor("ProgressBar_Fill");
-            var back = _themeManager.ActiveTheme.ExtendedPalette.getColor("ProgressBar_Background");
-            var doneProgress = (int)(e.ClipRectangle.Width * ((double)Value / Maximum));
-            e.Graphics.FillRectangle(new SolidBrush(progressFill), 0, 0, doneProgress, e.ClipRectangle.Height);
-            e.Graphics.FillRectangle(new SolidBrush(back), doneProgress, 0, e.ClipRectangle.Width,
-                                     e.ClipRectangle.Height);
-        }
+        var progressFill = _themeManager.ActiveTheme.ExtendedPalette.getColor("ProgressBar_Fill");
+        var back = _themeManager.ActiveTheme.ExtendedPalette.getColor("ProgressBar_Background");
+        var doneProgress = (int)(e.ClipRectangle.Width * ((double)Value / Maximum));
+        e.Graphics.FillRectangle(new SolidBrush(progressFill), 0, 0, doneProgress, e.ClipRectangle.Height);
+        e.Graphics.FillRectangle(new SolidBrush(back), doneProgress, 0, e.ClipRectangle.Width,
+            e.ClipRectangle.Height);
     }
 }

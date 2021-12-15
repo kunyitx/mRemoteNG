@@ -4,30 +4,30 @@ using NUnit.Framework;
 using WeifenLuo.WinFormsUI.Docking;
 
 
-namespace mRemoteNGTests.UI.Window
+namespace mRemoteNGTests.UI.Window;
+
+[Apartment(ApartmentState.STA)]
+public class ConnectionTreeWindowTests
 {
-    [Apartment(ApartmentState.STA)]
-    public class ConnectionTreeWindowTests
+    private ConnectionTreeWindow _connectionTreeWindow;
+
+    [SetUp]
+    public void Setup()
     {
-        private ConnectionTreeWindow _connectionTreeWindow;
+        _connectionTreeWindow = new ConnectionTreeWindow(new DockContent());
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _connectionTreeWindow = new ConnectionTreeWindow(new DockContent());
-        }
+    [TearDown]
+    public void Teardown()
+    {
+        _connectionTreeWindow.Close();
+    }
 
-        [TearDown]
-        public void Teardown()
-        {
-            _connectionTreeWindow.Close();
-        }
-
-        [Test, Apartment(ApartmentState.STA)]
-        public void CanShowWindow()
-        {
-            _connectionTreeWindow.Show();
-            Assert.That(_connectionTreeWindow.Visible);
-        }
+    [Test]
+    [Apartment(ApartmentState.STA)]
+    public void CanShowWindow()
+    {
+        _connectionTreeWindow.Show();
+        Assert.That(_connectionTreeWindow.Visible);
     }
 }

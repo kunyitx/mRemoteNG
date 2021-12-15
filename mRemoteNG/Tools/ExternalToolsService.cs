@@ -1,16 +1,14 @@
 ﻿using System.Linq;
 using mRemoteNG.Tools.CustomCollections;
 
-namespace mRemoteNG.Tools
-{
-    public class ExternalToolsService
-    {
-        public FullyObservableCollection<ExternalTool> ExternalTools { get; set; } =
-            new FullyObservableCollection<ExternalTool>();
+namespace mRemoteNG.Tools;
 
-        public ExternalTool GetExtAppByName(string name)
-        {
-            return ExternalTools.FirstOrDefault(extA => extA.DisplayName == name);
-        }
+public class ExternalToolsService
+{
+    public FullyObservableCollection<ExternalTool> ExternalTools { get; set; } = new();
+
+    public ExternalTool GetExtAppByName(string name)
+    {
+        return ExternalTools.FirstOrDefault(extA => extA.DisplayName == name);
     }
 }

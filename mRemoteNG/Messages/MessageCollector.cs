@@ -6,72 +6,71 @@ using System.Linq;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
-namespace mRemoteNG.Messages
+namespace mRemoteNG.Messages;
+
+public class MessageCollector : INotifyCollectionChanged
 {
-    public class MessageCollector : INotifyCollectionChanged
+    private readonly IList<IMessage> _messageList;
+
+    public IEnumerable<IMessage> Messages => _messageList;
+
+    public MessageCollector()
     {
-        private readonly IList<IMessage> _messageList;
+        _messageList = new List<IMessage>();
+    }
 
-        public IEnumerable<IMessage> Messages => _messageList;
+    public void AddMessage(MessageClass messageClass, string messageText, bool onlyLog = false)
+    {
+        var message = new Message(messageClass, messageText, onlyLog);
+        AddMessage(message);
+    }
 
-        public MessageCollector()
+    public void AddMessage(IMessage message)
+    {
+        AddMessages(new[] { message });
+    }
+
+    public void AddMessages(IEnumerable<IMessage> messages)
+    {
+        var newMessages = new List<IMessage>();
+        foreach (var message in messages)
         {
-            _messageList = new List<IMessage>();
+            if (_messageList.Contains(message)) continue;
+            _messageList.Add(message);
+            newMessages.Add(message);
         }
 
-        public void AddMessage(MessageClass messageClass, string messageText, bool onlyLog = false)
-        {
-            var message = new Message(messageClass, messageText, onlyLog);
-            AddMessage(message);
-        }
+        if (newMessages.Any())
+            RaiseCollectionChangedEvent(NotifyCollectionChangedAction.Add, newMessages);
+    }
 
-        public void AddMessage(IMessage message)
-        {
-            AddMessages(new[] {message});
-        }
+    public void AddExceptionMessage(string message,
+        Exception ex,
+        MessageClass msgClass = MessageClass.ErrorMsg,
+        bool logOnly = true)
+    {
+        AddMessage(msgClass, message + Environment.NewLine + Tools.MiscTools.GetExceptionMessageRecursive(ex),
+            logOnly);
+    }
 
-        public void AddMessages(IEnumerable<IMessage> messages)
-        {
-            var newMessages = new List<IMessage>();
-            foreach (var message in messages)
-            {
-                if (_messageList.Contains(message)) continue;
-                _messageList.Add(message);
-                newMessages.Add(message);
-            }
+    public void AddExceptionStackTrace(string message,
+        Exception ex,
+        MessageClass msgClass = MessageClass.ErrorMsg,
+        bool logOnly = true)
+    {
+        AddMessage(msgClass, message + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace,
+            logOnly);
+    }
 
-            if (newMessages.Any())
-                RaiseCollectionChangedEvent(NotifyCollectionChangedAction.Add, newMessages);
-        }
+    public void ClearMessages()
+    {
+        _messageList.Clear();
+    }
 
-        public void AddExceptionMessage(string message,
-                                        Exception ex,
-                                        MessageClass msgClass = MessageClass.ErrorMsg,
-                                        bool logOnly = true)
-        {
-            AddMessage(msgClass, message + Environment.NewLine + Tools.MiscTools.GetExceptionMessageRecursive(ex),
-                       logOnly);
-        }
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public void AddExceptionStackTrace(string message,
-                                           Exception ex,
-                                           MessageClass msgClass = MessageClass.ErrorMsg,
-                                           bool logOnly = true)
-        {
-            AddMessage(msgClass, message + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace,
-                       logOnly);
-        }
-
-        public void ClearMessages()
-        {
-            _messageList.Clear();
-        }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
-        private void RaiseCollectionChangedEvent(NotifyCollectionChangedAction action, IList items)
-        {
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action, items));
-        }
+    private void RaiseCollectionChangedEvent(NotifyCollectionChangedAction action, IList items)
+    {
+        CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action, items));
     }
 }

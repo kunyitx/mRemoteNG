@@ -4,172 +4,156 @@ using System.Linq;
 using WeifenLuo.WinFormsUI.Docking;
 
 
-namespace mRemoteNG.Themes
+namespace mRemoteNG.Themes;
+
+/// <inheritdoc />
+/// <summary>
+/// Container class for all the color and style elements to define a theme
+/// </summary>
+public class ThemeInfo : ICloneable
 {
-    /// <inheritdoc />
-    /// <summary>
-    /// Container class for all the color and style elements to define a theme
-    /// </summary>
-    public class ThemeInfo : ICloneable
+    #region Private Variables
+
+    private string _name;
+    private ThemeBase _theme;
+    private string _URI;
+    private VisualStudioToolStripExtender.VsVersion _version;
+    private ExtendedColorPalette _extendedPalette;
+
+    #endregion
+
+    #region Constructors
+
+    public ThemeInfo(string themeName,
+        ThemeBase inTheme,
+        string inURI,
+        VisualStudioToolStripExtender.VsVersion inVersion,
+        ExtendedColorPalette inExtendedPalette)
     {
-        #region Private Variables
+        _name = themeName;
+        _theme = inTheme;
+        _URI = inURI;
+        _version = inVersion;
+        _extendedPalette = inExtendedPalette;
+        IsThemeBase = false;
+        IsExtendable = false;
 
-        private string _name;
-        private ThemeBase _theme;
-        private string _URI;
-        private VisualStudioToolStripExtender.VsVersion _version;
-        private ExtendedColorPalette _extendedPalette;
+        if (_extendedPalette != null)
+            IsExtended = true;
 
-        #endregion
+        setCustomExtenders();
+    }
 
-        #region Constructors
+    public ThemeInfo(string themeName,
+        ThemeBase inTheme,
+        string inURI,
+        VisualStudioToolStripExtender.VsVersion inVersion)
+    {
+        _name = themeName;
+        _theme = inTheme;
+        _URI = inURI;
+        _version = inVersion;
+        IsThemeBase = false;
+        IsExtendable = false;
+        IsExtended = false;
+        setCustomExtenders();
+    }
 
-        public ThemeInfo(string themeName,
-                         ThemeBase inTheme,
-                         string inURI,
-                         VisualStudioToolStripExtender.VsVersion inVersion,
-                         ExtendedColorPalette inExtendedPalette)
+    #endregion
+
+    #region Public Methods
+
+    public object Clone()
+    {
+        var extPalette = new ExtendedColorPalette
         {
-            _name = themeName;
-            _theme = inTheme;
-            _URI = inURI;
-            _version = inVersion;
-            _extendedPalette = inExtendedPalette;
-            IsThemeBase = false;
-            IsExtendable = false;
+            ExtColorPalette =
+                _extendedPalette.ExtColorPalette.ToDictionary(entry => entry.Key, entry => entry.Value),
+            DefaultColorPalette = _extendedPalette.DefaultColorPalette
+        };
+        var clonedObj = new ThemeInfo(_name, _theme, _URI, _version, extPalette)
+        {
+            IsExtendable = IsExtendable,
+            IsThemeBase = IsThemeBase
+        };
 
-            if (_extendedPalette != null)
-                IsExtended = true;
+        return clonedObj;
+    }
 
+    #endregion
+
+
+    #region Properties
+
+    [Browsable(false)]
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            if (string.Equals(_name, value, StringComparison.InvariantCulture)) return;
+
+            _name = value;
+        }
+    }
+
+    public ThemeBase Theme
+    {
+        get => _theme;
+        set
+        {
+            if (value != null && _theme == value) return;
+
+            _theme = value;
             setCustomExtenders();
         }
+    }
 
-        public ThemeInfo(string themeName,
-                         ThemeBase inTheme,
-                         string inURI,
-                         VisualStudioToolStripExtender.VsVersion inVersion)
+    public string URI
+    {
+        get => _URI;
+        set
         {
-            _name = themeName;
-            _theme = inTheme;
-            _URI = inURI;
-            _version = inVersion;
-            IsThemeBase = false;
-            IsExtendable = false;
-            IsExtended = false;
-            setCustomExtenders();
+            if (value != null && _URI == value) return;
+
+            _URI = value;
         }
+    }
 
-        #endregion
-
-        #region Public Methods
-
-        public object Clone()
+    public VisualStudioToolStripExtender.VsVersion Version
+    {
+        get => _version;
+        set
         {
-            var extPalette = new ExtendedColorPalette
-            {
-                ExtColorPalette =
-                    _extendedPalette.ExtColorPalette.ToDictionary(entry => entry.Key, entry => entry.Value),
-                DefaultColorPalette = _extendedPalette.DefaultColorPalette
-            };
-            var clonedObj = new ThemeInfo(_name, _theme, _URI, _version, extPalette)
-            {
-                IsExtendable = IsExtendable,
-                IsThemeBase = IsThemeBase
-            };
+            if (Equals(_version, value)) return;
 
-            return clonedObj;
+            _version = value;
         }
+    }
 
-        #endregion
-
-
-        #region Properties
-
-        [Browsable(false)]
-        public string Name
+    public ExtendedColorPalette ExtendedPalette
+    {
+        get => _extendedPalette;
+        set
         {
-            get => _name;
-            set
-            {
-                if (string.Equals(_name, value, StringComparison.InvariantCulture))
-                {
-                    return;
-                }
+            if (_extendedPalette != null && _extendedPalette == value) return;
 
-                _name = value;
-            }
+            _extendedPalette = value;
         }
+    }
 
-        public ThemeBase Theme
-        {
-            get => _theme;
-            set
-            {
-                if (value != null && _theme == value)
-                {
-                    return;
-                }
+    public bool IsThemeBase { get; set; }
 
-                _theme = value;
-                setCustomExtenders();
-            }
-        }
+    public bool IsExtendable { get; set; }
 
-        public string URI
-        {
-            get => _URI;
-            set
-            {
-                if (value != null && _URI == value)
-                {
-                    return;
-                }
+    public bool IsExtended { get; private set; }
 
-                _URI = value;
-            }
-        }
+    #endregion
 
-        public VisualStudioToolStripExtender.VsVersion Version
-        {
-            get => _version;
-            set
-            {
-                if (Equals(_version, value))
-                {
-                    return;
-                }
-
-                _version = value;
-            }
-        }
-
-        public ExtendedColorPalette ExtendedPalette
-        {
-            get => _extendedPalette;
-            set
-            {
-                if (_extendedPalette != null && _extendedPalette == value)
-                {
-                    return;
-                }
-
-                _extendedPalette = value;
-            }
-        }
-
-        public bool IsThemeBase { get; set; }
-
-        public bool IsExtendable { get; set; }
-
-        public bool IsExtended { get; private set; }
-
-        #endregion
-
-        //Custom extenders for mremote customizations in DPS
-        private void setCustomExtenders()
-        {
-            _theme.Extender.DockPaneStripFactory = new MremoteDockPaneStripFactory();
-            _theme.Extender.FloatWindowFactory = new MremoteFloatWindowFactory();
-        }
+    //Custom extenders for mremote customizations in DPS
+    private void setCustomExtenders()
+    {
+        _theme.Extender.DockPaneStripFactory = new MremoteDockPaneStripFactory();
+        _theme.Extender.FloatWindowFactory = new MremoteFloatWindowFactory();
     }
 }

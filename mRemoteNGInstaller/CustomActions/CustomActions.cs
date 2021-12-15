@@ -30,13 +30,9 @@ namespace CustomActions
             session.Log("Begin IsLegacyVersionInstalled");
             var uninstaller = new UninstallNsisVersions();
             if (uninstaller.IsLegacymRemoteNgInstalled())
-            {
                 session["LEGACYVERSIONINSTALLED"] = "1";
-            }
             else
-            {
                 session["LEGACYVERSIONINSTALLED"] = "0";
-            }
 
             session.Log("End IsLegacyVersionInstalled");
             return ActionResult.Success;

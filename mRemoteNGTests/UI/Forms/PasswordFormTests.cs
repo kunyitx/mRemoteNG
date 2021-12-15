@@ -4,46 +4,46 @@ using mRemoteNG.UI.Forms;
 using mRemoteNGTests.TestHelpers;
 using NUnit.Framework;
 
-namespace mRemoteNGTests.UI.Forms
+namespace mRemoteNGTests.UI.Forms;
+
+[TestFixture]
+[Apartment(ApartmentState.STA)]
+public class PasswordFormTests
 {
-	[TestFixture]
-    [Apartment(ApartmentState.STA)]
-    public class PasswordFormTests
+    private FrmPassword _passwordForm;
+
+    [SetUp]
+    public void Setup()
     {
-        FrmPassword _passwordForm;
+        _passwordForm = new FrmPassword();
+        _passwordForm.Show();
+    }
 
-        [SetUp]
-        public void Setup()
+    [TearDown]
+    public void Teardown()
+    {
+        _passwordForm.Dispose();
+        while (_passwordForm.Disposing)
         {
-            _passwordForm = new FrmPassword();
-            _passwordForm.Show();
         }
 
-        [TearDown]
-        public void Teardown()
-        {
-            _passwordForm.Dispose();
-            while (_passwordForm.Disposing)
-            {
-            }
-            _passwordForm = null;
-        }
+        _passwordForm = null;
+    }
 
-        [Test]
-		[SetUICulture("en-US")]
-        public void PasswordFormText()
-        {
-            Assert.That(_passwordForm.Text, Does.Match("mRemoteNG password"));
-        }
+    [Test]
+    [SetUICulture("en-US")]
+    public void PasswordFormText()
+    {
+        Assert.That(_passwordForm.Text, Does.Match("mRemoteNG password"));
+    }
 
-        [Test]
-        public void ClickingCancelClosesPasswordForm()
-        {
-            bool eventFired = false;
-            _passwordForm.FormClosed += (o, e) => eventFired = true;
-            Button cancelButton = _passwordForm.FindControl<Button>("btnCancel");
-            cancelButton.PerformClick();
-            Assert.That(eventFired, Is.True);
-        }
+    [Test]
+    public void ClickingCancelClosesPasswordForm()
+    {
+        var eventFired = false;
+        _passwordForm.FormClosed += (o, e) => eventFired = true;
+        var cancelButton = _passwordForm.FindControl<Button>("btnCancel");
+        cancelButton.PerformClick();
+        Assert.That(eventFired, Is.True);
     }
 }

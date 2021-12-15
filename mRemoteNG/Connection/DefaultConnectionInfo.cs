@@ -4,79 +4,77 @@ using System.Configuration;
 using mRemoteNG.App;
 
 
-namespace mRemoteNG.Connection
+namespace mRemoteNG.Connection;
+
+public class DefaultConnectionInfo : ConnectionInfo
 {
-    public class DefaultConnectionInfo : ConnectionInfo
+    [Browsable(false)] public static DefaultConnectionInfo Instance { get; } = new();
+
+    private DefaultConnectionInfo()
     {
-        [Browsable(false)]
-        public static DefaultConnectionInfo Instance { get; } = new DefaultConnectionInfo();
+        IsDefault = true;
+        Inheritance = DefaultConnectionInheritance.Instance;
+    }
 
-        private DefaultConnectionInfo()
-        {
-            IsDefault = true;
-            Inheritance = DefaultConnectionInheritance.Instance;
-        }
+    public void LoadFrom<TSource>(TSource sourceInstance, Func<string, string> propertyNameMutator = null)
+    {
+        if (propertyNameMutator == null)
+            propertyNameMutator = a => a;
 
-        public void LoadFrom<TSource>(TSource sourceInstance, Func<string, string> propertyNameMutator = null)
-        {
-            if (propertyNameMutator == null)
-                propertyNameMutator = a => a;
-
-            var connectionProperties = GetSerializableProperties();
-            foreach (var property in connectionProperties)
+        var connectionProperties = GetSerializableProperties();
+        foreach (var property in connectionProperties)
+            try
             {
-                try
+                var expectedPropertyName = propertyNameMutator(property.Name);
+                var propertyFromSource = typeof(TSource).GetProperty(expectedPropertyName);
+                if (propertyFromSource == null)
+                    throw new SettingsPropertyNotFoundException(
+                        $"No property with name '{expectedPropertyName}' found.");
+
+                var valueFromSource = propertyFromSource.GetValue(sourceInstance, null);
+
+                if (property.PropertyType.IsEnum)
                 {
-                    var expectedPropertyName = propertyNameMutator(property.Name);
-                    var propertyFromSource = typeof(TSource).GetProperty(expectedPropertyName);
-                    if (propertyFromSource == null)
-                        throw new SettingsPropertyNotFoundException($"No property with name '{expectedPropertyName}' found.");
-
-                    var valueFromSource = propertyFromSource.GetValue(sourceInstance, null);
-
-                    if (property.PropertyType.IsEnum)
-                    {
-                        property.SetValue(Instance, Enum.Parse(property.PropertyType, valueFromSource.ToString()), null);
-                        continue;
-                    }
-
-                    property.SetValue(Instance, Convert.ChangeType(valueFromSource, property.PropertyType), null);
+                    property.SetValue(Instance, Enum.Parse(property.PropertyType, valueFromSource.ToString()), null);
+                    continue;
                 }
-                catch (Exception ex)
-                {
-                    Runtime.MessageCollector?.AddExceptionStackTrace($"Error loading default connectioninfo property {property.Name}", ex);
-                }
+
+                property.SetValue(Instance, Convert.ChangeType(valueFromSource, property.PropertyType), null);
             }
-        }
-
-        public void SaveTo<TDestination>(TDestination destinationInstance, Func<string, string> propertyNameMutator = null)
-        {
-            if (propertyNameMutator == null)
-                propertyNameMutator = (a) => a;
-
-            var connectionProperties = GetSerializableProperties();
-
-            foreach (var property in connectionProperties)
+            catch (Exception ex)
             {
-                try
-                {
-                    var expectedPropertyName = propertyNameMutator(property.Name);
-                    var propertyFromDestination = typeof(TDestination).GetProperty(expectedPropertyName);
-
-                    if (propertyFromDestination == null)
-                        throw new SettingsPropertyNotFoundException($"No property with name '{expectedPropertyName}' found.");
-
-                    // ensure value is of correct type
-                    var value = Convert.ChangeType(property.GetValue(Instance, null),
-                                                   propertyFromDestination.PropertyType);
-
-                    propertyFromDestination.SetValue(destinationInstance, value, null);
-                }
-                catch (Exception ex)
-                {
-                    Runtime.MessageCollector?.AddExceptionStackTrace($"Error saving default connectioninfo property {property.Name}", ex);
-                }
+                Runtime.MessageCollector?.AddExceptionStackTrace(
+                    $"Error loading default connectioninfo property {property.Name}", ex);
             }
-        }
+    }
+
+    public void SaveTo<TDestination>(TDestination destinationInstance, Func<string, string> propertyNameMutator = null)
+    {
+        if (propertyNameMutator == null)
+            propertyNameMutator = (a) => a;
+
+        var connectionProperties = GetSerializableProperties();
+
+        foreach (var property in connectionProperties)
+            try
+            {
+                var expectedPropertyName = propertyNameMutator(property.Name);
+                var propertyFromDestination = typeof(TDestination).GetProperty(expectedPropertyName);
+
+                if (propertyFromDestination == null)
+                    throw new SettingsPropertyNotFoundException(
+                        $"No property with name '{expectedPropertyName}' found.");
+
+                // ensure value is of correct type
+                var value = Convert.ChangeType(property.GetValue(Instance, null),
+                    propertyFromDestination.PropertyType);
+
+                propertyFromDestination.SetValue(destinationInstance, value, null);
+            }
+            catch (Exception ex)
+            {
+                Runtime.MessageCollector?.AddExceptionStackTrace(
+                    $"Error saving default connectioninfo property {property.Name}", ex);
+            }
     }
 }

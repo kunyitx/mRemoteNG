@@ -5,39 +5,38 @@ using System.Text.RegularExpressions;
 using mRemoteNG.Resources.Language;
 
 
-namespace mRemoteNG.Security.PasswordCreation
+namespace mRemoteNG.Security.PasswordCreation;
+
+public class PasswordIncludesSpecialCharactersConstraint : IPasswordConstraint
 {
-    public class PasswordIncludesSpecialCharactersConstraint : IPasswordConstraint
+    private readonly int _minimumCount;
+
+    public IEnumerable<char> SpecialCharacters { get; } = new[] { '!', '@', '#', '$', '%', '^', '&', '*' };
+
+    public string ConstraintHint { get; }
+
+    public PasswordIncludesSpecialCharactersConstraint(int minimumCount = 1)
     {
-        private readonly int _minimumCount;
+        if (minimumCount < 0)
+            throw new ArgumentException($"{nameof(minimumCount)} must be a positive value");
 
-        public IEnumerable<char> SpecialCharacters { get; } = new[] {'!', '@', '#', '$', '%', '^', '&', '*'};
+        _minimumCount = minimumCount;
+    }
 
-        public string ConstraintHint { get; }
+    public PasswordIncludesSpecialCharactersConstraint(IEnumerable<char> specialCharacters, int minimumCount = 1)
+        : this(minimumCount)
+    {
+        if (specialCharacters == null)
+            throw new ArgumentNullException(nameof(specialCharacters));
 
-        public PasswordIncludesSpecialCharactersConstraint(int minimumCount = 1)
-        {
-            if (minimumCount < 0)
-                throw new ArgumentException($"{nameof(minimumCount)} must be a positive value");
+        SpecialCharacters = specialCharacters;
+        ConstraintHint = string.Format(Language.PasswordConstainsSpecialCharactersConstraintHint, _minimumCount,
+            string.Concat(SpecialCharacters));
+    }
 
-            _minimumCount = minimumCount;
-        }
-
-        public PasswordIncludesSpecialCharactersConstraint(IEnumerable<char> specialCharacters, int minimumCount = 1)
-            : this(minimumCount)
-        {
-            if (specialCharacters == null)
-                throw new ArgumentNullException(nameof(specialCharacters));
-
-            SpecialCharacters = specialCharacters;
-            ConstraintHint = string.Format(Language.PasswordConstainsSpecialCharactersConstraintHint, _minimumCount,
-                                           string.Concat(SpecialCharacters));
-        }
-
-        public bool Validate(SecureString password)
-        {
-            var regex = new Regex($"[{string.Concat(SpecialCharacters)}]");
-            return regex.Matches(password.ConvertToUnsecureString()).Count >= _minimumCount;
-        }
+    public bool Validate(SecureString password)
+    {
+        var regex = new Regex($"[{string.Concat(SpecialCharacters)}]");
+        return regex.Matches(password.ConvertToUnsecureString()).Count >= _minimumCount;
     }
 }

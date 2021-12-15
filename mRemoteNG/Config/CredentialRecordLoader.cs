@@ -6,29 +6,28 @@ using mRemoteNG.Config.Serializers;
 using mRemoteNG.Credential;
 
 
-namespace mRemoteNG.Config
+namespace mRemoteNG.Config;
+
+public class CredentialRecordLoader
 {
-    public class CredentialRecordLoader
+    private readonly IDataProvider<string> _dataProvider;
+    private readonly ISecureDeserializer<string, IEnumerable<ICredentialRecord>> _deserializer;
+
+    public CredentialRecordLoader(IDataProvider<string> dataProvider,
+        ISecureDeserializer<string, IEnumerable<ICredentialRecord>> deserializer)
     {
-        private readonly IDataProvider<string> _dataProvider;
-        private readonly ISecureDeserializer<string, IEnumerable<ICredentialRecord>> _deserializer;
+        if (dataProvider == null)
+            throw new ArgumentNullException(nameof(dataProvider));
+        if (deserializer == null)
+            throw new ArgumentNullException(nameof(deserializer));
 
-        public CredentialRecordLoader(IDataProvider<string> dataProvider,
-                                      ISecureDeserializer<string, IEnumerable<ICredentialRecord>> deserializer)
-        {
-            if (dataProvider == null)
-                throw new ArgumentNullException(nameof(dataProvider));
-            if (deserializer == null)
-                throw new ArgumentNullException(nameof(deserializer));
+        _dataProvider = dataProvider;
+        _deserializer = deserializer;
+    }
 
-            _dataProvider = dataProvider;
-            _deserializer = deserializer;
-        }
-
-        public IEnumerable<ICredentialRecord> Load(SecureString key)
-        {
-            var serializedCredentials = _dataProvider.Load();
-            return _deserializer.Deserialize(serializedCredentials, key);
-        }
+    public IEnumerable<ICredentialRecord> Load(SecureString key)
+    {
+        var serializedCredentials = _dataProvider.Load();
+        return _deserializer.Deserialize(serializedCredentials, key);
     }
 }

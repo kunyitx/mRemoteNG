@@ -202,12 +202,12 @@
             this.Opacity = 0D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = " ";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.FrmMain_Load);
-            this.Shown += new System.EventHandler(this.frmMain_Shown);
-            this.ResizeBegin += new System.EventHandler(this.frmMain_ResizeBegin);
-            this.ResizeEnd += new System.EventHandler(this.frmMain_ResizeEnd);
-            this.Resize += new System.EventHandler(this.frmMain_Resize);
+            this.Shown += new System.EventHandler(this.FrmMain_Shown);
+            this.ResizeBegin += new System.EventHandler(this.FrmMain_ResizeBegin);
+            this.ResizeEnd += new System.EventHandler(this.FrmMain_ResizeEnd);
+            this.Resize += new System.EventHandler(this.FrmMain_Resize);
             this.msMain.ResumeLayout(false);
             this.msMain.PerformLayout();
             this.tsContainer.ContentPanel.ResumeLayout(false);

@@ -1,16 +1,15 @@
 using mRemoteNG.Properties;
 using mRemoteNG.Tools.Cmdline;
 
-namespace mRemoteNG.Tools
+namespace mRemoteNG.Tools;
+
+public class PuttyProcessController : ProcessController
 {
-    public class PuttyProcessController : ProcessController
+    public bool Start(CommandLineArguments arguments = null)
     {
-        public bool Start(CommandLineArguments arguments = null)
-        {
-            var filename = Settings.Default.UseCustomPuttyPath
-                ? Settings.Default.CustomPuttyPath
-                : App.Info.GeneralAppInfo.PuttyPath;
-            return Start(filename, arguments);
-        }
+        var filename = Settings.Default.UseCustomPuttyPath
+            ? Settings.Default.CustomPuttyPath
+            : App.Info.GeneralAppInfo.PuttyPath;
+        return Start(filename, arguments);
     }
 }

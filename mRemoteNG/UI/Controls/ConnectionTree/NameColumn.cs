@@ -1,17 +1,16 @@
 ﻿using BrightIdeasSoftware;
 using mRemoteNG.Connection;
 
-namespace mRemoteNG.UI.Controls.ConnectionTree
+namespace mRemoteNG.UI.Controls.ConnectionTree;
+
+public class NameColumn : OLVColumn
 {
-    public class NameColumn : OLVColumn
+    public NameColumn(ImageGetterDelegate imageGetterDelegate)
     {
-        public NameColumn(ImageGetterDelegate imageGetterDelegate)
-        {
-            AspectName = "Name";
-            FillsFreeSpace = false;
-            AspectGetter = item => ((ConnectionInfo)item).Name;
-            ImageGetter = imageGetterDelegate;
-            AutoCompleteEditor = false;
-        }
+        AspectName = "Name";
+        FillsFreeSpace = false;
+        AspectGetter = item => ((ConnectionInfo)item).Name;
+        ImageGetter = imageGetterDelegate;
+        AutoCompleteEditor = false;
     }
 }

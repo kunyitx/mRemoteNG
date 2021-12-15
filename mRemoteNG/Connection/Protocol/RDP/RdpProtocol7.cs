@@ -5,47 +5,46 @@ using System;
 using System.Windows.Forms;
 using mRemoteNG.Resources.Language;
 
-namespace mRemoteNG.Connection.Protocol.RDP
+namespace mRemoteNG.Connection.Protocol.RDP;
+
+public class RdpProtocol7 : RdpProtocol6
 {
-    public class RdpProtocol7 : RdpProtocol6
+    protected override RdpVersion RdpProtocolVersion => RdpVersion.Rdc7;
+
+    public override bool Initialize()
     {
-        protected override RdpVersion RdpProtocolVersion => RdpVersion.Rdc7;
+        if (!base.Initialize())
+            return false;
 
-        public override bool Initialize()
+        try
         {
-            if (!base.Initialize())
-                return false;
+            var rdpClient7 = (MsRdpClient7NotSafeForScripting)((AxHost)Control).GetOcx();
+            rdpClient7.AdvancedSettings8.AudioQualityMode = (uint)connectionInfo.SoundQuality;
+            rdpClient7.AdvancedSettings8.AudioCaptureRedirectionMode = connectionInfo.RedirectAudioCapture;
+            rdpClient7.AdvancedSettings8.NetworkConnectionType = (int)RdpNetworkConnectionType.Modem;
 
-            try
+            if (connectionInfo.UseVmId)
             {
-                var rdpClient7 = (MsRdpClient7NotSafeForScripting)((AxHost) Control).GetOcx();
-                rdpClient7.AdvancedSettings8.AudioQualityMode = (uint)connectionInfo.SoundQuality;
-                rdpClient7.AdvancedSettings8.AudioCaptureRedirectionMode = connectionInfo.RedirectAudioCapture;
-                rdpClient7.AdvancedSettings8.NetworkConnectionType = (int)RdpNetworkConnectionType.Modem;
-
-                if (connectionInfo.UseVmId)
-                {
-                    SetExtendedProperty("DisableCredentialsDelegation", true);
-                    rdpClient7.AdvancedSettings7.AuthenticationServiceClass = "Microsoft Virtual Console Service";
-                    rdpClient7.AdvancedSettings8.EnableCredSspSupport = true;
-                    rdpClient7.AdvancedSettings8.NegotiateSecurityLayer = false;
-                    rdpClient7.AdvancedSettings7.PCB = $"{connectionInfo.VmId}";
-                    if (connectionInfo.UseEnhancedMode)
-                        rdpClient7.AdvancedSettings7.PCB += ";EnhancedMode=1";
-                }
+                SetExtendedProperty("DisableCredentialsDelegation", true);
+                rdpClient7.AdvancedSettings7.AuthenticationServiceClass = "Microsoft Virtual Console Service";
+                rdpClient7.AdvancedSettings8.EnableCredSspSupport = true;
+                rdpClient7.AdvancedSettings8.NegotiateSecurityLayer = false;
+                rdpClient7.AdvancedSettings7.PCB = $"{connectionInfo.VmId}";
+                if (connectionInfo.UseEnhancedMode)
+                    rdpClient7.AdvancedSettings7.PCB += ";EnhancedMode=1";
             }
-            catch (Exception ex)
-            {
-                Runtime.MessageCollector.AddExceptionStackTrace(Language.RdpSetPropsFailed, ex);
-                return false;
-            }
-
-            return true;
+        }
+        catch (Exception ex)
+        {
+            Runtime.MessageCollector.AddExceptionStackTrace(Language.RdpSetPropsFailed, ex);
+            return false;
         }
 
-        protected override AxHost CreateActiveXRdpClientControl()
-        {
-            return new AxMsRdpClient7NotSafeForScripting();
-        }
+        return true;
+    }
+
+    protected override AxHost CreateActiveXRdpClientControl()
+    {
+        return new AxMsRdpClient7NotSafeForScripting();
     }
 }

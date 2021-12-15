@@ -6,26 +6,25 @@ using mRemoteNG.Container;
 using mRemoteNG.Tools;
 
 
-namespace mRemoteNG.Config.Import
+namespace mRemoteNG.Config.Import;
+
+public class PortScanImporter : IConnectionImporter<IEnumerable<ScanHost>>
 {
-    public class PortScanImporter : IConnectionImporter<IEnumerable<ScanHost>>
+    private readonly ProtocolType _targetProtocolType;
+
+    public PortScanImporter(ProtocolType targetProtocolType)
     {
-        private readonly ProtocolType _targetProtocolType;
+        _targetProtocolType = targetProtocolType;
+    }
 
-        public PortScanImporter(ProtocolType targetProtocolType)
-        {
-            _targetProtocolType = targetProtocolType;
-        }
+    public void Import(IEnumerable<ScanHost> hosts, ContainerInfo destinationContainer)
+    {
+        var deserializer = new PortScanDeserializer(_targetProtocolType);
+        var connectionTreeModel = deserializer.Deserialize(hosts);
 
-        public void Import(IEnumerable<ScanHost> hosts, ContainerInfo destinationContainer)
-        {
-            var deserializer = new PortScanDeserializer(_targetProtocolType);
-            var connectionTreeModel = deserializer.Deserialize(hosts);
-
-            var importedRootNode = connectionTreeModel.RootNodes.First();
-            if (importedRootNode == null) return;
-            var childrenToAdd = importedRootNode.Children.ToArray();
-            destinationContainer.AddChildRange(childrenToAdd);
-        }
+        var importedRootNode = connectionTreeModel.RootNodes.First();
+        if (importedRootNode == null) return;
+        var childrenToAdd = importedRootNode.Children.ToArray();
+        destinationContainer.AddChildRange(childrenToAdd);
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace mRemoteNG.Tools.WindowsRegistry
+﻿namespace mRemoteNG.Tools.WindowsRegistry;
+
+public interface IRegistry
 {
-    public interface IRegistry
-    {
-        Optional<string> GetKeyValue(RegistryHive hive, string keyPath, string propertyName);
-        string[] GetSubKeyNames(RegistryHive hive, string keyPath);
-    }
+    Optional<string> GetKeyValue(RegistryHive hive, string keyPath, string propertyName);
+    string[] GetSubKeyNames(RegistryHive hive, string keyPath);
 }

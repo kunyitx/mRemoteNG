@@ -1,25 +1,24 @@
 ﻿using System;
 
-namespace mRemoteNG.UI.Controls.PageSequence
+namespace mRemoteNG.UI.Controls.PageSequence;
+
+public delegate void SequencedPageReplcementRequestHandler(object sender, SequencedPageReplcementRequestArgs args);
+
+public enum RelativePagePosition
 {
-    public delegate void SequencedPageReplcementRequestHandler(object sender, SequencedPageReplcementRequestArgs args);
+    PreviousPage,
+    CurrentPage,
+    NextPage
+}
 
-    public enum RelativePagePosition
+public class SequencedPageReplcementRequestArgs
+{
+    public SequencedControl NewControl { get; }
+    public RelativePagePosition PagePosition { get; }
+
+    public SequencedPageReplcementRequestArgs(SequencedControl newControl, RelativePagePosition pageToReplace)
     {
-        PreviousPage,
-        CurrentPage,
-        NextPage
-    }
-
-    public class SequencedPageReplcementRequestArgs
-    {
-        public SequencedControl NewControl { get; }
-        public RelativePagePosition PagePosition { get; }
-
-        public SequencedPageReplcementRequestArgs(SequencedControl newControl, RelativePagePosition pageToReplace)
-        {
-            NewControl = newControl ?? throw new ArgumentNullException(nameof(newControl));
-            PagePosition = pageToReplace;
-        }
+        NewControl = newControl ?? throw new ArgumentNullException(nameof(newControl));
+        PagePosition = pageToReplace;
     }
 }

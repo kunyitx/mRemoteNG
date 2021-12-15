@@ -5,52 +5,51 @@ using System.Windows.Forms;
 using mRemoteNG.Resources.Language;
 
 
-namespace mRemoteNG.Tree
+namespace mRemoteNG.Tree;
+
+public class SelectedConnectionDeletionConfirmer : IConfirm<ConnectionInfo>
 {
-    public class SelectedConnectionDeletionConfirmer : IConfirm<ConnectionInfo>
+    private readonly Func<string, DialogResult> _confirmationFunc;
+
+    public SelectedConnectionDeletionConfirmer(Func<string, DialogResult> confirmationFunc)
     {
-        private readonly Func<string, DialogResult> _confirmationFunc;
+        _confirmationFunc = confirmationFunc;
+    }
 
-        public SelectedConnectionDeletionConfirmer(Func<string, DialogResult> confirmationFunc)
-        {
-            _confirmationFunc = confirmationFunc;
-        }
+    public bool Confirm(ConnectionInfo deletionTarget)
+    {
+        if (deletionTarget == null)
+            return false;
 
-        public bool Confirm(ConnectionInfo deletionTarget)
-        {
-            if (deletionTarget == null)
-                return false;
+        var deletionTargetAsContainer = deletionTarget as ContainerInfo;
+        if (deletionTargetAsContainer != null)
+            return deletionTargetAsContainer.HasChildren()
+                ? UserConfirmsNonEmptyFolderDeletion(deletionTargetAsContainer)
+                : UserConfirmsEmptyFolderDeletion(deletionTargetAsContainer);
+        return UserConfirmsConnectionDeletion(deletionTarget);
+    }
 
-            var deletionTargetAsContainer = deletionTarget as ContainerInfo;
-            if (deletionTargetAsContainer != null)
-                return deletionTargetAsContainer.HasChildren()
-                    ? UserConfirmsNonEmptyFolderDeletion(deletionTargetAsContainer)
-                    : UserConfirmsEmptyFolderDeletion(deletionTargetAsContainer);
-            return UserConfirmsConnectionDeletion(deletionTarget);
-        }
+    private bool UserConfirmsEmptyFolderDeletion(AbstractConnectionRecord deletionTarget)
+    {
+        var messagePrompt = string.Format(Language.ConfirmDeleteNodeFolder, deletionTarget.Name);
+        return PromptUser(messagePrompt);
+    }
 
-        private bool UserConfirmsEmptyFolderDeletion(AbstractConnectionRecord deletionTarget)
-        {
-            var messagePrompt = string.Format(Language.ConfirmDeleteNodeFolder, deletionTarget.Name);
-            return PromptUser(messagePrompt);
-        }
+    private bool UserConfirmsNonEmptyFolderDeletion(AbstractConnectionRecord deletionTarget)
+    {
+        var messagePrompt = string.Format(Language.ConfirmDeleteNodeFolderNotEmpty, deletionTarget.Name);
+        return PromptUser(messagePrompt);
+    }
 
-        private bool UserConfirmsNonEmptyFolderDeletion(AbstractConnectionRecord deletionTarget)
-        {
-            var messagePrompt = string.Format(Language.ConfirmDeleteNodeFolderNotEmpty, deletionTarget.Name);
-            return PromptUser(messagePrompt);
-        }
+    private bool UserConfirmsConnectionDeletion(AbstractConnectionRecord deletionTarget)
+    {
+        var messagePrompt = string.Format(Language.ConfirmDeleteNodeConnection, deletionTarget.Name);
+        return PromptUser(messagePrompt);
+    }
 
-        private bool UserConfirmsConnectionDeletion(AbstractConnectionRecord deletionTarget)
-        {
-            var messagePrompt = string.Format(Language.ConfirmDeleteNodeConnection, deletionTarget.Name);
-            return PromptUser(messagePrompt);
-        }
-
-        private bool PromptUser(string promptMessage)
-        {
-            var msgBoxResponse = _confirmationFunc(promptMessage);
-            return msgBoxResponse == DialogResult.Yes;
-        }
+    private bool PromptUser(string promptMessage)
+    {
+        var msgBoxResponse = _confirmationFunc(promptMessage);
+        return msgBoxResponse == DialogResult.Yes;
     }
 }
