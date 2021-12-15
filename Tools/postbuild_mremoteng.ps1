@@ -28,6 +28,7 @@ param (
 Write-Output "+===========================================================================================+"
 Write-Output "|                               Beginning mRemoteNG Post Build                              |"
 Write-Output "+===========================================================================================+"
+
 Format-Table -AutoSize -Wrap -InputObject @{
     "SolutionDir" = $SolutionDir
     "TargetDir" = $TargetDir
@@ -59,3 +60,7 @@ Format-Table -AutoSize -Wrap -InputObject @{
 & "$PSScriptRoot\sign_binaries.ps1" -TargetDir $TargetDir -CertificatePath $CertificatePath -CertificatePassword $CertificatePassword -ConfigurationName $ConfigurationName -Exclude $ExcludeFromSigning -SolutionDir $SolutionDir
 & "$PSScriptRoot\verify_binary_signatures.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName -CertificatePath $CertificatePath -SolutionDir $SolutionDir
 & "$PSScriptRoot\zip_files.ps1" -SolutionDir $SolutionDir -TargetDir $TargetDir -ConfigurationName $ConfigurationName
+
+Write-Output "+===========================================================================================+"
+Write-Output "|                                  End mRemoteNG Post Build                                 |"
+Write-Output "+===========================================================================================+"
