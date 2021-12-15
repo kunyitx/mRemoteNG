@@ -8,16 +8,15 @@ using System.Threading;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
 
-
 namespace mRemoteNG.Tools;
 
 public class PortScanner
 {
     private readonly List<IPAddress> _ipAddresses = new();
     private readonly List<int> _ports = new();
-    private Thread _scanThread;
     private readonly List<ScanHost> _scannedHosts = new();
     private readonly int _timeoutInMilliseconds;
+    private Thread _scanThread;
 
     #region Public Methods
 

@@ -1,9 +1,10 @@
-﻿using mRemoteNG.App;
-using mRemoteNG.Tools;
-using System;
+﻿using System;
 using System.Threading;
 using System.Windows.Forms;
+using mRemoteNG.App;
+using mRemoteNG.Tools;
 using mRemoteNG.UI.Tabs;
+using Timer = System.Timers.Timer;
 
 // ReSharper disable UnusedMember.Local
 
@@ -11,6 +12,18 @@ namespace mRemoteNG.Connection.Protocol;
 
 public abstract class ProtocolBase : IDisposable
 {
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (disposing) return;
+        tmrReconnect?.Dispose();
+    }
+
     #region Private Variables
 
     private ConnectionTab _connectionTab;
@@ -60,7 +73,7 @@ public abstract class ProtocolBase : IDisposable
 
     public ConnectionInfo.Force Force { get; set; }
 
-    public readonly System.Timers.Timer tmrReconnect = new(2000);
+    public readonly Timer tmrReconnect = new(2000);
     protected ReconnectGroup ReconnectGroup;
 
     protected ProtocolBase(string name)
@@ -326,16 +339,4 @@ public abstract class ProtocolBase : IDisposable
     }
 
     #endregion
-
-    private void Dispose(bool disposing)
-    {
-        if (disposing) return;
-        tmrReconnect?.Dispose();
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
 }

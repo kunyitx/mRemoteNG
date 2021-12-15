@@ -1,6 +1,6 @@
 ﻿using mRemoteNG.Properties;
-using mRemoteNG.Tools;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.Tree.Root;
 
@@ -21,7 +21,7 @@ public class RootPuttySessionsNodeInfo : RootNodeInfo
 
     #region Public Properties
 
-    [LocalizedAttributes.LocalizedDefaultValue("strPuttySavedSessionsRootName")]
+    [LocalizedAttributes.LocalizedDefaultValueAttribute("strPuttySavedSessionsRootName")]
     public override string Name
     {
         get => _name;
@@ -29,9 +29,9 @@ public class RootPuttySessionsNodeInfo : RootNodeInfo
         //Settings.Default.PuttySavedSessionsName = value;
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Display))]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Panel))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionPanel))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Display))]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Panel))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionPanel))]
     public override string Panel
     {
         get => _panel;

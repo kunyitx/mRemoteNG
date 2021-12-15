@@ -6,17 +6,17 @@ using mRemoteNG.Config.Import;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Config.Serializers.MiscSerializers;
 
 public class ActiveDirectoryDeserializer
 {
-    private readonly string _ldapPath;
     private readonly bool _importSubOu;
+    private readonly string _ldapPath;
 
     public ActiveDirectoryDeserializer(string ldapPath, bool importSubOu)
     {

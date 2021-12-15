@@ -7,7 +7,6 @@ using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Tree;
 
-
 namespace mRemoteNG.Tools;
 
 public class ConnectionsTreeToMenuItemsConverter

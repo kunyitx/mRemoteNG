@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using mRemoteNG.App;
 
@@ -21,8 +22,8 @@ public class HeadlessTabControl : TabControl
         // 
         // HeadlessTabControl
         // 
-        Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
+        Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
         ResumeLayout(false);
     }
 }

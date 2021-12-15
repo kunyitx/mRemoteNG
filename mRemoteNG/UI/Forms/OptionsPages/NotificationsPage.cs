@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
@@ -13,7 +15,7 @@ public sealed partial class NotificationsPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.LogError_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.LogError_16x);
     }
 
     public override string PageName
@@ -133,7 +135,7 @@ public sealed partial class NotificationsPage
         Settings.Default.PopupMessageWriterWriteErrorMsgs = chkPopupError.Checked;
     }
 
-    private void buttonSelectLogPath_Click(object sender, System.EventArgs e)
+    private void buttonSelectLogPath_Click(object sender, EventArgs e)
     {
         var currentFile = textBoxLogPath.Text;
         var currentDirectory = Path.GetDirectoryName(currentFile);
@@ -146,18 +148,18 @@ public sealed partial class NotificationsPage
         textBoxLogPath.Text = saveFileDialogLogging.FileName;
     }
 
-    private void buttonRestoreDefaultLogPath_Click(object sender, System.EventArgs e)
+    private void buttonRestoreDefaultLogPath_Click(object sender, EventArgs e)
     {
         textBoxLogPath.Text = Logger.DefaultLogPath;
     }
 
-    private void buttonOpenLogFile_Click(object sender, System.EventArgs e)
+    private void buttonOpenLogFile_Click(object sender, EventArgs e)
     {
         if (Path.GetExtension(textBoxLogPath.Text) == ".log")
             Process.Start(textBoxLogPath.Text);
     }
 
-    private void chkLogToCurrentDir_CheckedChanged(object sender, System.EventArgs e)
+    private void chkLogToCurrentDir_CheckedChanged(object sender, EventArgs e)
     {
         buttonSelectLogPath.Enabled = !chkLogToCurrentDir.Checked;
         buttonRestoreDefaultLogPath.Enabled = !chkLogToCurrentDir.Checked;

@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.App.Info;
 using mRemoteNG.Messages;
-using mRemoteNG.UI.TaskDialog;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.UI.TaskDialog;
 
 namespace mRemoteNG.UI;
 
@@ -23,8 +23,8 @@ public class DialogFactory
     }
 
     /// <summary>
-    /// Creates and shows a dialog to either create a new connections file, load a different one,
-    /// exit, or optionally cancel the operation.
+    ///     Creates and shows a dialog to either create a new connections file, load a different one,
+    ///     exit, or optionally cancel the operation.
     /// </summary>
     /// <param name="connectionFileName"></param>
     /// <param name="messageText"></param>
@@ -89,9 +89,9 @@ public class DialogFactory
     }
 
     /// <summary>
-    /// Creates a new dialog that allows the user to select an mRemoteNG
-    /// connections file path. Don't forget to dispose the dialog when you
-    /// are done!
+    ///     Creates a new dialog that allows the user to select an mRemoteNG
+    ///     connections file path. Don't forget to dispose the dialog when you
+    ///     are done!
     /// </summary>
     public static SaveFileDialog ConnectionsSaveAsDialog()
     {

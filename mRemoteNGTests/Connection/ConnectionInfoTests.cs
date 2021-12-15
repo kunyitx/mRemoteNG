@@ -7,13 +7,12 @@ using mRemoteNG.Container;
 using mRemoteNG.Tree.Root;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Connection;
 
 public class ConnectionInfoTests
 {
-    private ConnectionInfo _connectionInfo;
     private const string TestDomain = "somedomain";
+    private ConnectionInfo _connectionInfo;
 
     [SetUp]
     public void Setup()

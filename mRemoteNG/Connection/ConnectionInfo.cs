@@ -15,16 +15,31 @@ using mRemoteNG.Connection.Protocol.Telnet;
 using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Container;
 using mRemoteNG.Properties;
-using mRemoteNG.Tree;
 using mRemoteNG.Resources.Language;
-using mRemoteNG.Tree.Root;
-
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.Connection;
 
 [DefaultProperty("Name")]
 public class ConnectionInfo : AbstractConnectionRecord, IHasParent, IInheritable
 {
+    #region Public Enumerations
+
+    [Flags]
+    public enum Force
+    {
+        None = 0,
+        UseConsoleSession = 1,
+        Fullscreen = 2,
+        DoNotJump = 4,
+        OverridePanel = 8,
+        DontUseConsoleSession = 16,
+        NoCredentials = 32,
+        ViewOnly = 64
+    }
+
+    #endregion
+
     private ConnectionInfoInheritance _inheritance;
 
     #region Public Properties
@@ -87,8 +102,8 @@ public class ConnectionInfo : AbstractConnectionRecord, IHasParent, IInheritable
     }
 
     /// <summary>
-    /// Copies all connection and inheritance values
-    /// from the given <see cref="sourceConnectionInfo"/>.
+    ///     Copies all connection and inheritance values
+    ///     from the given <see cref="sourceConnectionInfo" />.
     /// </summary>
     /// <param name="sourceConnectionInfo"></param>
     public void CopyFrom(ConnectionInfo sourceConnectionInfo)
@@ -129,7 +144,7 @@ public class ConnectionInfo : AbstractConnectionRecord, IHasParent, IInheritable
     protected virtual IEnumerable<PropertyInfo> GetProperties(string[] excludedPropertyNames)
     {
         var properties = typeof(ConnectionInfo).GetProperties();
-        var filteredProperties = properties.Where((prop) => !excludedPropertyNames.Contains(prop.Name));
+        var filteredProperties = properties.Where(prop => !excludedPropertyNames.Contains(prop.Name));
         return filteredProperties;
     }
 
@@ -158,23 +173,6 @@ public class ConnectionInfo : AbstractConnectionRecord, IHasParent, IInheritable
     public ConnectionInfo GetRootParent()
     {
         return Parent != null ? Parent.GetRootParent() : this;
-    }
-
-    #endregion
-
-    #region Public Enumerations
-
-    [Flags()]
-    public enum Force
-    {
-        None = 0,
-        UseConsoleSession = 1,
-        Fullscreen = 2,
-        DoNotJump = 4,
-        OverridePanel = 8,
-        DontUseConsoleSession = 16,
-        NoCredentials = 32,
-        ViewOnly = 64
     }
 
     #endregion

@@ -6,21 +6,20 @@ using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class ConnectionTreeDragAndDropHandlerTests
 {
-    private ConnectionTreeDragAndDropHandler _dragAndDropHandler;
-    private RootNodeInfo _rootNode;
-    private ContainerInfo _container1;
-    private ContainerInfo _container2;
-    private ContainerInfo _container3;
     private ConnectionInfo _connection1;
     private ConnectionInfo _connection2;
     private ConnectionInfo _connection3;
     private ConnectionInfo _connection4;
     private ConnectionInfo _connection5;
+    private ContainerInfo _container1;
+    private ContainerInfo _container2;
+    private ContainerInfo _container3;
+    private ConnectionTreeDragAndDropHandler _dragAndDropHandler;
+    private RootNodeInfo _rootNode;
 
     [SetUp]
     public void Setup()

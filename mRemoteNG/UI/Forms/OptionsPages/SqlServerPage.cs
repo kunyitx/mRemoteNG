@@ -3,8 +3,9 @@ using mRemoteNG.App;
 using mRemoteNG.Config.Connections.Multiuser;
 using mRemoteNG.Config.DatabaseConnectors;
 using mRemoteNG.Properties;
-using mRemoteNG.Security.SymmetricEncryption;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Security.SymmetricEncryption;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
 
@@ -16,7 +17,7 @@ public sealed partial class SqlServerPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.SQLDatabase_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.SQLDatabase_16x);
         _databaseConnectionTester = new DatabaseConnectionTester();
     }
 

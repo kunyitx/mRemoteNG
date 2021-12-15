@@ -1,22 +1,22 @@
-﻿using mRemoteNG.Connection;
+﻿using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
+using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
+using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Security;
 using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using NUnit.Framework;
-using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
-using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
 
 namespace mRemoteNGTests.Config.Serializers.ConnectionSerializers.Xml;
 
 public class XmlConnectionsSerializerTests
 {
-    private XmlConnectionsSerializer _serializer;
     private ConnectionTreeModel _connectionTreeModel;
     private ICryptographyProvider _cryptographyProvider;
+    private XmlConnectionsSerializer _serializer;
 
 
     [SetUp]

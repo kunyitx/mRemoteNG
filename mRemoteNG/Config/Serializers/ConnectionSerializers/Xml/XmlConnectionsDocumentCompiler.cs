@@ -12,9 +12,9 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
 
 public class XmlConnectionsDocumentCompiler
 {
+    private readonly ISerializer<ConnectionInfo, XElement> _connectionNodeSerializer;
     private readonly ICryptographyProvider _cryptographyProvider;
     private SecureString _encryptionKey;
-    private readonly ISerializer<ConnectionInfo, XElement> _connectionNodeSerializer;
 
     public XmlConnectionsDocumentCompiler(ICryptographyProvider cryptographyProvider,
         ISerializer<ConnectionInfo, XElement> connectionNodeSerializer)

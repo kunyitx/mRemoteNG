@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using mRemoteNG.App;
 using mRemoteNG.App.Info;
@@ -12,20 +11,20 @@ using mRemoteNG.Config.Serializers.Versioning;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security;
 using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Config.Connections;
 
 public class SqlConnectionsSaver : ISaver<ConnectionTreeModel>
 {
-    private readonly SaveFilter _saveFilter;
-    private readonly ISerializer<IEnumerable<LocalConnectionPropertiesModel>, string> _localPropertiesSerializer;
     private readonly IDataProvider<string> _dataProvider;
+    private readonly ISerializer<IEnumerable<LocalConnectionPropertiesModel>, string> _localPropertiesSerializer;
+    private readonly SaveFilter _saveFilter;
 
     public SqlConnectionsSaver(SaveFilter saveFilter,
         ISerializer<IEnumerable<LocalConnectionPropertiesModel>, string>
@@ -82,11 +81,11 @@ public class SqlConnectionsSaver : ISaver<ConnectionTreeModel>
     }
 
     /// <summary>
-    /// Determines if a given property name should be only saved
-    /// locally.
+    ///     Determines if a given property name should be only saved
+    ///     locally.
     /// </summary>
     /// <param name="property">
-    /// The name of the property that triggered the save event
+    ///     The name of the property that triggered the save event
     /// </param>
     /// <returns></returns>
     private bool PropertyIsLocalOnly(string property)
@@ -141,13 +140,13 @@ public class SqlConnectionsSaver : ISaver<ConnectionTreeModel>
                 databaseConnector.DbCommand(
                     "INSERT INTO tblRoot (Name, Export, Protected, ConfVersion) VALUES('" +
                     MiscTools.PrepareValueForDB(rootTreeNode.Name) + "', 0, '" + strProtected + "','" +
-                    ConnectionsFileInfo.ConnectionFileVersion.ToString() + "')");
+                    ConnectionsFileInfo.ConnectionFileVersion + "')");
             dbQuery.ExecuteNonQuery();
         }
         else
         {
             Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
-                $"UpdateRootNodeTable: rootTreeNode was null. Could not insert!");
+                "UpdateRootNodeTable: rootTreeNode was null. Could not insert!");
         }
     }
 

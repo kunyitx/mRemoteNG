@@ -10,6 +10,9 @@ namespace mRemoteNG.Tools;
 
 public class IeBrowserEmulation
 {
+    private IeBrowserEmulation()
+    {
+    }
     // found this here:
     // http://www.neowin.net/forum/topic/1077469-vbnet-webbrowser-control-does-not-load-javascript/#comment-596755046
 
@@ -37,32 +40,30 @@ public class IeBrowserEmulation
     }
 
 #if PORTABLE
-        private static void DeleteBrowserFeatureControlKey(string feature, string appName)
-        {
-            if (Environment.Is64BitOperatingSystem)
-            {
-                using (var key = Registry.CurrentUser.OpenSubKey(
-                                                                 string
-                                                                     .Concat("Software\\Wow6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\",
-                                                                             feature),
-                                                                 RegistryKeyPermissionCheck.ReadWriteSubTree))
-                {
-                    if (key?.GetValueNames().Contains(appName) ?? false)
-                        key.DeleteValue(appName);
-                }
-            }
-
-
-            using (var key = Registry.CurrentUser.CreateSubKey(
-                                                               string
-                                                                   .Concat("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\",
-                                                                           feature),
-                                                               RegistryKeyPermissionCheck.ReadWriteSubTree))
+    private static void DeleteBrowserFeatureControlKey(string feature, string appName)
+    {
+        if (Environment.Is64BitOperatingSystem)
+            using (var key = Registry.CurrentUser.OpenSubKey(
+                       string
+                           .Concat("Software\\Wow6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\",
+                               feature),
+                       RegistryKeyPermissionCheck.ReadWriteSubTree))
             {
                 if (key?.GetValueNames().Contains(appName) ?? false)
                     key.DeleteValue(appName);
             }
+
+
+        using (var key = Registry.CurrentUser.CreateSubKey(
+                   string
+                       .Concat("Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\",
+                           feature),
+                   RegistryKeyPermissionCheck.ReadWriteSubTree))
+        {
+            if (key?.GetValueNames().Contains(appName) ?? false)
+                key.DeleteValue(appName);
         }
+    }
 #endif
 
     private static void SetBrowserFeatureControl()
@@ -105,46 +106,44 @@ public class IeBrowserEmulation
     }
 
 #if PORTABLE
-        private static void DeleteBrowserFeatureControl()
-        {
-            // http://msdn.microsoft.com/en-us/library/ee330720(v=vs.85).aspx
+    private static void DeleteBrowserFeatureControl()
+    {
+        // http://msdn.microsoft.com/en-us/library/ee330720(v=vs.85).aspx
 
-            // FeatureControl settings are per-process
-            var fileName = Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName);
+        // FeatureControl settings are per-process
+        var fileName = Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName);
 
-            // make sure the control is not running inside Visual Studio Designer
-            if (string.Compare(fileName, "devenv.exe", StringComparison.OrdinalIgnoreCase) == 0 ||
-                string.Compare(fileName, "XDesProc.exe", StringComparison.OrdinalIgnoreCase) == 0)
-            {
-                return;
-            }
+        // make sure the control is not running inside Visual Studio Designer
+        if (string.Compare(fileName, "devenv.exe", StringComparison.OrdinalIgnoreCase) == 0 ||
+            string.Compare(fileName, "XDesProc.exe", StringComparison.OrdinalIgnoreCase) == 0)
+            return;
 
-            DeleteBrowserFeatureControlKey("FEATURE_BROWSER_EMULATION", fileName);
-            // Webpages containing standards-based !DOCTYPE directives are displayed in IE10 Standards mode.
-            DeleteBrowserFeatureControlKey("FEATURE_AJAX_CONNECTIONEVENTS", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_ENABLE_CLIPCHILDREN_OPTIMIZATION", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_MANAGE_SCRIPT_CIRCULAR_REFS", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_DOMSTORAGE", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_GPU_RENDERING", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_IVIEWOBJECTDRAW_DMLT9_WITH_GDI", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_DISABLE_LEGACY_COMPRESSION", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_LOCALMACHINE_LOCKDOWN", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_BLOCK_LMZ_OBJECT", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_BLOCK_LMZ_SCRIPT", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_DISABLE_NAVIGATION_SOUNDS", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_SCRIPTURL_MITIGATION", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_SPELLCHECKING", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_STATUS_BAR_THROTTLING", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_TABBED_BROWSING", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_VALIDATE_NAVIGATE_URL", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_WEBOC_DOCUMENT_ZOOM", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_WEBOC_POPUPMANAGEMENT", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_WEBOC_MOVESIZECHILD", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_ADDON_MANAGEMENT", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_WEBSOCKET", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_WINDOW_RESTRICTIONS", fileName);
-            DeleteBrowserFeatureControlKey("FEATURE_XMLHTTP", fileName);
-        }
+        DeleteBrowserFeatureControlKey("FEATURE_BROWSER_EMULATION", fileName);
+        // Webpages containing standards-based !DOCTYPE directives are displayed in IE10 Standards mode.
+        DeleteBrowserFeatureControlKey("FEATURE_AJAX_CONNECTIONEVENTS", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_ENABLE_CLIPCHILDREN_OPTIMIZATION", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_MANAGE_SCRIPT_CIRCULAR_REFS", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_DOMSTORAGE", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_GPU_RENDERING", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_IVIEWOBJECTDRAW_DMLT9_WITH_GDI", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_DISABLE_LEGACY_COMPRESSION", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_LOCALMACHINE_LOCKDOWN", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_BLOCK_LMZ_OBJECT", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_BLOCK_LMZ_SCRIPT", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_DISABLE_NAVIGATION_SOUNDS", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_SCRIPTURL_MITIGATION", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_SPELLCHECKING", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_STATUS_BAR_THROTTLING", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_TABBED_BROWSING", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_VALIDATE_NAVIGATE_URL", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_WEBOC_DOCUMENT_ZOOM", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_WEBOC_POPUPMANAGEMENT", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_WEBOC_MOVESIZECHILD", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_ADDON_MANAGEMENT", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_WEBSOCKET", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_WINDOW_RESTRICTIONS", fileName);
+        DeleteBrowserFeatureControlKey("FEATURE_XMLHTTP", fileName);
+    }
 #endif
 
     private static uint GetBrowserEmulationMode()
@@ -228,18 +227,14 @@ public class IeBrowserEmulation
     public static void Unregister()
     {
 #if PORTABLE
-            try
-            {
-                DeleteBrowserFeatureControl();
-            }
-            catch (Exception ex)
-            {
-                Runtime.MessageCollector?.AddExceptionMessage("IeBrowserEmulation.Unregister() failed.", ex);
-            }
+        try
+        {
+            DeleteBrowserFeatureControl();
+        }
+        catch (Exception ex)
+        {
+            Runtime.MessageCollector?.AddExceptionMessage("IeBrowserEmulation.Unregister() failed.", ex);
+        }
 #endif
-    }
-
-    private IeBrowserEmulation()
-    {
     }
 }

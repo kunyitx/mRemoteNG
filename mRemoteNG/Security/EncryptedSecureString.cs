@@ -10,13 +10,8 @@ namespace mRemoteNG.Security;
 public class EncryptedSecureString : IDisposable
 {
     private static SecureString _machineKey;
-    private SecureString _secureString;
     private readonly ICryptographyProvider _cryptographyProvider;
-
-    private static SecureString MachineKey
-    {
-        get { return _machineKey ?? (_machineKey = GenerateNewMachineKey(32)); }
-    }
+    private SecureString _secureString;
 
     public EncryptedSecureString()
     {
@@ -28,6 +23,17 @@ public class EncryptedSecureString : IDisposable
     {
         _secureString = new SecureString();
         _cryptographyProvider = cryptographyProvider;
+    }
+
+    private static SecureString MachineKey
+    {
+        get { return _machineKey ?? (_machineKey = GenerateNewMachineKey(32)); }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     public string GetClearTextValue()
@@ -60,11 +66,5 @@ public class EncryptedSecureString : IDisposable
 
         _machineKey?.Dispose();
         _secureString?.Dispose();
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }

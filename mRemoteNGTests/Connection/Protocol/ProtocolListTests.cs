@@ -6,15 +6,14 @@ using mRemoteNG.Connection.Protocol.Telnet;
 using mRemoteNG.Connection.Protocol.VNC;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Connection.Protocol;
 
 public class ProtocolListTests
 {
-    private ProtocolList _protocolList;
     private ProtocolBase _protocol1;
     private ProtocolBase _protocol2;
     private ProtocolBase _protocol3;
+    private ProtocolList _protocolList;
 
 
     [SetUp]

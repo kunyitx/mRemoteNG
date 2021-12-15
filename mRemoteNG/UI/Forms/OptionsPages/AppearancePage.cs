@@ -2,8 +2,9 @@
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Properties;
-using mRemoteNG.Tools;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
 
@@ -13,7 +14,7 @@ public sealed partial class AppearancePage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Panel_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.Panel_16x);
     }
 
     public override string PageName

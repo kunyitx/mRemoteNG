@@ -11,6 +11,41 @@ public class CommandLineArguments
 
     public bool EscapeForShell { get; set; }
 
+    #region Protected Methods
+
+    protected static string ProcessArgument(Argument argument, bool escapeForShell = false)
+    {
+        var text = argument.Text;
+
+        if (argument.IsFileName) text = PrefixFileName(text);
+
+        text = EscapeBackslashes(text);
+        text = QuoteArgument(text, argument.ForceQuotes);
+        if (escapeForShell) text = EscapeShellMetacharacters(text);
+
+        return text;
+    }
+
+    #endregion
+
+    #region Protected Classes
+
+    protected class Argument
+    {
+        public Argument(string text, bool isFileName = false, bool forceQuotes = false)
+        {
+            Text = text;
+            IsFileName = isFileName;
+            ForceQuotes = forceQuotes;
+        }
+
+        public string Text { get; set; }
+        public bool IsFileName { get; set; }
+        public bool ForceQuotes { get; set; }
+    }
+
+    #endregion
+
     #region Public Methods
 
     public void Add(string argument, bool forceQuotes = false)
@@ -74,41 +109,6 @@ public class CommandLineArguments
     public static string EscapeShellMetacharacters(string argument)
     {
         return string.IsNullOrEmpty(argument) ? argument : Regex.Replace(argument, "([()%!^\"<>&|])", "^$1");
-    }
-
-    #endregion
-
-    #region Protected Methods
-
-    protected static string ProcessArgument(Argument argument, bool escapeForShell = false)
-    {
-        var text = argument.Text;
-
-        if (argument.IsFileName) text = PrefixFileName(text);
-
-        text = EscapeBackslashes(text);
-        text = QuoteArgument(text, argument.ForceQuotes);
-        if (escapeForShell) text = EscapeShellMetacharacters(text);
-
-        return text;
-    }
-
-    #endregion
-
-    #region Protected Classes
-
-    protected class Argument
-    {
-        public Argument(string text, bool isFileName = false, bool forceQuotes = false)
-        {
-            Text = text;
-            IsFileName = isFileName;
-            ForceQuotes = forceQuotes;
-        }
-
-        public string Text { get; set; }
-        public bool IsFileName { get; set; }
-        public bool ForceQuotes { get; set; }
     }
 
     #endregion

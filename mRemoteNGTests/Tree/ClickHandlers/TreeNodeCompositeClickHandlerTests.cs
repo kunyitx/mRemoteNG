@@ -4,7 +4,6 @@ using mRemoteNG.Tree.ClickHandlers;
 using NSubstitute;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class TreeNodeCompositeClickHandlerTests

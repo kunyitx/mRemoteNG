@@ -8,8 +8,8 @@ namespace mRemoteNGTests.Messages.MessageWriters;
 
 public class OnlyLogMessageFilterTests
 {
-    private OnlyLogMessageFilter _sut;
     private IMessageWriter _mockWriter;
+    private OnlyLogMessageFilter _sut;
 
     [SetUp]
     public void Setup()

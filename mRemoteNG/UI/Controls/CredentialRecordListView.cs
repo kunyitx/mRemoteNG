@@ -4,15 +4,30 @@ using System.Linq;
 using BrightIdeasSoftware;
 using mRemoteNG.Credential;
 using mRemoteNG.Credential.Repositories;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tools.CustomCollections;
 using mRemoteNG.UI.Controls.PageSequence;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Controls;
 
 public partial class CredentialRecordListView : SequencedControl
 {
     private ICredentialRepositoryList _credentialRepositoryList = new CredentialRepositoryList();
+
+    public CredentialRecordListView()
+    {
+        InitializeComponent();
+        Disposed += OnDisposed;
+        olvColumnCredentialId.AspectGetter = CredentialIdAspectGetter;
+        olvColumnTitle.AspectGetter = CredentialTitleAspectGetter;
+        olvColumnUsername.AspectGetter = CredentialUsernameAspectGetter;
+        olvColumnDomain.AspectGetter = CredentialDomainAspectGetter;
+        olvColumnRepositorySource.AspectGetter = CredentialSourceAspectGetter;
+        olvColumnRepositoryTitle.AspectGetter = RepoTitleAspectGetter;
+        objectListView1.SelectionChanged += (sender, args) => RaiseSelectionChangedEvent();
+        objectListView1.CellClick += RaiseCellClickEvent;
+        ApplyLanguage();
+    }
 
     public ICredentialRepositoryList CredentialRepositoryList
     {
@@ -38,21 +53,6 @@ public partial class CredentialRecordListView : SequencedControl
         select CastRowObject(item);
 
     public bool MultipleObjectsSelected => objectListView1.SelectedObjects.Count > 1;
-
-    public CredentialRecordListView()
-    {
-        InitializeComponent();
-        Disposed += OnDisposed;
-        olvColumnCredentialId.AspectGetter = CredentialIdAspectGetter;
-        olvColumnTitle.AspectGetter = CredentialTitleAspectGetter;
-        olvColumnUsername.AspectGetter = CredentialUsernameAspectGetter;
-        olvColumnDomain.AspectGetter = CredentialDomainAspectGetter;
-        olvColumnRepositorySource.AspectGetter = CredentialSourceAspectGetter;
-        olvColumnRepositoryTitle.AspectGetter = RepoTitleAspectGetter;
-        objectListView1.SelectionChanged += (sender, args) => RaiseSelectionChangedEvent();
-        objectListView1.CellClick += RaiseCellClickEvent;
-        ApplyLanguage();
-    }
 
     private void OnDisposed(object sender, EventArgs eventArgs)
     {

@@ -3,7 +3,7 @@
 namespace mRemoteNG.Tools.Clipboard;
 
 /// <summary>
-/// Represents the Windows system clipboard
+///     Represents the Windows system clipboard
 /// </summary>
 public class WindowsClipboard : IClipboard
 {

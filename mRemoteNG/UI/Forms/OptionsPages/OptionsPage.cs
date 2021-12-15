@@ -13,6 +13,27 @@ public class OptionsPage : UserControl
         ThemeManager.getInstance().ThemeChanged += ApplyTheme;
     }
 
+    protected virtual void ApplyTheme()
+    {
+        if (!ThemeManager.getInstance().ActiveAndExtended) return;
+        BackColor = ThemeManager.getInstance().ActiveTheme.ExtendedPalette.getColor("Dialog_Background");
+        ForeColor = ThemeManager.getInstance().ActiveTheme.ExtendedPalette.getColor("Dialog_Foreground");
+        Invalidate();
+    }
+
+    private void InitializeComponent()
+    {
+        SuspendLayout();
+        // 
+        // OptionsPage
+        // 
+        AutoScaleDimensions = new SizeF(96F, 96F);
+        AutoScaleMode = AutoScaleMode.Dpi;
+        Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+        Name = "OptionsPage";
+        ResumeLayout(false);
+    }
+
     #region Public Properties
 
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -42,37 +63,16 @@ public class OptionsPage : UserControl
     }
 
     #endregion
-
-    protected virtual void ApplyTheme()
-    {
-        if (!ThemeManager.getInstance().ActiveAndExtended) return;
-        BackColor = ThemeManager.getInstance().ActiveTheme.ExtendedPalette.getColor("Dialog_Background");
-        ForeColor = ThemeManager.getInstance().ActiveTheme.ExtendedPalette.getColor("Dialog_Foreground");
-        Invalidate();
-    }
-
-    private void InitializeComponent()
-    {
-        SuspendLayout();
-        // 
-        // OptionsPage
-        // 
-        AutoScaleDimensions = new SizeF(96F, 96F);
-        AutoScaleMode = AutoScaleMode.Dpi;
-        Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-        Name = "OptionsPage";
-        ResumeLayout(false);
-    }
 }
 
 internal class DropdownList
 {
-    public int Index { get; set; }
-    public string DisplayString { get; set; }
-
     public DropdownList(int argIndex, string argDisplay)
     {
         Index = argIndex;
         DisplayString = argDisplay;
     }
+
+    public int Index { get; set; }
+    public string DisplayString { get; set; }
 }

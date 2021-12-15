@@ -19,13 +19,10 @@ namespace mRemoteNG.Config.Connections;
 
 public class SqlConnectionsLoader : IConnectionsLoader
 {
-    private readonly IDeserializer<string, IEnumerable<LocalConnectionPropertiesModel>>
-        _localConnectionPropertiesDeserializer;
-
     private readonly IDataProvider<string> _dataProvider;
 
-    public Func<Optional<SecureString>> AuthenticationRequestor { get; set; } =
-        () => MiscTools.PasswordDialog("", false);
+    private readonly IDeserializer<string, IEnumerable<LocalConnectionPropertiesModel>>
+        _localConnectionPropertiesDeserializer;
 
     public SqlConnectionsLoader(
         IDeserializer<string, IEnumerable<LocalConnectionPropertiesModel>> localConnectionPropertiesDeserializer,
@@ -35,6 +32,9 @@ public class SqlConnectionsLoader : IConnectionsLoader
             localConnectionPropertiesDeserializer.ThrowIfNull(nameof(localConnectionPropertiesDeserializer));
         _dataProvider = dataProvider.ThrowIfNull(nameof(dataProvider));
     }
+
+    public Func<Optional<SecureString>> AuthenticationRequestor { get; set; } =
+        () => MiscTools.PasswordDialog("", false);
 
     public ConnectionTreeModel Load()
     {

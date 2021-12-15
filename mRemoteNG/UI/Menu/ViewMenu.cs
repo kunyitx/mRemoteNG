@@ -1,30 +1,38 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.Panels;
 using mRemoteNG.UI.Window;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Menu;
 
 public class ViewMenu : ToolStripMenuItem
 {
-    private ToolStripMenuItem _mMenViewConnectionPanels;
-    private ToolStripMenuItem _mMenReconnectAll;
-    private ToolStripSeparator _mMenViewSep1;
-    public ToolStripMenuItem _mMenViewErrorsAndInfos;
-    private ToolStripMenuItem _mMenViewAddConnectionPanel;
-    private ToolStripSeparator _mMenViewSep2;
-    private ToolStripMenuItem _mMenViewFullscreen;
-    public ToolStripMenuItem _mMenViewExtAppsToolbar;
-    public ToolStripMenuItem _mMenViewQuickConnectToolbar;
-    public ToolStripMenuItem _mMenViewMultiSshToolbar;
-    private ToolStripMenuItem _mMenViewResetLayout;
-    public ToolStripMenuItem _mMenViewLockToolbars;
     private readonly PanelAdder _panelAdder;
+    private ToolStripMenuItem _mMenReconnectAll;
+    private ToolStripMenuItem _mMenViewAddConnectionPanel;
+    private ToolStripMenuItem _mMenViewConnectionPanels;
+    public ToolStripMenuItem _mMenViewErrorsAndInfos;
+    public ToolStripMenuItem _mMenViewExtAppsToolbar;
+    private ToolStripMenuItem _mMenViewFullscreen;
+    public ToolStripMenuItem _mMenViewLockToolbars;
+    public ToolStripMenuItem _mMenViewMultiSshToolbar;
+    public ToolStripMenuItem _mMenViewQuickConnectToolbar;
+    private ToolStripMenuItem _mMenViewResetLayout;
+    private ToolStripSeparator _mMenViewSep1;
+    private ToolStripSeparator _mMenViewSep2;
+
+
+    public ViewMenu()
+    {
+        Initialize();
+        _panelAdder = new PanelAdder();
+    }
 
 
     public ToolStrip TsExternalTools { get; set; }
@@ -33,13 +41,6 @@ public class ViewMenu : ToolStripMenuItem
     public FullscreenHandler FullscreenHandler { get; set; }
     public FrmMain MainForm { get; set; }
     public IConnectionInitiator ConnectionInitiator { get; set; }
-
-
-    public ViewMenu()
-    {
-        Initialize();
-        _panelAdder = new PanelAdder();
-    }
 
     private void Initialize()
     {
@@ -75,7 +76,7 @@ public class ViewMenu : ToolStripMenuItem
             _mMenViewFullscreen
         });
         Name = "mMenView";
-        Size = new System.Drawing.Size(44, 20);
+        Size = new Size(44, 20);
         Text = Language._View;
         //DropDownOpening += mMenView_DropDownOpening;
         // 
@@ -83,7 +84,7 @@ public class ViewMenu : ToolStripMenuItem
         // 
         _mMenViewAddConnectionPanel.Image = Properties.Resources.InsertPanel_16x;
         _mMenViewAddConnectionPanel.Name = "mMenViewAddConnectionPanel";
-        _mMenViewAddConnectionPanel.Size = new System.Drawing.Size(228, 22);
+        _mMenViewAddConnectionPanel.Size = new Size(228, 22);
         _mMenViewAddConnectionPanel.Text = Language.AddConnectionPanel;
         _mMenViewAddConnectionPanel.Click += mMenViewAddConnectionPanel_Click;
         // 
@@ -91,7 +92,7 @@ public class ViewMenu : ToolStripMenuItem
         // 
         _mMenReconnectAll.Image = Properties.Resources.Refresh_16x;
         _mMenReconnectAll.Name = "mMenReconnectAll";
-        _mMenReconnectAll.Size = new System.Drawing.Size(281, 22);
+        _mMenReconnectAll.Size = new Size(281, 22);
         _mMenReconnectAll.Text = Language.ReconnectAllConnections;
         _mMenReconnectAll.Click += mMenReconnectAll_Click;
         // 
@@ -99,60 +100,60 @@ public class ViewMenu : ToolStripMenuItem
         // 
         _mMenViewConnectionPanels.Image = Properties.Resources.Panel_16x;
         _mMenViewConnectionPanels.Name = "mMenViewConnectionPanels";
-        _mMenViewConnectionPanels.Size = new System.Drawing.Size(228, 22);
+        _mMenViewConnectionPanels.Size = new Size(228, 22);
         _mMenViewConnectionPanels.Text = Language.ConnectionPanels;
         // 
         // mMenViewSep1
         // 
         _mMenViewSep1.Name = "mMenViewSep1";
-        _mMenViewSep1.Size = new System.Drawing.Size(225, 6);
+        _mMenViewSep1.Size = new Size(225, 6);
         // 
         // mMenViewErrorsAndInfos
         // 
         _mMenViewErrorsAndInfos.Checked = true;
         _mMenViewErrorsAndInfos.CheckState = CheckState.Checked;
         _mMenViewErrorsAndInfos.Name = "mMenViewErrorsAndInfos";
-        _mMenViewErrorsAndInfos.Size = new System.Drawing.Size(228, 22);
+        _mMenViewErrorsAndInfos.Size = new Size(228, 22);
         _mMenViewErrorsAndInfos.Text = Language.Notifications;
         _mMenViewErrorsAndInfos.Click += mMenViewErrorsAndInfos_Click;
         // 
         // mMenViewResetLayout
         // 
         _mMenViewResetLayout.Name = "mMenViewResetLayout";
-        _mMenViewResetLayout.Size = new System.Drawing.Size(228, 22);
+        _mMenViewResetLayout.Size = new Size(228, 22);
         _mMenViewResetLayout.Text = Language.ResetLayout;
         _mMenViewResetLayout.Click += mMenViewResetLayout_Click;
         // 
         // mMenViewLockToolbars
         // 
         _mMenViewLockToolbars.Name = "mMenViewLockToolbars";
-        _mMenViewLockToolbars.Size = new System.Drawing.Size(228, 22);
+        _mMenViewLockToolbars.Size = new Size(228, 22);
         _mMenViewLockToolbars.Text = Language.LockToolbars;
         _mMenViewLockToolbars.Click += mMenViewLockToolbars_Click;
         // 
         // mMenViewSep2
         // 
         _mMenViewSep2.Name = "mMenViewSep2";
-        _mMenViewSep2.Size = new System.Drawing.Size(225, 6);
+        _mMenViewSep2.Size = new Size(225, 6);
         // 
         // mMenViewQuickConnectToolbar
         // 
         _mMenViewQuickConnectToolbar.Name = "mMenViewQuickConnectToolbar";
-        _mMenViewQuickConnectToolbar.Size = new System.Drawing.Size(228, 22);
+        _mMenViewQuickConnectToolbar.Size = new Size(228, 22);
         _mMenViewQuickConnectToolbar.Text = Language.QuickConnectToolbar;
         _mMenViewQuickConnectToolbar.Click += mMenViewQuickConnectToolbar_Click;
         // 
         // mMenViewExtAppsToolbar
         // 
         _mMenViewExtAppsToolbar.Name = "mMenViewExtAppsToolbar";
-        _mMenViewExtAppsToolbar.Size = new System.Drawing.Size(228, 22);
+        _mMenViewExtAppsToolbar.Size = new Size(228, 22);
         _mMenViewExtAppsToolbar.Text = Language.ExternalToolsToolbar;
         _mMenViewExtAppsToolbar.Click += mMenViewExtAppsToolbar_Click;
         // 
         // mMenViewMultiSSHToolbar
         // 
         _mMenViewMultiSshToolbar.Name = "mMenViewMultiSSHToolbar";
-        _mMenViewMultiSshToolbar.Size = new System.Drawing.Size(279, 26);
+        _mMenViewMultiSshToolbar.Size = new Size(279, 26);
         _mMenViewMultiSshToolbar.Text = Language.MultiSshToolbar;
         _mMenViewMultiSshToolbar.Click += mMenViewMultiSSHToolbar_Click;
         // 
@@ -161,7 +162,7 @@ public class ViewMenu : ToolStripMenuItem
         _mMenViewFullscreen.Image = Properties.Resources.FullScreen_16x;
         _mMenViewFullscreen.Name = "mMenViewFullscreen";
         _mMenViewFullscreen.ShortcutKeys = Keys.F11;
-        _mMenViewFullscreen.Size = new System.Drawing.Size(228, 22);
+        _mMenViewFullscreen.Size = new Size(228, 22);
         _mMenViewFullscreen.Text = Language.Fullscreen;
         _mMenViewFullscreen.Checked = Settings.Default.MainFormKiosk;
         _mMenViewFullscreen.Click += mMenViewFullscreen_Click;

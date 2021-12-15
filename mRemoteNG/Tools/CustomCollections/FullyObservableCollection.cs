@@ -12,15 +12,6 @@ public class FullyObservableCollection<T> : IFullyNotifiableList<T>
     private readonly IList<T> _list = new List<T>();
     private bool _eventsAllowed;
 
-    public int Count => _list.Count;
-    public bool IsReadOnly => _list.IsReadOnly;
-
-    public T this[int index]
-    {
-        get => _list[index];
-        set => _list[index] = value;
-    }
-
     public FullyObservableCollection()
     {
     }
@@ -30,30 +21,21 @@ public class FullyObservableCollection<T> : IFullyNotifiableList<T>
         AddRange(items);
     }
 
+    public int Count => _list.Count;
+    public bool IsReadOnly => _list.IsReadOnly;
+
+    public T this[int index]
+    {
+        get => _list[index];
+        set => _list[index] = value;
+    }
+
     public void Add(T item)
     {
         _list.Add(item);
         SubscribeToChildEvents(item);
         if (_eventsAllowed)
             RaiseCollectionChangedEvent(ActionType.Added, new[] { item });
-    }
-
-    /// <summary>
-    /// Adds a range of items to the collection.
-    /// Only raises a single <see cref="CollectionUpdated"/> event
-    /// after all new items are added.
-    /// </summary>
-    /// <param name="items"></param>
-    public void AddRange(IEnumerable<T> items)
-    {
-        var itemsAsList = items.ToList();
-        _eventsAllowed = false;
-
-        foreach (var item in itemsAsList)
-            Add(item);
-
-        _eventsAllowed = true;
-        RaiseCollectionChangedEvent(ActionType.Added, itemsAsList);
     }
 
     public void Insert(int index, T item)
@@ -89,6 +71,26 @@ public class FullyObservableCollection<T> : IFullyNotifiableList<T>
         RaiseCollectionChangedEvent(ActionType.Removed, oldItems);
     }
 
+    public event EventHandler<CollectionUpdatedEventArgs<T>> CollectionUpdated;
+
+    /// <summary>
+    ///     Adds a range of items to the collection.
+    ///     Only raises a single <see cref="CollectionUpdated" /> event
+    ///     after all new items are added.
+    /// </summary>
+    /// <param name="items"></param>
+    public void AddRange(IEnumerable<T> items)
+    {
+        var itemsAsList = items.ToList();
+        _eventsAllowed = false;
+
+        foreach (var item in itemsAsList)
+            Add(item);
+
+        _eventsAllowed = true;
+        RaiseCollectionChangedEvent(ActionType.Added, itemsAsList);
+    }
+
     private void SubscribeToChildEvents(INotifyPropertyChanged item)
     {
         item.PropertyChanged += ItemOnPropertyChanged;
@@ -104,8 +106,6 @@ public class FullyObservableCollection<T> : IFullyNotifiableList<T>
         if (sender is T)
             RaiseCollectionChangedEvent(ActionType.Updated, new[] { (T)sender });
     }
-
-    public event EventHandler<CollectionUpdatedEventArgs<T>> CollectionUpdated;
 
     private void RaiseCollectionChangedEvent(ActionType action, IEnumerable<T> changedItems)
     {

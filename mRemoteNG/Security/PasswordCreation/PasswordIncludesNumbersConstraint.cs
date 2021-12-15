@@ -9,8 +9,6 @@ public class PasswordIncludesNumbersConstraint : IPasswordConstraint
 {
     private readonly int _minimumCount;
 
-    public string ConstraintHint { get; }
-
     public PasswordIncludesNumbersConstraint(int minimumCount = 1)
     {
         if (minimumCount < 0)
@@ -19,6 +17,8 @@ public class PasswordIncludesNumbersConstraint : IPasswordConstraint
         _minimumCount = minimumCount;
         ConstraintHint = string.Format(Language.PasswordContainsNumbersConstraint, _minimumCount);
     }
+
+    public string ConstraintHint { get; }
 
     public bool Validate(SecureString password)
     {

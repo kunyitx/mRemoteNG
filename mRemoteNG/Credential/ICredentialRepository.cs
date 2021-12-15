@@ -4,7 +4,6 @@ using System.Security;
 using mRemoteNG.Credential.Repositories;
 using mRemoteNG.Tools.CustomCollections;
 
-
 namespace mRemoteNG.Credential;
 
 public interface ICredentialRepository

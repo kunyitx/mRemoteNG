@@ -1,6 +1,5 @@
-using mRemoteNG.Tools;
 using System.ComponentModel;
-
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.Credential;
 
@@ -8,35 +7,35 @@ public class CredentialInfo
 {
     #region Public Properties
 
-    [LocalizedAttributes.LocalizedCategory("strCategoryDisplay")]
+    [LocalizedAttributes.LocalizedCategoryAttribute("strCategoryDisplay")]
     [Browsable(true)]
-    [LocalizedAttributes.LocalizedDisplayName("strPropertyNameName")]
-    [LocalizedAttributes.LocalizedDescription("strPropertyDescriptionName")]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute("strPropertyNameName")]
+    [LocalizedAttributes.LocalizedDescriptionAttribute("strPropertyDescriptionName")]
     public string Name { get; set; }
 
-    [LocalizedAttributes.LocalizedCategory("strCategoryDisplay")]
+    [LocalizedAttributes.LocalizedCategoryAttribute("strCategoryDisplay")]
     [Browsable(true)]
-    [LocalizedAttributes.LocalizedDisplayName("strPropertyNameDescription")]
-    [LocalizedAttributes.LocalizedDescription("strPropertyDescriptionDescription")]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute("strPropertyNameDescription")]
+    [LocalizedAttributes.LocalizedDescriptionAttribute("strPropertyDescriptionDescription")]
     public string Description { get; set; }
 
-    [LocalizedAttributes.LocalizedCategory("strCategoryCredentials", 2)]
+    [LocalizedAttributes.LocalizedCategoryAttribute("strCategoryCredentials", 2)]
     [Browsable(true)]
-    [LocalizedAttributes.LocalizedDisplayName("strPropertyNameUsername")]
-    [LocalizedAttributes.LocalizedDescription("strPropertyDescriptionUsername")]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute("strPropertyNameUsername")]
+    [LocalizedAttributes.LocalizedDescriptionAttribute("strPropertyDescriptionUsername")]
     public string Username { get; set; }
 
-    [LocalizedAttributes.LocalizedCategory("strCategoryCredentials", 2)]
+    [LocalizedAttributes.LocalizedCategoryAttribute("strCategoryCredentials", 2)]
     [Browsable(true)]
-    [LocalizedAttributes.LocalizedDisplayName("strPropertyNamePassword")]
-    [LocalizedAttributes.LocalizedDescription("strPropertyDescriptionPassword")]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute("strPropertyNamePassword")]
+    [LocalizedAttributes.LocalizedDescriptionAttribute("strPropertyDescriptionPassword")]
     [PasswordPropertyText(true)]
     public string Password { get; set; }
 
-    [LocalizedAttributes.LocalizedCategory("strCategoryCredentials", 2)]
+    [LocalizedAttributes.LocalizedCategoryAttribute("strCategoryCredentials", 2)]
     [Browsable(true)]
-    [LocalizedAttributes.LocalizedDisplayName("strPropertyNameDomain")]
-    [LocalizedAttributes.LocalizedDescription("strPropertyDescriptionDomain")]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute("strPropertyNameDomain")]
+    [LocalizedAttributes.LocalizedDescriptionAttribute("strPropertyDescriptionDomain")]
     public string Domain { get; set; }
 
     #endregion

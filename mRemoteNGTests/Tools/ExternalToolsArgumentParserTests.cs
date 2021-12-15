@@ -4,12 +4,10 @@ using mRemoteNG.Connection;
 using mRemoteNG.Tools;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tools;
 
 public class ExternalToolsArgumentParserTests
 {
-    private ExternalToolArgumentParser _argumentParser;
     private const string TestString = @"()%!^abc123*<>&|""'\";
     private const string StringAfterMetacharacterEscaping = @"^(^)^%^!^^abc123*^<^>^&^|^""'\";
     private const string StringAfterAllEscaping = @"^(^)^%^!^^abc123*^<^>^&^|\^""'\";
@@ -17,6 +15,7 @@ public class ExternalToolsArgumentParserTests
     private const int Port = 9933;
     private const string PortAsString = "9933";
     private const string SampleCommandString = @"/k echo ()%!^abc123*<>&|""'\";
+    private ExternalToolArgumentParser _argumentParser;
 
 
     [OneTimeSetUp]

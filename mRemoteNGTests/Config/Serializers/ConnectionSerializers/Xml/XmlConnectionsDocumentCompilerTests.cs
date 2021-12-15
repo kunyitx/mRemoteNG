@@ -1,29 +1,29 @@
-﻿using mRemoteNG.Connection;
+﻿using System.Linq;
+using System.Xml.XPath;
+using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
+using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Security;
 using mRemoteNG.Security.Factories;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using NUnit.Framework;
-using System.Linq;
-using System.Xml.XPath;
-using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
 
 namespace mRemoteNGTests.Config.Serializers.ConnectionSerializers.Xml;
 
 public class XmlConnectionsDocumentCompilerTests
 {
-    private XmlConnectionsDocumentCompiler _documentCompiler;
-    private ConnectionTreeModel _connectionTreeModel;
-    private ICryptographyProvider _cryptographyProvider;
-    private ContainerInfo _folder1;
-    private ContainerInfo _folder2;
-    private ContainerInfo _folder3;
     private ConnectionInfo _con0;
     private ConnectionInfo _con1;
     private ConnectionInfo _con2;
     private ConnectionInfo _con3;
     private ConnectionInfo _con4;
+    private ConnectionTreeModel _connectionTreeModel;
+    private ICryptographyProvider _cryptographyProvider;
+    private XmlConnectionsDocumentCompiler _documentCompiler;
+    private ContainerInfo _folder1;
+    private ContainerInfo _folder2;
+    private ContainerInfo _folder3;
 
     [SetUp]
     public void Setup()

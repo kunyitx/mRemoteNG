@@ -1,345 +1,26 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Security.Permissions;
 using System.Windows.Forms;
 using mRemoteNG.Connection;
 using mRemoteNG.Properties;
-using WeifenLuo.WinFormsUI.Docking;
 using mRemoteNG.Resources.Language;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.UI.Tabs;
 
 /// <summary>
-/// This class is lifted from VS2013DockPaneStrip from DockPanelSuite and customized for MremoteNG
+///     This class is lifted from VS2013DockPaneStrip from DockPanelSuite and customized for MremoteNG
 /// </summary>
 [ToolboxItem(false)]
 internal class DockPaneStripNG : DockPaneStripBase
 {
-    private class MremoteNGTab : Tab
-    {
-        public MremoteNGTab(IDockContent content)
-            : base(content)
-        {
-        }
+    private const int TAB_CLOSE_BUTTON_WIDTH = 30;
 
-        public int TabX { get; set; }
-
-        public int TabWidth { get; set; }
-
-        public int MaxWidth { get; set; }
-
-        protected internal bool Flag { get; set; }
-    }
-
-    protected override Tab CreateTab(IDockContent content)
-    {
-        return new MremoteNGTab(content);
-    }
-
-    [ToolboxItem(false)]
-    private sealed class InertButton : InertButtonBase
-    {
-        public InertButton(Bitmap hovered, Bitmap normal, Bitmap pressed)
-        {
-            HoverImage = hovered;
-            Image = normal;
-            PressImage = pressed;
-        }
-
-        public override Bitmap Image { get; }
-
-        public override Bitmap HoverImage { get; }
-
-        public override Bitmap PressImage { get; }
-    }
-
-    #region Constants
-
-    private const int _ToolWindowStripGapTop = 0;
-    private const int _ToolWindowStripGapBottom = 0;
-    private const int _ToolWindowStripGapLeft = 0;
-    private const int _ToolWindowStripGapRight = 0;
-    private const int _ToolWindowImageHeight = 16;
-    private const int _ToolWindowImageWidth = 0; //16;
-    private const int _ToolWindowImageGapTop = 3;
-    private const int _ToolWindowImageGapBottom = 1;
-    private const int _ToolWindowImageGapLeft = 2;
-    private const int _ToolWindowImageGapRight = 0;
-    private const int _ToolWindowTextGapRight = 3;
-    private const int _ToolWindowTabSeperatorGapTop = 3;
-    private const int _ToolWindowTabSeperatorGapBottom = 3;
-
-    private const int _DocumentStripGapTop = 0;
-    private const int _DocumentStripGapBottom = 1;
-    private const int _DocumentTabMaxWidth = 200;
-    private const int _DocumentButtonGapTop = 3;
-    private const int _DocumentButtonGapBottom = 3;
-    private const int _DocumentButtonGapBetween = 0;
-    private const int _DocumentButtonGapRight = 3;
-    private const int _DocumentTabGapTop = 0; //3;
-    private const int _DocumentTabGapLeft = 0; //3;
-    private const int _DocumentTabGapRight = 0; //3;
-    private const int _DocumentIconGapBottom = 2; //2;
-    private const int _DocumentIconGapLeft = 8;
-    private const int _DocumentIconGapRight = 0;
-    private const int _DocumentIconHeight = 16;
-    private const int _DocumentIconWidth = 16;
-    private const int _DocumentTextGapRight = 6;
-
-    #endregion
-
-    #region Members
-
-    private InertButton m_buttonOverflow;
-    private InertButton m_buttonWindowList;
-    private ToolTip m_toolTip;
-    private Font m_font;
-    private Font m_boldFont;
-    private int m_startDisplayingTab;
-    private bool m_documentTabsOverflow;
-    private static string m_toolTipSelect;
-    private bool m_suspendDrag;
-
-    #endregion
-
-    #region Properties
-
-    private Rectangle TabStripRectangle =>
-        Appearance == DockPane.AppearanceStyle.Document
-            ? TabStripRectangle_Document
-            : TabStripRectangle_ToolWindow;
-
-    private Rectangle TabStripRectangle_ToolWindow
-    {
-        get
-        {
-            var rect = ClientRectangle;
-            return new Rectangle(rect.X, rect.Top + ToolWindowStripGapTop, rect.Width,
-                rect.Height - ToolWindowStripGapTop - ToolWindowStripGapBottom);
-        }
-    }
-
-    private Rectangle TabStripRectangle_Document
-    {
-        get
-        {
-            var rect = ClientRectangle;
-            return new Rectangle(rect.X, rect.Top + DocumentStripGapTop, rect.Width,
-                rect.Height + DocumentStripGapTop - DocumentStripGapBottom);
-        }
-    }
-
-    private Rectangle TabsRectangle
-    {
-        get
-        {
-            if (Appearance == DockPane.AppearanceStyle.ToolWindow)
-                return TabStripRectangle;
-
-            var rectWindow = TabStripRectangle;
-            var x = rectWindow.X;
-            var y = rectWindow.Y;
-            var width = rectWindow.Width;
-            var height = rectWindow.Height;
-
-            x += DocumentTabGapLeft;
-            width -= DocumentTabGapLeft +
-                     DocumentTabGapRight +
-                     DocumentButtonGapRight +
-                     ButtonOverflow.Width +
-                     ButtonWindowList.Width +
-                     2 * DocumentButtonGapBetween;
-
-            return new Rectangle(x, y, width, height);
-        }
-    }
-
-    private ContextMenuStrip SelectMenu { get; }
-
-    public int SelectMenuMargin { get; set; } = 5;
-
-    private InertButton ButtonOverflow
-    {
-        get
-        {
-            if (m_buttonOverflow != null) return m_buttonOverflow;
-            m_buttonOverflow = new InertButton(
-                DockPane.DockPanel.Theme.ImageService.DockPaneHover_OptionOverflow,
-                DockPane.DockPanel.Theme.ImageService.DockPane_OptionOverflow,
-                DockPane.DockPanel.Theme.ImageService.DockPanePress_OptionOverflow);
-            m_buttonOverflow.Click += WindowList_Click;
-            Controls.Add(m_buttonOverflow);
-
-            return m_buttonOverflow;
-        }
-    }
-
-    private InertButton ButtonWindowList
-    {
-        get
-        {
-            if (m_buttonWindowList != null) return m_buttonWindowList;
-            m_buttonWindowList = new InertButton(
-                DockPane.DockPanel.Theme.ImageService.DockPaneHover_List,
-                DockPane.DockPanel.Theme.ImageService.DockPane_List,
-                DockPane.DockPanel.Theme.ImageService.DockPanePress_List);
-            m_buttonWindowList.Click += WindowList_Click;
-            Controls.Add(m_buttonWindowList);
-
-            return m_buttonWindowList;
-        }
-    }
-
-    private static GraphicsPath GraphicsPath => MremoteNGAutoHideStrip.GraphicsPath;
-
-    private IContainer Components { get; }
-
-    public Font TextFont => DockPane.DockPanel.Theme.Skin.DockPaneStripSkin.TextFont;
-
-    private Font BoldFont
-    {
-        get
-        {
-            if (IsDisposed)
-                return null;
-
-            if (m_boldFont == null)
-            {
-                m_font = TextFont;
-                m_boldFont = new Font(TextFont, FontStyle.Bold);
-            }
-            else if (!Equals(m_font, TextFont))
-            {
-                m_boldFont.Dispose();
-                m_font = TextFont;
-                m_boldFont = new Font(TextFont, FontStyle.Bold);
-            }
-
-            return m_boldFont;
-        }
-    }
-
-    private int StartDisplayingTab
-    {
-        get => m_startDisplayingTab;
-        set
-        {
-            m_startDisplayingTab = value;
-            Invalidate();
-        }
-    }
-
-    private int EndDisplayingTab { get; set; }
-
-    private int FirstDisplayingTab { get; set; }
-
-    private bool DocumentTabsOverflow
-    {
-        set
-        {
-            if (m_documentTabsOverflow == value)
-                return;
-
-            m_documentTabsOverflow = value;
-            SetInertButtons();
-        }
-    }
-
-    #region Customizable Properties
-
-    private static int ToolWindowStripGapTop => _ToolWindowStripGapTop;
-
-    private static int ToolWindowStripGapBottom => _ToolWindowStripGapBottom;
-
-    private static int ToolWindowStripGapLeft => _ToolWindowStripGapLeft;
-
-    private static int ToolWindowStripGapRight => _ToolWindowStripGapRight;
-
-    private static int ToolWindowImageHeight => _ToolWindowImageHeight;
-
-    private static int ToolWindowImageWidth => _ToolWindowImageWidth;
-
-    private static int ToolWindowImageGapTop => _ToolWindowImageGapTop;
-
-    private static int ToolWindowImageGapBottom => _ToolWindowImageGapBottom;
-
-    private static int ToolWindowImageGapLeft => _ToolWindowImageGapLeft;
-
-    private static int ToolWindowImageGapRight => _ToolWindowImageGapRight;
-
-    private static int ToolWindowTextGapRight => _ToolWindowTextGapRight;
-
-    private static int ToolWindowTabSeperatorGapTop => _ToolWindowTabSeperatorGapTop;
-
-    private static int ToolWindowTabSeperatorGapBottom => _ToolWindowTabSeperatorGapBottom;
-
-    private static string ToolTipSelect => m_toolTipSelect ?? (m_toolTipSelect = Language.TabsAndPanels);
-
-    private TextFormatFlags ToolWindowTextFormat
-    {
-        get
-        {
-            const TextFormatFlags textFormat = TextFormatFlags.EndEllipsis |
-                                               TextFormatFlags.HorizontalCenter |
-                                               TextFormatFlags.SingleLine |
-                                               TextFormatFlags.VerticalCenter;
-            if (RightToLeft == RightToLeft.Yes)
-                return textFormat | TextFormatFlags.RightToLeft | TextFormatFlags.Right;
-            return textFormat;
-        }
-    }
-
-    private static int DocumentStripGapTop => _DocumentStripGapTop;
-
-    private static int DocumentStripGapBottom => _DocumentStripGapBottom;
-
-    private TextFormatFlags DocumentTextFormat
-    {
-        get
-        {
-            const TextFormatFlags textFormat = TextFormatFlags.EndEllipsis |
-                                               TextFormatFlags.SingleLine |
-                                               TextFormatFlags.VerticalCenter |
-                                               TextFormatFlags.HorizontalCenter;
-            if (RightToLeft == RightToLeft.Yes)
-                return textFormat | TextFormatFlags.RightToLeft;
-            return textFormat;
-        }
-    }
-
-    private static int DocumentTabMaxWidth => _DocumentTabMaxWidth;
-
-    private static int DocumentButtonGapTop => _DocumentButtonGapTop;
-
-    private static int DocumentButtonGapBottom => _DocumentButtonGapBottom;
-
-    private static int DocumentButtonGapBetween => _DocumentButtonGapBetween;
-
-    private static int DocumentButtonGapRight => _DocumentButtonGapRight;
-
-    private static int DocumentTabGapTop => _DocumentTabGapTop;
-
-    private static int DocumentTabGapLeft => _DocumentTabGapLeft;
-
-    private static int DocumentTabGapRight => _DocumentTabGapRight;
-
-    private static int DocumentIconGapBottom => _DocumentIconGapBottom;
-
-    private static int DocumentIconGapLeft => _DocumentIconGapLeft;
-
-    private static int DocumentIconGapRight => _DocumentIconGapRight;
-
-    private static int DocumentIconWidth => _DocumentIconWidth;
-
-    private static int DocumentIconHeight => _DocumentIconHeight;
-
-    private static int DocumentTextGapRight => _DocumentTextGapRight;
-
-    #endregion
-
-    #endregion
+    private bool m_isMouseDown;
 
     public DockPaneStripNG(DockPane pane)
         : base(pane)
@@ -359,8 +40,28 @@ internal class DockPaneStripNG : DockPaneStripBase
         ResumeLayout();
     }
 
+    protected bool IsMouseDown
+    {
+        get => m_isMouseDown;
+        private set
+        {
+            if (m_isMouseDown == value)
+                return;
+
+            m_isMouseDown = value;
+            Invalidate();
+        }
+    }
+
+    private Rectangle ActiveClose { get; set; }
+
+    protected override Tab CreateTab(IDockContent content)
+    {
+        return new MremoteNGTab(content);
+    }
+
     // This seems like a bogus warning - suppressing since Components is being disposed...
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed",
+    [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed",
         MessageId = "<Components>k__BackingField")]
     protected override void Dispose(bool disposing)
     {
@@ -598,7 +299,7 @@ internal class DockPaneStripNG : DockPaneStripBase
     }
 
     /// <summary>
-    /// Calculate which tabs are displayed and in what order.
+    ///     Calculate which tabs are displayed and in what order.
     /// </summary>
     private void CalculateTabs_Document()
     {
@@ -706,8 +407,6 @@ internal class DockPaneStripNG : DockPaneStripBase
         return ToolWindowImageWidth + sizeString.Width + ToolWindowImageGapLeft
                + ToolWindowImageGapRight + ToolWindowTextGapRight;
     }
-
-    private const int TAB_CLOSE_BUTTON_WIDTH = 30;
 
     private int GetMaxTabWidth_Document(int index)
     {
@@ -1068,21 +767,6 @@ internal class DockPaneStripNG : DockPaneStripBase
             g.DrawIcon(tab.Content.DockHandler.Icon, rectIcon);
     }
 
-    private bool m_isMouseDown;
-
-    protected bool IsMouseDown
-    {
-        get => m_isMouseDown;
-        private set
-        {
-            if (m_isMouseDown == value)
-                return;
-
-            m_isMouseDown = value;
-            Invalidate();
-        }
-    }
-
     protected override void OnMouseUp(MouseEventArgs e)
     {
         base.OnMouseUp(e);
@@ -1336,8 +1020,6 @@ internal class DockPaneStripNG : DockPaneStripBase
         return new Rectangle((int)rectangle.Left, (int)rectangle.Top, (int)rectangle.Width, (int)rectangle.Height);
     }
 
-    private Rectangle ActiveClose { get; set; }
-
     private bool SetActiveClose(Rectangle rectangle)
     {
         if (ActiveClose == rectangle)
@@ -1399,6 +1081,325 @@ internal class DockPaneStripNG : DockPaneStripBase
 
         base.WndProc(ref m);
     }
+
+    #endregion
+
+    private class MremoteNGTab : Tab
+    {
+        public MremoteNGTab(IDockContent content)
+            : base(content)
+        {
+        }
+
+        public int TabX { get; set; }
+
+        public int TabWidth { get; set; }
+
+        public int MaxWidth { get; set; }
+
+        protected internal bool Flag { get; set; }
+    }
+
+    [ToolboxItem(false)]
+    private sealed class InertButton : InertButtonBase
+    {
+        public InertButton(Bitmap hovered, Bitmap normal, Bitmap pressed)
+        {
+            HoverImage = hovered;
+            Image = normal;
+            PressImage = pressed;
+        }
+
+        public override Bitmap Image { get; }
+
+        public override Bitmap HoverImage { get; }
+
+        public override Bitmap PressImage { get; }
+    }
+
+    #region Constants
+
+    private const int _ToolWindowStripGapTop = 0;
+    private const int _ToolWindowStripGapBottom = 0;
+    private const int _ToolWindowStripGapLeft = 0;
+    private const int _ToolWindowStripGapRight = 0;
+    private const int _ToolWindowImageHeight = 16;
+    private const int _ToolWindowImageWidth = 0; //16;
+    private const int _ToolWindowImageGapTop = 3;
+    private const int _ToolWindowImageGapBottom = 1;
+    private const int _ToolWindowImageGapLeft = 2;
+    private const int _ToolWindowImageGapRight = 0;
+    private const int _ToolWindowTextGapRight = 3;
+    private const int _ToolWindowTabSeperatorGapTop = 3;
+    private const int _ToolWindowTabSeperatorGapBottom = 3;
+
+    private const int _DocumentStripGapTop = 0;
+    private const int _DocumentStripGapBottom = 1;
+    private const int _DocumentTabMaxWidth = 200;
+    private const int _DocumentButtonGapTop = 3;
+    private const int _DocumentButtonGapBottom = 3;
+    private const int _DocumentButtonGapBetween = 0;
+    private const int _DocumentButtonGapRight = 3;
+    private const int _DocumentTabGapTop = 0; //3;
+    private const int _DocumentTabGapLeft = 0; //3;
+    private const int _DocumentTabGapRight = 0; //3;
+    private const int _DocumentIconGapBottom = 2; //2;
+    private const int _DocumentIconGapLeft = 8;
+    private const int _DocumentIconGapRight = 0;
+    private const int _DocumentIconHeight = 16;
+    private const int _DocumentIconWidth = 16;
+    private const int _DocumentTextGapRight = 6;
+
+    #endregion
+
+    #region Members
+
+    private InertButton m_buttonOverflow;
+    private InertButton m_buttonWindowList;
+    private readonly ToolTip m_toolTip;
+    private Font m_font;
+    private Font m_boldFont;
+    private int m_startDisplayingTab;
+    private bool m_documentTabsOverflow;
+    private static string m_toolTipSelect;
+    private bool m_suspendDrag;
+
+    #endregion
+
+    #region Properties
+
+    private Rectangle TabStripRectangle =>
+        Appearance == DockPane.AppearanceStyle.Document
+            ? TabStripRectangle_Document
+            : TabStripRectangle_ToolWindow;
+
+    private Rectangle TabStripRectangle_ToolWindow
+    {
+        get
+        {
+            var rect = ClientRectangle;
+            return new Rectangle(rect.X, rect.Top + ToolWindowStripGapTop, rect.Width,
+                rect.Height - ToolWindowStripGapTop - ToolWindowStripGapBottom);
+        }
+    }
+
+    private Rectangle TabStripRectangle_Document
+    {
+        get
+        {
+            var rect = ClientRectangle;
+            return new Rectangle(rect.X, rect.Top + DocumentStripGapTop, rect.Width,
+                rect.Height + DocumentStripGapTop - DocumentStripGapBottom);
+        }
+    }
+
+    private Rectangle TabsRectangle
+    {
+        get
+        {
+            if (Appearance == DockPane.AppearanceStyle.ToolWindow)
+                return TabStripRectangle;
+
+            var rectWindow = TabStripRectangle;
+            var x = rectWindow.X;
+            var y = rectWindow.Y;
+            var width = rectWindow.Width;
+            var height = rectWindow.Height;
+
+            x += DocumentTabGapLeft;
+            width -= DocumentTabGapLeft +
+                     DocumentTabGapRight +
+                     DocumentButtonGapRight +
+                     ButtonOverflow.Width +
+                     ButtonWindowList.Width +
+                     2 * DocumentButtonGapBetween;
+
+            return new Rectangle(x, y, width, height);
+        }
+    }
+
+    private ContextMenuStrip SelectMenu { get; }
+
+    public int SelectMenuMargin { get; set; } = 5;
+
+    private InertButton ButtonOverflow
+    {
+        get
+        {
+            if (m_buttonOverflow != null) return m_buttonOverflow;
+            m_buttonOverflow = new InertButton(
+                DockPane.DockPanel.Theme.ImageService.DockPaneHover_OptionOverflow,
+                DockPane.DockPanel.Theme.ImageService.DockPane_OptionOverflow,
+                DockPane.DockPanel.Theme.ImageService.DockPanePress_OptionOverflow);
+            m_buttonOverflow.Click += WindowList_Click;
+            Controls.Add(m_buttonOverflow);
+
+            return m_buttonOverflow;
+        }
+    }
+
+    private InertButton ButtonWindowList
+    {
+        get
+        {
+            if (m_buttonWindowList != null) return m_buttonWindowList;
+            m_buttonWindowList = new InertButton(
+                DockPane.DockPanel.Theme.ImageService.DockPaneHover_List,
+                DockPane.DockPanel.Theme.ImageService.DockPane_List,
+                DockPane.DockPanel.Theme.ImageService.DockPanePress_List);
+            m_buttonWindowList.Click += WindowList_Click;
+            Controls.Add(m_buttonWindowList);
+
+            return m_buttonWindowList;
+        }
+    }
+
+    private static GraphicsPath GraphicsPath => MremoteNGAutoHideStrip.GraphicsPath;
+
+    private IContainer Components { get; }
+
+    public Font TextFont => DockPane.DockPanel.Theme.Skin.DockPaneStripSkin.TextFont;
+
+    private Font BoldFont
+    {
+        get
+        {
+            if (IsDisposed)
+                return null;
+
+            if (m_boldFont == null)
+            {
+                m_font = TextFont;
+                m_boldFont = new Font(TextFont, FontStyle.Bold);
+            }
+            else if (!Equals(m_font, TextFont))
+            {
+                m_boldFont.Dispose();
+                m_font = TextFont;
+                m_boldFont = new Font(TextFont, FontStyle.Bold);
+            }
+
+            return m_boldFont;
+        }
+    }
+
+    private int StartDisplayingTab
+    {
+        get => m_startDisplayingTab;
+        set
+        {
+            m_startDisplayingTab = value;
+            Invalidate();
+        }
+    }
+
+    private int EndDisplayingTab { get; set; }
+
+    private int FirstDisplayingTab { get; set; }
+
+    private bool DocumentTabsOverflow
+    {
+        set
+        {
+            if (m_documentTabsOverflow == value)
+                return;
+
+            m_documentTabsOverflow = value;
+            SetInertButtons();
+        }
+    }
+
+    #region Customizable Properties
+
+    private static int ToolWindowStripGapTop => _ToolWindowStripGapTop;
+
+    private static int ToolWindowStripGapBottom => _ToolWindowStripGapBottom;
+
+    private static int ToolWindowStripGapLeft => _ToolWindowStripGapLeft;
+
+    private static int ToolWindowStripGapRight => _ToolWindowStripGapRight;
+
+    private static int ToolWindowImageHeight => _ToolWindowImageHeight;
+
+    private static int ToolWindowImageWidth => _ToolWindowImageWidth;
+
+    private static int ToolWindowImageGapTop => _ToolWindowImageGapTop;
+
+    private static int ToolWindowImageGapBottom => _ToolWindowImageGapBottom;
+
+    private static int ToolWindowImageGapLeft => _ToolWindowImageGapLeft;
+
+    private static int ToolWindowImageGapRight => _ToolWindowImageGapRight;
+
+    private static int ToolWindowTextGapRight => _ToolWindowTextGapRight;
+
+    private static int ToolWindowTabSeperatorGapTop => _ToolWindowTabSeperatorGapTop;
+
+    private static int ToolWindowTabSeperatorGapBottom => _ToolWindowTabSeperatorGapBottom;
+
+    private static string ToolTipSelect => m_toolTipSelect ?? (m_toolTipSelect = Language.TabsAndPanels);
+
+    private TextFormatFlags ToolWindowTextFormat
+    {
+        get
+        {
+            const TextFormatFlags textFormat = TextFormatFlags.EndEllipsis |
+                                               TextFormatFlags.HorizontalCenter |
+                                               TextFormatFlags.SingleLine |
+                                               TextFormatFlags.VerticalCenter;
+            if (RightToLeft == RightToLeft.Yes)
+                return textFormat | TextFormatFlags.RightToLeft | TextFormatFlags.Right;
+            return textFormat;
+        }
+    }
+
+    private static int DocumentStripGapTop => _DocumentStripGapTop;
+
+    private static int DocumentStripGapBottom => _DocumentStripGapBottom;
+
+    private TextFormatFlags DocumentTextFormat
+    {
+        get
+        {
+            const TextFormatFlags textFormat = TextFormatFlags.EndEllipsis |
+                                               TextFormatFlags.SingleLine |
+                                               TextFormatFlags.VerticalCenter |
+                                               TextFormatFlags.HorizontalCenter;
+            if (RightToLeft == RightToLeft.Yes)
+                return textFormat | TextFormatFlags.RightToLeft;
+            return textFormat;
+        }
+    }
+
+    private static int DocumentTabMaxWidth => _DocumentTabMaxWidth;
+
+    private static int DocumentButtonGapTop => _DocumentButtonGapTop;
+
+    private static int DocumentButtonGapBottom => _DocumentButtonGapBottom;
+
+    private static int DocumentButtonGapBetween => _DocumentButtonGapBetween;
+
+    private static int DocumentButtonGapRight => _DocumentButtonGapRight;
+
+    private static int DocumentTabGapTop => _DocumentTabGapTop;
+
+    private static int DocumentTabGapLeft => _DocumentTabGapLeft;
+
+    private static int DocumentTabGapRight => _DocumentTabGapRight;
+
+    private static int DocumentIconGapBottom => _DocumentIconGapBottom;
+
+    private static int DocumentIconGapLeft => _DocumentIconGapLeft;
+
+    private static int DocumentIconGapRight => _DocumentIconGapRight;
+
+    private static int DocumentIconWidth => _DocumentIconWidth;
+
+    private static int DocumentIconHeight => _DocumentIconHeight;
+
+    private static int DocumentTextGapRight => _DocumentTextGapRight;
+
+    #endregion
 
     #endregion
 }

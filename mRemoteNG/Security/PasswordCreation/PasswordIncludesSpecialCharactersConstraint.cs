@@ -4,16 +4,11 @@ using System.Security;
 using System.Text.RegularExpressions;
 using mRemoteNG.Resources.Language;
 
-
 namespace mRemoteNG.Security.PasswordCreation;
 
 public class PasswordIncludesSpecialCharactersConstraint : IPasswordConstraint
 {
     private readonly int _minimumCount;
-
-    public IEnumerable<char> SpecialCharacters { get; } = new[] { '!', '@', '#', '$', '%', '^', '&', '*' };
-
-    public string ConstraintHint { get; }
 
     public PasswordIncludesSpecialCharactersConstraint(int minimumCount = 1)
     {
@@ -33,6 +28,10 @@ public class PasswordIncludesSpecialCharactersConstraint : IPasswordConstraint
         ConstraintHint = string.Format(Language.PasswordConstainsSpecialCharactersConstraintHint, _minimumCount,
             string.Concat(SpecialCharacters));
     }
+
+    public IEnumerable<char> SpecialCharacters { get; } = new[] { '!', '@', '#', '$', '%', '^', '&', '*' };
+
+    public string ConstraintHint { get; }
 
     public bool Validate(SecureString password)
     {

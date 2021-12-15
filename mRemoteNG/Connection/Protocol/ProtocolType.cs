@@ -1,40 +1,40 @@
-﻿using mRemoteNG.Tools;
-using mRemoteNG.Resources.Language;
+﻿using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.Connection.Protocol;
 
 public enum ProtocolType
 {
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.Rdp))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Rdp))]
     RDP = 0,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.Vnc))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Vnc))]
     VNC = 1,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.SshV1))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.SshV1))]
     SSH1 = 2,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.SshV2))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.SshV2))]
     SSH2 = 3,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.Telnet))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Telnet))]
     Telnet = 4,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.Rlogin))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Rlogin))]
     Rlogin = 5,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.Raw))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Raw))]
     RAW = 6,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.Http))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Http))]
     HTTP = 7,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.Https))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Https))]
     HTTPS = 8,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PowerShell))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PowerShell))]
     PowerShell = 10,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.ExternalTool))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.ExternalTool))]
     IntApp = 20
 }

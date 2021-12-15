@@ -1,20 +1,20 @@
 ﻿using System.Data;
+using System.Data.SqlClient;
+using mRemoteNG.App;
 using mRemoteNG.Config.DatabaseConnectors;
 using mRemoteNG.Messages;
-using mRemoteNG.App;
 using MySql.Data.MySqlClient;
-using System.Data.SqlClient;
 
 namespace mRemoteNG.Config.DataProviders;
 
 public class SqlDataProvider : IDataProvider<DataTable>
 {
-    public IDatabaseConnector DatabaseConnector { get; }
-
     public SqlDataProvider(IDatabaseConnector databaseConnector)
     {
         DatabaseConnector = databaseConnector;
     }
+
+    public IDatabaseConnector DatabaseConnector { get; }
 
     public DataTable Load()
     {

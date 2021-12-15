@@ -1,6 +1,6 @@
-﻿using mRemoteNG.App;
-using System;
+﻿using System;
 using System.Timers;
+using mRemoteNG.App;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -8,19 +8,40 @@ namespace mRemoteNG.Config.Connections.Multiuser;
 
 public class RemoteConnectionsSyncronizer : IConnectionsUpdateChecker
 {
-    private readonly Timer _updateTimer;
     private readonly IConnectionsUpdateChecker _updateChecker;
-
-    public double TimerIntervalInMilliseconds
-    {
-        get { return _updateTimer.Interval; }
-    }
+    private readonly Timer _updateTimer;
 
     public RemoteConnectionsSyncronizer(IConnectionsUpdateChecker updateChecker)
     {
         _updateChecker = updateChecker;
         _updateTimer = new Timer(3000);
         SetEventListeners();
+    }
+
+    public double TimerIntervalInMilliseconds
+    {
+        get { return _updateTimer.Interval; }
+    }
+
+    public bool IsUpdateAvailable()
+    {
+        return _updateChecker.IsUpdateAvailable();
+    }
+
+    public void IsUpdateAvailableAsync()
+    {
+        _updateChecker.IsUpdateAvailableAsync();
+    }
+
+    public event EventHandler UpdateCheckStarted;
+    public event UpdateCheckFinishedEventHandler UpdateCheckFinished;
+    public event ConnectionsUpdateAvailableEventHandler ConnectionsUpdateAvailable;
+
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     private void SetEventListeners()
@@ -49,16 +70,6 @@ public class RemoteConnectionsSyncronizer : IConnectionsUpdateChecker
         _updateTimer.Stop();
     }
 
-    public bool IsUpdateAvailable()
-    {
-        return _updateChecker.IsUpdateAvailable();
-    }
-
-    public void IsUpdateAvailableAsync()
-    {
-        _updateChecker.IsUpdateAvailableAsync();
-    }
-
 
     private void OnUpdateCheckStarted(object sender, EventArgs eventArgs)
     {
@@ -70,17 +81,6 @@ public class RemoteConnectionsSyncronizer : IConnectionsUpdateChecker
     {
         _updateTimer.Start();
         UpdateCheckFinished?.Invoke(sender, eventArgs);
-    }
-
-    public event EventHandler UpdateCheckStarted;
-    public event UpdateCheckFinishedEventHandler UpdateCheckFinished;
-    public event ConnectionsUpdateAvailableEventHandler ConnectionsUpdateAvailable;
-
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 
     private void Dispose(bool itIsSafeToAlsoFreeManagedObjects)

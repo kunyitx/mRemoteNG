@@ -1,16 +1,64 @@
 ﻿using System;
 using System.Windows.Forms;
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
-using mRemoteNG.Tools;
 using mRemoteNG.App;
-using mRemoteNG.UI.Tabs;
 using mRemoteNG.Resources.Language;
-
+using mRemoteNG.Tools;
+using mRemoteNG.UI.Tabs;
 
 namespace mRemoteNG.Connection.Protocol.Http;
 
 public class HTTPBase : ProtocolBase
 {
+    #region Enums
+
+    public enum RenderingEngine
+    {
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.HttpInternetExplorer))]
+        IE = 1,
+
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.HttpCEF))]
+        EdgeChromium = 2
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private string GetUrl()
+    {
+        try
+        {
+            var strHost = InterfaceControl.Info.Hostname;
+
+            if (InterfaceControl.Info.Port != defaultPort)
+            {
+                if (strHost.EndsWith("/"))
+                    strHost = strHost.Substring(0, strHost.Length - 1);
+
+                if (strHost.Contains(httpOrS + "://") == false)
+                    strHost = httpOrS + "://" + strHost;
+
+                strHost = strHost + ":" + InterfaceControl.Info.Port;
+            }
+            else
+            {
+                if (strHost.Contains(httpOrS + "://") == false)
+                    strHost = httpOrS + "://" + strHost;
+            }
+
+            return strHost;
+        }
+        catch (Exception ex)
+        {
+            Runtime.MessageCollector.AddExceptionStackTrace(Language.HttpFailedUrlBuild, ex);
+            return string.Empty;
+        }
+    }
+
+    #endregion
+
     #region Private Properties
 
     private Control _wBrowser;
@@ -27,7 +75,7 @@ public class HTTPBase : ProtocolBase
         try
         {
             if (renderingEngine == RenderingEngine.EdgeChromium)
-                Control = new WebView2()
+                Control = new WebView2
                 {
                     Dock = DockStyle.Fill
                 };
@@ -105,45 +153,10 @@ public class HTTPBase : ProtocolBase
 
     #endregion
 
-    #region Private Methods
-
-    private string GetUrl()
-    {
-        try
-        {
-            var strHost = InterfaceControl.Info.Hostname;
-
-            if (InterfaceControl.Info.Port != defaultPort)
-            {
-                if (strHost.EndsWith("/"))
-                    strHost = strHost.Substring(0, strHost.Length - 1);
-
-                if (strHost.Contains(httpOrS + "://") == false)
-                    strHost = httpOrS + "://" + strHost;
-
-                strHost = strHost + ":" + InterfaceControl.Info.Port;
-            }
-            else
-            {
-                if (strHost.Contains(httpOrS + "://") == false)
-                    strHost = httpOrS + "://" + strHost;
-            }
-
-            return strHost;
-        }
-        catch (Exception ex)
-        {
-            Runtime.MessageCollector.AddExceptionStackTrace(Language.HttpFailedUrlBuild, ex);
-            return string.Empty;
-        }
-    }
-
-    #endregion
-
     #region Events
 
     private void Edge_CoreWebView2InitializationCompleted(object sender,
-        Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+        CoreWebView2InitializationCompletedEventArgs e)
     {
         if (!e.IsSuccess)
             Runtime.MessageCollector.AddExceptionStackTrace(Language.HttpFailedUrlBuild, e.InitializationException);
@@ -179,19 +192,6 @@ public class HTTPBase : ProtocolBase
         {
             Runtime.MessageCollector.AddExceptionStackTrace(Language.HttpDocumentTileChangeFailed, ex);
         }
-    }
-
-    #endregion
-
-    #region Enums
-
-    public enum RenderingEngine
-    {
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.HttpInternetExplorer))]
-        IE = 1,
-
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.HttpCEF))]
-        EdgeChromium = 2
     }
 
     #endregion

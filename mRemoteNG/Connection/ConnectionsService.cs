@@ -13,33 +13,24 @@ using mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.UI;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Connection;
 
 public class ConnectionsService
 {
     private static readonly object SaveLock = new();
-    private readonly PuttySessionsManager _puttySessionsManager;
     private readonly IDataProvider<string> _localConnectionPropertiesDataProvider;
     private readonly LocalConnectionPropertiesXmlSerializer _localConnectionPropertiesSerializer;
-    private bool _batchingSaves = false;
-    private bool _saveRequested = false;
-    private bool _saveAsyncRequested = false;
-
-    public bool IsConnectionsFileLoaded { get; set; }
-    public bool UsingDatabase { get; private set; }
-    public string ConnectionFileName { get; private set; }
-    public RemoteConnectionsSyncronizer RemoteConnectionsSyncronizer { get; set; }
-    public DateTime LastSqlUpdate { get; set; }
-    public DateTime LastFileUpdate { get; set; }
-
-    public ConnectionTreeModel ConnectionTreeModel { get; private set; }
+    private readonly PuttySessionsManager _puttySessionsManager;
+    private bool _batchingSaves;
+    private bool _saveAsyncRequested;
+    private bool _saveRequested;
 
     public ConnectionsService(PuttySessionsManager puttySessionsManager)
     {
@@ -52,6 +43,15 @@ public class ConnectionsService
             new FileDataProvider(Path.Combine(path, "LocalConnectionProperties.xml"));
         _localConnectionPropertiesSerializer = new LocalConnectionPropertiesXmlSerializer();
     }
+
+    public bool IsConnectionsFileLoaded { get; set; }
+    public bool UsingDatabase { get; private set; }
+    public string ConnectionFileName { get; private set; }
+    public RemoteConnectionsSyncronizer RemoteConnectionsSyncronizer { get; set; }
+    public DateTime LastSqlUpdate { get; set; }
+    public DateTime LastFileUpdate { get; set; }
+
+    public ConnectionTreeModel ConnectionTreeModel { get; private set; }
 
     public void NewConnectionsFile(string filename)
     {
@@ -117,8 +117,8 @@ public class ConnectionsService
     }
 
     /// <summary>
-    /// Load connections from a source. <see cref="connectionFileName"/> is ignored if
-    /// <see cref="useDatabase"/> is true.
+    ///     Load connections from a source. <see cref="connectionFileName" /> is ignored if
+    ///     <see cref="useDatabase" /> is true.
     /// </summary>
     /// <param name="useDatabase"></param>
     /// <param name="import"></param>
@@ -164,10 +164,10 @@ public class ConnectionsService
     }
 
     /// <summary>
-    /// When turned on, calls to <see cref="SaveConnections()"/> or
-    /// <see cref="SaveConnectionsAsync"/> will not immediately execute.
-    /// Instead, they will be deferred until <see cref="EndBatchingSaves"/>
-    /// is called.
+    ///     When turned on, calls to <see cref="SaveConnections()" /> or
+    ///     <see cref="SaveConnectionsAsync" /> will not immediately execute.
+    ///     Instead, they will be deferred until <see cref="EndBatchingSaves" />
+    ///     is called.
     /// </summary>
     public void BeginBatchingSaves()
     {
@@ -175,9 +175,9 @@ public class ConnectionsService
     }
 
     /// <summary>
-    /// Immediately executes a single <see cref="SaveConnections()"/> or
-    /// <see cref="SaveConnectionsAsync"/> if one has been requested
-    /// since calling <see cref="BeginBatchingSaves"/>.
+    ///     Immediately executes a single <see cref="SaveConnections()" /> or
+    ///     <see cref="SaveConnectionsAsync" /> if one has been requested
+    ///     since calling <see cref="BeginBatchingSaves" />.
     /// </summary>
     public void EndBatchingSaves()
     {
@@ -190,11 +190,11 @@ public class ConnectionsService
     }
 
     /// <summary>
-    /// All calls to <see cref="SaveConnections()"/> or <see cref="SaveConnectionsAsync"/>
-    /// will be deferred until the returned <see cref="DisposableAction"/> is disposed.
-    /// Once disposed, this will immediately executes a single <see cref="SaveConnections()"/>
-    /// or <see cref="SaveConnectionsAsync"/> if one has been requested.
-    /// Place this call in a 'using' block to represent a batched saving context.
+    ///     All calls to <see cref="SaveConnections()" /> or <see cref="SaveConnectionsAsync" />
+    ///     will be deferred until the returned <see cref="DisposableAction" /> is disposed.
+    ///     Once disposed, this will immediately executes a single <see cref="SaveConnections()" />
+    ///     or <see cref="SaveConnectionsAsync" /> if one has been requested.
+    ///     Place this call in a 'using' block to represent a batched saving context.
     /// </summary>
     /// <returns></returns>
     public DisposableAction BatchedSavingContext()
@@ -203,8 +203,8 @@ public class ConnectionsService
     }
 
     /// <summary>
-    /// Saves the currently loaded <see cref="ConnectionTreeModel"/> with
-    /// no <see cref="SaveFilter"/>.
+    ///     Saves the currently loaded <see cref="ConnectionTreeModel" /> with
+    ///     no <see cref="SaveFilter" />.
     /// </summary>
     public void SaveConnections()
     {
@@ -212,8 +212,8 @@ public class ConnectionsService
     }
 
     /// <summary>
-    /// Saves the given <see cref="ConnectionTreeModel"/>.
-    /// If <see cref="useDatabase"/> is true, <see cref="connectionFileName"/> is ignored
+    ///     Saves the given <see cref="ConnectionTreeModel" />.
+    ///     If <see cref="useDatabase" /> is true, <see cref="connectionFileName" /> is ignored
     /// </summary>
     /// <param name="connectionTreeModel"></param>
     /// <param name="useDatabase"></param>
@@ -221,8 +221,8 @@ public class ConnectionsService
     /// <param name="connectionFileName"></param>
     /// <param name="forceSave">Bypasses safety checks that prevent saving if a connection file isn't loaded.</param>
     /// <param name="propertyNameTrigger">
-    /// Optional. The name of the property that triggered
-    /// this save.
+    ///     Optional. The name of the property that triggered
+    ///     this save.
     /// </param>
     public void SaveConnections(ConnectionTreeModel connectionTreeModel,
         bool useDatabase,
@@ -280,11 +280,11 @@ public class ConnectionsService
     }
 
     /// <summary>
-    /// Save the currently loaded connections asynchronously
+    ///     Save the currently loaded connections asynchronously
     /// </summary>
     /// <param name="propertyNameTrigger">
-    /// Optional. The name of the property that triggered
-    /// this save.
+    ///     Optional. The name of the property that triggered
+    ///     this save.
     /// </param>
     public void SaveConnectionsAsync(string propertyNameTrigger = "")
     {

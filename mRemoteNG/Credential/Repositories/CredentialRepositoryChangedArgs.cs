@@ -4,8 +4,6 @@ namespace mRemoteNG.Credential.Repositories;
 
 public class CredentialRepositoryChangedArgs : EventArgs
 {
-    public ICredentialRepository Repository { get; }
-
     public CredentialRepositoryChangedArgs(ICredentialRepository repository)
     {
         if (repository == null)
@@ -13,4 +11,6 @@ public class CredentialRepositoryChangedArgs : EventArgs
 
         Repository = repository;
     }
+
+    public ICredentialRepository Repository { get; }
 }

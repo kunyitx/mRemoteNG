@@ -11,10 +11,10 @@ namespace mRemoteNG.Messages.WriterDecorators;
 
 public class MessageFocusDecorator : IMessageWriter
 {
-    private readonly IMessageTypeFilteringOptions _filter;
     private readonly IMessageWriter _decoratedWriter;
-    private readonly ErrorAndInfoWindow _messageWindow;
+    private readonly IMessageTypeFilteringOptions _filter;
     private readonly FrmMain _frmMain = FrmMain.Default;
+    private readonly ErrorAndInfoWindow _messageWindow;
 
     public MessageFocusDecorator(ErrorAndInfoWindow messageWindow,
         IMessageTypeFilteringOptions filter,

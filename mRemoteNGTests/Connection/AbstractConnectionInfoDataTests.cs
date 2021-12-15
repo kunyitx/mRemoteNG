@@ -6,19 +6,10 @@ using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Connection.Protocol.VNC;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Connection;
 
 public class AbstractConnectionInfoDataTests
 {
-#pragma warning disable 618
-    private class TestAbstractConnectionInfoData : AbstractConnectionRecord
-    {
-        public TestAbstractConnectionInfoData() : base(Guid.NewGuid().ToString())
-        {
-        }
-    }
-#pragma warning restore 618
     private TestAbstractConnectionInfoData _testAbstractConnectionInfoData;
 
     [SetUp]
@@ -519,4 +510,12 @@ public class AbstractConnectionInfoDataTests
         _testAbstractConnectionInfoData.VNCViewOnly = true;
         Assert.That(wasCalled, Is.True);
     }
+#pragma warning disable 618
+    private class TestAbstractConnectionInfoData : AbstractConnectionRecord
+    {
+        public TestAbstractConnectionInfoData() : base(Guid.NewGuid().ToString())
+        {
+        }
+    }
+#pragma warning restore 618
 }

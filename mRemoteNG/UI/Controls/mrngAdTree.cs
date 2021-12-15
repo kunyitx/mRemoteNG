@@ -1,7 +1,7 @@
-﻿using mRemoteNG.Tools;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.UI.Controls;
 

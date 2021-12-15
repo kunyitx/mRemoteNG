@@ -1,17 +1,16 @@
-﻿using mRemoteNG.App;
+﻿using System;
+using mRemoteNG.App;
 using mRemoteNG.App.Info;
 using mRemoteNG.Config.DatabaseConnectors;
 using mRemoteNG.Messages;
 using mRemoteNG.Resources.Language;
-using System;
 
 namespace mRemoteNG.Config.Serializers.Versioning;
 
 public class SqlDatabaseVersionVerifier
 {
-    protected readonly Version currentSupportedVersion = new(2, 9);
-
     private readonly IDatabaseConnector _databaseConnector;
+    protected readonly Version currentSupportedVersion = new(2, 9);
 
     public SqlDatabaseVersionVerifier(IDatabaseConnector DatabaseConnector)
     {

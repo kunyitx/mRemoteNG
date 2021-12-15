@@ -8,10 +8,11 @@ using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
+using mRemoteNG.Resources;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree.Root;
 using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Window;
 
@@ -22,7 +23,7 @@ public partial class PortScanWindow
     public PortScanWindow()
     {
         InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.SearchAndApps_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.SearchAndApps_16x);
         WindowType = WindowType.PortScan;
         DockPnl = new DockContent();
         ApplyTheme();
@@ -31,11 +32,6 @@ public partial class PortScanWindow
     }
 
     #endregion
-
-    private new void ApplyTheme()
-    {
-        base.ApplyTheme();
-    }
 
     #region Private Properties
 
@@ -64,6 +60,95 @@ public partial class PortScanWindow
     }
 
     #endregion
+
+    private new void ApplyTheme()
+    {
+        base.ApplyTheme();
+    }
+
+    private void importSelectedHosts(ProtocolType protocol)
+    {
+        var hosts = new List<ScanHost>();
+        foreach (ScanHost host in olvHosts.SelectedObjects) hosts.Add(host);
+
+        if (hosts.Count < 1)
+        {
+            Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg,
+                "Could not import host(s) from port scan context menu");
+            return;
+        }
+
+        var destinationContainer = GetDestinationContainerForImportedHosts();
+        Import.ImportFromPortScan(hosts, protocol, destinationContainer);
+    }
+
+    /// <summary>
+    ///     Determines where the imported hosts will be placed
+    ///     in the connection tree.
+    /// </summary>
+    private ContainerInfo GetDestinationContainerForImportedHosts()
+    {
+        var selectedNode = Windows.TreeForm.SelectedNode
+                           ?? Windows.TreeForm.ConnectionTree.ConnectionTreeModel.RootNodes.OfType<RootNodeInfo>()
+                               .First();
+
+        // if a putty node is selected, place imported connections in the root connection node
+        if (selectedNode is RootPuttySessionsNodeInfo || selectedNode is PuttySessionInfo)
+            selectedNode = Windows.TreeForm.ConnectionTree.ConnectionTreeModel.RootNodes.OfType<RootNodeInfo>()
+                .First();
+
+        // if the selected node is a connection, use its parent container
+        var selectedTreeNodeAsContainer = selectedNode as ContainerInfo ?? selectedNode.Parent;
+
+        return selectedTreeNodeAsContainer;
+    }
+
+    private void importVNCToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        importSelectedHosts(ProtocolType.VNC);
+    }
+
+    private void importTelnetToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        importSelectedHosts(ProtocolType.Telnet);
+    }
+
+    private void importSSH2ToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        importSelectedHosts(ProtocolType.SSH2);
+    }
+
+    private void importRloginToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        importSelectedHosts(ProtocolType.Rlogin);
+    }
+
+    private void importRDPToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        importSelectedHosts(ProtocolType.RDP);
+    }
+
+    private void importHTTPSToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        importSelectedHosts(ProtocolType.HTTPS);
+    }
+
+    private void importHTTPToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        importSelectedHosts(ProtocolType.HTTP);
+    }
+
+    private void NgCheckFirstPort_CheckedChanged(object sender, EventArgs e)
+    {
+        portStart.Enabled = ngCheckFirstPort.Checked;
+    }
+
+    private void NgCheckLastPort_CheckedChanged(object sender, EventArgs e)
+    {
+        portEnd.Enabled = ngCheckLastPort.Checked;
+
+        portEnd.Value = portEnd.Enabled ? 65535 : 0;
+    }
 
     #region Private Fields
 
@@ -217,8 +302,7 @@ public partial class PortScanWindow
     {
         if (InvokeRequired)
         {
-            Invoke(new PortScannerHostScannedDelegate(PortScanner_HostScanned),
-                new object[] { host, scannedCount, totalCount });
+            Invoke(new PortScannerHostScannedDelegate(PortScanner_HostScanned), host, scannedCount, totalCount);
             return;
         }
 
@@ -235,7 +319,7 @@ public partial class PortScanWindow
     {
         if (InvokeRequired)
         {
-            Invoke(new PortScannerScanComplete(PortScanner_ScanComplete), new object[] { hosts });
+            Invoke(new PortScannerScanComplete(PortScanner_ScanComplete), hosts);
             return;
         }
 
@@ -246,88 +330,4 @@ public partial class PortScanWindow
     }
 
     #endregion
-
-    private void importSelectedHosts(ProtocolType protocol)
-    {
-        var hosts = new List<ScanHost>();
-        foreach (ScanHost host in olvHosts.SelectedObjects) hosts.Add(host);
-
-        if (hosts.Count < 1)
-        {
-            Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg,
-                "Could not import host(s) from port scan context menu");
-            return;
-        }
-
-        var destinationContainer = GetDestinationContainerForImportedHosts();
-        Import.ImportFromPortScan(hosts, protocol, destinationContainer);
-    }
-
-    /// <summary>
-    /// Determines where the imported hosts will be placed
-    /// in the connection tree.
-    /// </summary>
-    private ContainerInfo GetDestinationContainerForImportedHosts()
-    {
-        var selectedNode = Windows.TreeForm.SelectedNode
-                           ?? Windows.TreeForm.ConnectionTree.ConnectionTreeModel.RootNodes.OfType<RootNodeInfo>()
-                               .First();
-
-        // if a putty node is selected, place imported connections in the root connection node
-        if (selectedNode is RootPuttySessionsNodeInfo || selectedNode is PuttySessionInfo)
-            selectedNode = Windows.TreeForm.ConnectionTree.ConnectionTreeModel.RootNodes.OfType<RootNodeInfo>()
-                .First();
-
-        // if the selected node is a connection, use its parent container
-        var selectedTreeNodeAsContainer = selectedNode as ContainerInfo ?? selectedNode.Parent;
-
-        return selectedTreeNodeAsContainer;
-    }
-
-    private void importVNCToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        importSelectedHosts(ProtocolType.VNC);
-    }
-
-    private void importTelnetToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        importSelectedHosts(ProtocolType.Telnet);
-    }
-
-    private void importSSH2ToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        importSelectedHosts(ProtocolType.SSH2);
-    }
-
-    private void importRloginToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        importSelectedHosts(ProtocolType.Rlogin);
-    }
-
-    private void importRDPToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        importSelectedHosts(ProtocolType.RDP);
-    }
-
-    private void importHTTPSToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        importSelectedHosts(ProtocolType.HTTPS);
-    }
-
-    private void importHTTPToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-        importSelectedHosts(ProtocolType.HTTP);
-    }
-
-    private void NgCheckFirstPort_CheckedChanged(object sender, EventArgs e)
-    {
-        portStart.Enabled = ngCheckFirstPort.Checked;
-    }
-
-    private void NgCheckLastPort_CheckedChanged(object sender, EventArgs e)
-    {
-        portEnd.Enabled = ngCheckLastPort.Checked;
-
-        portEnd.Value = portEnd.Enabled ? 65535 : 0;
-    }
 }

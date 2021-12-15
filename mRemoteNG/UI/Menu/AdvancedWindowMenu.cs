@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Windows.Forms;
-using mRemoteNG.Tools;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.UI.Menu;
 
 // This class creates new menu items to menu that appears when you right click the top of the app (where the window title is)
 public class AdvancedWindowMenu : IDisposable
 {
-    private readonly WindowMenu _windowMenu;
     private readonly int[] _sysMenSubItems = new int[51];
+    private readonly WindowMenu _windowMenu;
 
     public AdvancedWindowMenu(IWin32Window boundControl)
     {
         _windowMenu = new WindowMenu(boundControl.Handle);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     public Screen GetScreenById(int id)
@@ -67,11 +73,5 @@ public class AdvancedWindowMenu : IDisposable
         if (!disposing) return;
 
         _windowMenu?.Dispose();
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }

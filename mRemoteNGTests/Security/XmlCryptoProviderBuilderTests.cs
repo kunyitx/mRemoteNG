@@ -5,7 +5,6 @@ using mRemoteNG.Security.Factories;
 using mRemoteNG.Security.SymmetricEncryption;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Security;
 
 public class XmlCryptoProviderBuilderTests

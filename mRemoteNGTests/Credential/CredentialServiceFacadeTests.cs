@@ -11,8 +11,8 @@ namespace mRemoteNGTests.Credential;
 
 public class CredentialServiceFacadeTests
 {
-    private CredentialServiceFacade _credentialService;
     private ICredentialRepositoryList _credentialRepositoryList;
+    private CredentialServiceFacade _credentialService;
     private ILoader<IEnumerable<ICredentialRepository>> _loader;
     private ISaver<IEnumerable<ICredentialRepository>> _saver;
 

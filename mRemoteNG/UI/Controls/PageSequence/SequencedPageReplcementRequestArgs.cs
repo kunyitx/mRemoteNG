@@ -13,12 +13,12 @@ public enum RelativePagePosition
 
 public class SequencedPageReplcementRequestArgs
 {
-    public SequencedControl NewControl { get; }
-    public RelativePagePosition PagePosition { get; }
-
     public SequencedPageReplcementRequestArgs(SequencedControl newControl, RelativePagePosition pageToReplace)
     {
         NewControl = newControl ?? throw new ArgumentNullException(nameof(newControl));
         PagePosition = pageToReplace;
     }
+
+    public SequencedControl NewControl { get; }
+    public RelativePagePosition PagePosition { get; }
 }

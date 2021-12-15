@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.CompilerServices;
+using NUnit.Framework;
 
 namespace mRemoteNGTests;
 
@@ -43,7 +43,7 @@ public class BinaryFileTests
     }
 
     /// <summary>
-    /// Checks if the stream is a MZ header and if it is large address aware
+    ///     Checks if the stream is a MZ header and if it is large address aware
     /// </summary>
     /// <param name="stream">Stream to check, make sure its at the start of the MZ header</param>
     /// <returns></returns>

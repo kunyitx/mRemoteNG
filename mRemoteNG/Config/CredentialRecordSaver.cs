@@ -5,7 +5,6 @@ using mRemoteNG.Config.DataProviders;
 using mRemoteNG.Config.Serializers;
 using mRemoteNG.Credential;
 
-
 namespace mRemoteNG.Config;
 
 public class CredentialRecordSaver

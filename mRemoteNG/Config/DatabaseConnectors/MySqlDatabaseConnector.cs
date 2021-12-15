@@ -9,13 +9,25 @@ namespace mRemoteNG.Config.DatabaseConnectors;
 
 public class MySqlDatabaseConnector : IDatabaseConnector
 {
-    private DbConnection _dbConnection { get; set; } = default(MySqlConnection);
-    private string _dbConnectionString = "";
     private readonly string _dbHost;
-    private readonly string _dbPort;
     private readonly string _dbName;
-    private readonly string _dbUsername;
     private readonly string _dbPassword;
+    private readonly string _dbPort;
+    private readonly string _dbUsername;
+    private string _dbConnectionString = "";
+
+    public MySqlDatabaseConnector(string host, string database, string username, string password)
+    {
+        var hostParts = host.Split(new[] { ':' }, 2);
+        _dbHost = hostParts[0];
+        _dbPort = hostParts.Length == 2 ? hostParts[1] : "3306";
+        _dbName = database;
+        _dbUsername = username;
+        _dbPassword = password;
+        Initialize();
+    }
+
+    private DbConnection _dbConnection { get; set; } = default(MySqlConnection);
 
     public DbConnection DbConnection()
     {
@@ -28,29 +40,6 @@ public class MySqlDatabaseConnector : IDatabaseConnector
     }
 
     public bool IsConnected => _dbConnection.State == ConnectionState.Open;
-
-    public MySqlDatabaseConnector(string host, string database, string username, string password)
-    {
-        var hostParts = host.Split(new char[] { ':' }, 2);
-        _dbHost = hostParts[0];
-        _dbPort = hostParts.Length == 2 ? hostParts[1] : "3306";
-        _dbName = database;
-        _dbUsername = username;
-        _dbPassword = password;
-        Initialize();
-    }
-
-    private void Initialize()
-    {
-        BuildSqlConnectionString();
-        _dbConnection = new MySqlConnection(_dbConnectionString);
-    }
-
-    private void BuildSqlConnectionString()
-    {
-        _dbConnectionString =
-            $"server={_dbHost};user={_dbUsername};database={_dbName};port={_dbPort};password={_dbPassword}";
-    }
 
     public void Connect()
     {
@@ -75,6 +64,18 @@ public class MySqlDatabaseConnector : IDatabaseConnector
     public void Dispose()
     {
         Dispose(true);
+    }
+
+    private void Initialize()
+    {
+        BuildSqlConnectionString();
+        _dbConnection = new MySqlConnection(_dbConnectionString);
+    }
+
+    private void BuildSqlConnectionString()
+    {
+        _dbConnectionString =
+            $"server={_dbHost};user={_dbUsername};database={_dbName};port={_dbPort};password={_dbPassword}";
     }
 
     private void Dispose(bool itIsSafeToFreeManagedObjects)

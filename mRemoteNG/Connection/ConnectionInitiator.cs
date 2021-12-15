@@ -1,25 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.Panels;
 using mRemoteNG.UI.Tabs;
 using mRemoteNG.UI.Window;
 using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.Resources.Language;
-
+using ProtocolType = mRemoteNG.Connection.Protocol.ProtocolType;
 
 namespace mRemoteNG.Connection;
 
 public class ConnectionInitiator : IConnectionInitiator
 {
-    private readonly PanelAdder _panelAdder = new();
     private readonly List<string> _activeConnections = new();
+    private readonly PanelAdder _panelAdder = new();
 
     public IEnumerable<string> ActiveConnections => _activeConnections;
 
@@ -103,9 +107,9 @@ public class ConnectionInitiator : IConnectionInitiator
                 Runtime.MessageCollector.AddMessage(MessageClass.DebugMsg,
                     $"SSH Tunnel connection '{connectionInfoOriginal.SSHTunnelConnectionName}' configured for '{connectionInfoOriginal.Name}' found. Finding free local port for use as local tunnel port ...");
                 // determine a free local port to use as local tunnel port
-                var l = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+                var l = new TcpListener(IPAddress.Loopback, 0);
                 l.Start();
-                var localSshTunnelPort = ((System.Net.IPEndPoint)l.LocalEndpoint).Port;
+                var localSshTunnelPort = ((IPEndPoint)l.LocalEndpoint).Port;
                 l.Stop();
                 Runtime.MessageCollector.AddMessage(MessageClass.DebugMsg,
                     $"{localSshTunnelPort} will be used as local tunnel port. Establishing SSH connection to '{connectionInfoSshTunnel.Hostname}' with additional tunnel options for target connection ...");
@@ -160,9 +164,9 @@ public class ConnectionInitiator : IConnectionInitiator
                     "Putty started for SSH connection for tunnel. Waiting for local tunnel port to become available ...");
 
                 // wait until SSH tunnel connection is ready, by checking if local port can be connected to, but max 60 sec.
-                var testsock = new System.Net.Sockets.Socket(System.Net.Sockets.SocketType.Stream,
+                var testsock = new Socket(SocketType.Stream,
                     System.Net.Sockets.ProtocolType.Tcp);
-                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                var stopwatch = Stopwatch.StartNew();
                 while (stopwatch.ElapsedMilliseconds < 60000)
                 {
                     // confirm that SSH connection is still active
@@ -181,13 +185,13 @@ public class ConnectionInitiator : IConnectionInitiator
 
                     try
                     {
-                        testsock.Connect(System.Net.IPAddress.Loopback, localSshTunnelPort);
+                        testsock.Connect(IPAddress.Loopback, localSshTunnelPort);
                         testsock.Close();
                         break;
                     }
                     catch
                     {
-                        await System.Threading.Tasks.Task.Delay(1000);
+                        await Task.Delay(1000);
                     }
                 }
 

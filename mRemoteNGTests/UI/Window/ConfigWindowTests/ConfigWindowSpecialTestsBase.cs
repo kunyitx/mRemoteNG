@@ -8,11 +8,11 @@ namespace mRemoteNGTests.UI.Window.ConfigWindowTests;
 
 public abstract class ConfigWindowSpecialTestsBase
 {
-    protected abstract ProtocolType Protocol { get; }
-    protected bool TestAgainstContainerInfo { get; set; } = false;
     protected ConfigWindow ConfigWindow;
     protected ConnectionInfo ConnectionInfo;
     protected List<string> ExpectedPropertyList;
+    protected abstract ProtocolType Protocol { get; }
+    protected bool TestAgainstContainerInfo { get; set; } = false;
 
     [SetUp]
     public virtual void Setup()

@@ -6,7 +6,6 @@ using mRemoteNG.UI.Controls.ConnectionTree;
 using NSubstitute;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class ExpandNodeClickHandlerTests

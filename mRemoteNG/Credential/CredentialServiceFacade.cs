@@ -7,11 +7,9 @@ namespace mRemoteNG.Credential;
 
 public class CredentialServiceFacade
 {
-    private readonly ICredentialRepositoryList _repositoryList;
     private readonly ILoader<IEnumerable<ICredentialRepository>> _loader;
+    private readonly ICredentialRepositoryList _repositoryList;
     private readonly ISaver<IEnumerable<ICredentialRepository>> _saver;
-
-    public IEnumerable<ICredentialRepository> CredentialRepositories => _repositoryList;
 
     public CredentialServiceFacade(ICredentialRepositoryList repositoryList,
         ILoader<IEnumerable<ICredentialRepository>> loader,
@@ -29,6 +27,8 @@ public class CredentialServiceFacade
         _saver = saver;
         SetupEventHandlers();
     }
+
+    public IEnumerable<ICredentialRepository> CredentialRepositories => _repositoryList;
 
     public void SaveRepositoryList()
     {

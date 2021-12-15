@@ -3,15 +3,42 @@ using System.ComponentModel;
 using System.Linq;
 using WeifenLuo.WinFormsUI.Docking;
 
-
 namespace mRemoteNG.Themes;
 
 /// <inheritdoc />
 /// <summary>
-/// Container class for all the color and style elements to define a theme
+///     Container class for all the color and style elements to define a theme
 /// </summary>
 public class ThemeInfo : ICloneable
 {
+    #region Public Methods
+
+    public object Clone()
+    {
+        var extPalette = new ExtendedColorPalette
+        {
+            ExtColorPalette =
+                _extendedPalette.ExtColorPalette.ToDictionary(entry => entry.Key, entry => entry.Value),
+            DefaultColorPalette = _extendedPalette.DefaultColorPalette
+        };
+        var clonedObj = new ThemeInfo(_name, _theme, _URI, _version, extPalette)
+        {
+            IsExtendable = IsExtendable,
+            IsThemeBase = IsThemeBase
+        };
+
+        return clonedObj;
+    }
+
+    #endregion
+
+    //Custom extenders for mremote customizations in DPS
+    private void setCustomExtenders()
+    {
+        _theme.Extender.DockPaneStripFactory = new MremoteDockPaneStripFactory();
+        _theme.Extender.FloatWindowFactory = new MremoteFloatWindowFactory();
+    }
+
     #region Private Variables
 
     private string _name;
@@ -57,27 +84,6 @@ public class ThemeInfo : ICloneable
         IsExtendable = false;
         IsExtended = false;
         setCustomExtenders();
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    public object Clone()
-    {
-        var extPalette = new ExtendedColorPalette
-        {
-            ExtColorPalette =
-                _extendedPalette.ExtColorPalette.ToDictionary(entry => entry.Key, entry => entry.Value),
-            DefaultColorPalette = _extendedPalette.DefaultColorPalette
-        };
-        var clonedObj = new ThemeInfo(_name, _theme, _URI, _version, extPalette)
-        {
-            IsExtendable = IsExtendable,
-            IsThemeBase = IsThemeBase
-        };
-
-        return clonedObj;
     }
 
     #endregion
@@ -146,14 +152,7 @@ public class ThemeInfo : ICloneable
 
     public bool IsExtendable { get; set; }
 
-    public bool IsExtended { get; private set; }
+    public bool IsExtended { get; }
 
     #endregion
-
-    //Custom extenders for mremote customizations in DPS
-    private void setCustomExtenders()
-    {
-        _theme.Extender.DockPaneStripFactory = new MremoteDockPaneStripFactory();
-        _theme.Extender.FloatWindowFactory = new MremoteFloatWindowFactory();
-    }
 }

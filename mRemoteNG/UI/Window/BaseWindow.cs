@@ -1,3 +1,4 @@
+using System.Drawing;
 using mRemoteNG.Themes;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -13,14 +14,6 @@ public class BaseWindow : DockContent
     //private WindowType _WindowType;
     //private DockContent _DockPnl;
     private ThemeManager _themeManager;
-
-    #endregion
-
-    #region Public Properties
-
-    protected WindowType WindowType { get; set; }
-
-    protected DockContent DockPnl { get; set; }
 
     #endregion
 
@@ -42,6 +35,27 @@ public class BaseWindow : DockContent
         ForeColor = _themeManager.ActiveTheme.ExtendedPalette.getColor("Dialog_Foreground");
     }
 
+    private void InitializeComponent()
+    {
+        SuspendLayout();
+        // 
+        // BaseWindow
+        // 
+        ClientSize = new Size(284, 261);
+        Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
+        Name = "BaseWindow";
+        ResumeLayout(false);
+    }
+
+    #region Public Properties
+
+    protected WindowType WindowType { get; set; }
+
+    protected DockContent DockPnl { get; set; }
+
+    #endregion
+
 
     #region Private Methods
 
@@ -60,17 +74,4 @@ public class BaseWindow : DockContent
     */
 
     #endregion
-
-    private void InitializeComponent()
-    {
-        SuspendLayout();
-        // 
-        // BaseWindow
-        // 
-        ClientSize = new System.Drawing.Size(284, 261);
-        Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
-        Name = "BaseWindow";
-        ResumeLayout(false);
-    }
 }

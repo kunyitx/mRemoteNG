@@ -1,14 +1,42 @@
-﻿using mRemoteNG.Themes;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.Windows.Forms;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.TaskDialog;
 
 public sealed partial class CommandButton : Button
 {
+    //--------------------------------------------------------------------------------
+
+    #region CONSTRUCTOR
+
+    //--------------------------------------------------------------------------------
+    public CommandButton()
+    {
+        InitializeComponent();
+        Font = new Font("Segoe UI", 11.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+        SmallFont = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+        _themeManager = ThemeManager.getInstance();
+    }
+
+    #endregion
+
+    //--------------------------------------------------------------------------------
+
+    #region PUBLIC ROUTINES
+
+    //--------------------------------------------------------------------------------
+    public int GetBestHeight()
+    {
+        return TOP_MARGIN * 2 + (int)GetSmallTextSizeF().Height + (int)GetLargeTextSizeF().Height;
+    }
+
+    #endregion
+
     //--------------------------------------------------------------------------------
 
     #region PRIVATE MEMBERS
@@ -51,7 +79,7 @@ public sealed partial class CommandButton : Button
     }
 
     // SmallFont is the font used for secondary lines
-    private Font SmallFont { get; set; }
+    private Font SmallFont { get; }
 
     // AutoHeight determines whether the button automatically resizes itself to fit the Text
     private bool m_autoHeight = true;
@@ -67,33 +95,6 @@ public sealed partial class CommandButton : Button
             m_autoHeight = value;
             if (m_autoHeight) Invalidate();
         }
-    }
-
-    #endregion
-
-    //--------------------------------------------------------------------------------
-
-    #region CONSTRUCTOR
-
-    //--------------------------------------------------------------------------------
-    public CommandButton()
-    {
-        InitializeComponent();
-        Font = new Font("Segoe UI", 11.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-        SmallFont = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-        _themeManager = ThemeManager.getInstance();
-    }
-
-    #endregion
-
-    //--------------------------------------------------------------------------------
-
-    #region PUBLIC ROUTINES
-
-    //--------------------------------------------------------------------------------
-    public int GetBestHeight()
-    {
-        return TOP_MARGIN * 2 + (int)GetSmallTextSizeF().Height + (int)GetLargeTextSizeF().Height;
     }
 
     #endregion
@@ -166,7 +167,7 @@ public sealed partial class CommandButton : Button
         }
 
         e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-        e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+        e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
         const LinearGradientMode mode = LinearGradientMode.Vertical;
 

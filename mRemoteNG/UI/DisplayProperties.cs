@@ -11,11 +11,9 @@ public class DisplayProperties
 {
     private readonly IGraphicsProvider _graphicsProvider;
 
-    public SizeF ResolutionScalingFactor => _graphicsProvider.GetResolutionScalingFactor();
-
     /// <summary>
-    /// Creates a new <see cref="DisplayProperties"/> instance with the default
-    /// <see cref="IGraphicsProvider"/> of type <see cref="GdiPlusGraphicsProvider"/>
+    ///     Creates a new <see cref="DisplayProperties" /> instance with the default
+    ///     <see cref="IGraphicsProvider" /> of type <see cref="GdiPlusGraphicsProvider" />
     /// </summary>
     public DisplayProperties()
         : this(new GdiPlusGraphicsProvider())
@@ -23,8 +21,8 @@ public class DisplayProperties
     }
 
     /// <summary>
-    /// Creates a new <see cref="DisplayProperties"/> instance with the given
-    /// <see cref="IGraphicsProvider"/>.
+    ///     Creates a new <see cref="DisplayProperties" /> instance with the given
+    ///     <see cref="IGraphicsProvider" />.
     /// </summary>
     /// <param name="graphicsProvider"></param>
     public DisplayProperties(IGraphicsProvider graphicsProvider)
@@ -32,8 +30,10 @@ public class DisplayProperties
         _graphicsProvider = graphicsProvider.ThrowIfNull(nameof(graphicsProvider));
     }
 
+    public SizeF ResolutionScalingFactor => _graphicsProvider.GetResolutionScalingFactor();
+
     /// <summary>
-    /// Scale the given nominal width value by the <see cref="ResolutionScalingFactor"/>
+    ///     Scale the given nominal width value by the <see cref="ResolutionScalingFactor" />
     /// </summary>
     /// <param name="width"></param>
     public int ScaleWidth(float width)
@@ -42,7 +42,7 @@ public class DisplayProperties
     }
 
     /// <summary>
-    /// Scale the given nominal height value by the <see cref="ResolutionScalingFactor"/>
+    ///     Scale the given nominal height value by the <see cref="ResolutionScalingFactor" />
     /// </summary>
     /// <param name="height"></param>
     public int ScaleHeight(float height)
@@ -51,8 +51,8 @@ public class DisplayProperties
     }
 
     /// <summary>
-    /// Scales the height and width of the given <see cref="Size"/> struct
-    /// by the <see cref="ResolutionScalingFactor"/>
+    ///     Scales the height and width of the given <see cref="Size" /> struct
+    ///     by the <see cref="ResolutionScalingFactor" />
     /// </summary>
     /// <param name="size"></param>
     /// <returns></returns>
@@ -62,12 +62,12 @@ public class DisplayProperties
     }
 
     /// <summary>
-    /// Scales the given image by <see cref="ResolutionScalingFactor"/>
+    ///     Scales the given image by <see cref="ResolutionScalingFactor" />
     /// </summary>
     /// <param name="image">The image to resize.</param>
     /// <returns>The resized image.</returns>
     /// <remarks>
-    /// Code from https://stackoverflow.com/questions/1922040/how-to-resize-an-image-c-sharp
+    ///     Code from https://stackoverflow.com/questions/1922040/how-to-resize-an-image-c-sharp
     /// </remarks>
     public Bitmap ScaleImage(Image image)
     {
@@ -104,7 +104,7 @@ public class DisplayProperties
     }
 
     /// <summary>
-    /// Scale the given nominal height value by the <see cref="ResolutionScalingFactor"/>
+    ///     Scale the given nominal height value by the <see cref="ResolutionScalingFactor" />
     /// </summary>
     /// <param name="width"></param>
     private int CalculateScaledValue(float value, float scalingValue)

@@ -82,13 +82,13 @@ public class SqlDatabaseMetaDataRetriever
             cmd = databaseConnector.DbCommand(
                 "INSERT INTO tblRoot (Name, Export, Protected, ConfVersion) VALUES('" +
                 MiscTools.PrepareValueForDB(rootTreeNode.Name) + "', 0, '" + strProtected + "','" +
-                ConnectionsFileInfo.ConnectionFileVersion.ToString() + "')");
+                ConnectionsFileInfo.ConnectionFileVersion + "')");
             cmd.ExecuteNonQuery();
         }
         else
         {
             Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
-                $"UpdateRootNodeTable: rootTreeNode was null. Could not insert!");
+                "UpdateRootNodeTable: rootTreeNode was null. Could not insert!");
         }
     }
 }

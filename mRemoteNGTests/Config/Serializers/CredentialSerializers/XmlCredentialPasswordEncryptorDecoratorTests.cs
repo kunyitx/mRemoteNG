@@ -14,11 +14,11 @@ namespace mRemoteNGTests.Config.Serializers.CredentialSerializers;
 
 public class XmlCredentialPasswordEncryptorDecoratorTests
 {
-    private XmlCredentialPasswordEncryptorDecorator _sut;
     private const BlockCipherEngines CipherEngine = BlockCipherEngines.Twofish;
     private const BlockCipherModes CipherMode = BlockCipherModes.EAX;
     private const int KdfIterations = 2000;
-    private SecureString _key = "myKey1".ConvertToSecureString();
+    private readonly SecureString _key = "myKey1".ConvertToSecureString();
+    private XmlCredentialPasswordEncryptorDecorator _sut;
 
     [SetUp]
     public void Setup()

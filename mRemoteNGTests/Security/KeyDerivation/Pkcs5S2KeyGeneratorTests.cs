@@ -2,7 +2,6 @@
 using mRemoteNG.Security.KeyDerivation;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Security.KeyDerivation;
 
 public class Pkcs5S2KeyGeneratorTests

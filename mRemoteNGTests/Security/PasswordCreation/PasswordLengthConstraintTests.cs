@@ -3,7 +3,6 @@ using mRemoteNG.Security;
 using mRemoteNG.Security.PasswordCreation;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Security.PasswordCreation;
 
 public class PasswordLengthConstraintTests

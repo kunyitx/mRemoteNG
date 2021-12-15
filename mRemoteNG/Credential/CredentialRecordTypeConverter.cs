@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using mRemoteNG.App;
 
-
 namespace mRemoteNG.Credential;
 
 public class CredentialRecordTypeConverter : TypeConverter

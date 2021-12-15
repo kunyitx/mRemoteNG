@@ -1,3 +1,4 @@
+using mRemoteNG.App.Info;
 using mRemoteNG.Properties;
 using mRemoteNG.Tools.Cmdline;
 
@@ -9,7 +10,7 @@ public class PuttyProcessController : ProcessController
     {
         var filename = Settings.Default.UseCustomPuttyPath
             ? Settings.Default.CustomPuttyPath
-            : App.Info.GeneralAppInfo.PuttyPath;
+            : GeneralAppInfo.PuttyPath;
         return Start(filename, arguments);
     }
 }

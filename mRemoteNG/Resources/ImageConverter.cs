@@ -5,7 +5,7 @@ namespace mRemoteNG.Resources;
 internal class ImageConverter
 {
     /// <summary>
-    /// Draws an Icon from a Bitmap
+    ///     Draws an Icon from a Bitmap
     /// </summary>
     /// <param name="SVGString"></param>
     /// <returns></returns>

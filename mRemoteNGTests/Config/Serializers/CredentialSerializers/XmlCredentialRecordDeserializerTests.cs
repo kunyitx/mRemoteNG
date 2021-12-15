@@ -8,12 +8,12 @@ namespace mRemoteNGTests.Config.Serializers.CredentialSerializers;
 
 public class XmlCredentialRecordDeserializerTests
 {
-    private XmlCredentialRecordDeserializer _deserializer;
-    private readonly Guid _id = Guid.NewGuid();
     private const string Title = "sometitle";
     private const string Username = "myusername";
     private const string Domain = "mydomain";
     private const string PlaintextPassword = "mypassword";
+    private readonly Guid _id = Guid.NewGuid();
+    private XmlCredentialRecordDeserializer _deserializer;
 
 
     [SetUp]

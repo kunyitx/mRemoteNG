@@ -1,4 +1,6 @@
-﻿using mRemoteNG.Properties;
+﻿using System;
+using mRemoteNG.Properties;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
@@ -9,7 +11,7 @@ public sealed partial class TabsPanelsPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Tab_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.Tab_16x);
     }
 
     public override string PageName
@@ -72,7 +74,7 @@ public sealed partial class TabsPanelsPage
         txtBoxPanelName.Enabled = chkCreateEmptyPanelOnStart.Checked;
     }
 
-    private void chkCreateEmptyPanelOnStart_CheckedChanged(object sender, System.EventArgs e)
+    private void chkCreateEmptyPanelOnStart_CheckedChanged(object sender, EventArgs e)
     {
         UpdatePanelNameTextBox();
     }

@@ -8,8 +8,6 @@ namespace mRemoteNG.UI.Controls;
 //warning: THe DropDown style rendering is glitchy in this control, only use DropDownList or correct the rendering method
 internal class MrngComboBox : ComboBox
 {
-    private ThemeManager _themeManager;
-
     public enum MouseState
     {
         HOVER,
@@ -17,12 +15,14 @@ internal class MrngComboBox : ComboBox
         OUT
     }
 
-    public MouseState _mice { get; set; }
+    private ThemeManager _themeManager;
 
     public MrngComboBox()
     {
         ThemeManager.getInstance().ThemeChanged += OnCreateControl;
     }
+
+    public MouseState _mice { get; set; }
 
     protected override void OnCreateControl()
     {
@@ -167,7 +167,7 @@ internal class MrngComboBox : ComboBox
         // NGComboBox
         // 
         Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
-            GraphicsUnit.Point, (byte)0);
+            GraphicsUnit.Point, 0);
         ResumeLayout(false);
     }
 }

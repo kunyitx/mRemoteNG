@@ -14,11 +14,11 @@ namespace mRemoteNGTests.Config.Serializers.ConnectionSerializers.Csv;
 
 public class CsvConnectionsSerializerMremotengFormatTests
 {
-    private ICredentialRepositoryList _credentialRepositoryList;
     private const string ConnectionName = "myconnection";
     private const string Username = "myuser";
     private const string Domain = "mydomain";
     private const string Password = "mypass123";
+    private ICredentialRepositoryList _credentialRepositoryList;
 
     [OneTimeSetUp]
     public void OneTimeSetup()

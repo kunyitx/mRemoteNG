@@ -10,7 +10,6 @@ using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Messages;
 using mRemoteNG.Resources.Language;
 
-
 namespace mRemoteNG.Tools;
 
 public class ScanHost
@@ -79,8 +78,7 @@ public class ScanHost
         {
             if (string.IsNullOrEmpty(HostName))
                 return HostIp;
-            else
-                return HostName;
+            return HostName;
         }
     }
 

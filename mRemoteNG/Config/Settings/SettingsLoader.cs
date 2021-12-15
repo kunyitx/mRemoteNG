@@ -1,30 +1,27 @@
 using System;
 using System.Drawing;
-using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.App;
-using System.Threading;
 using System.Globalization;
-using mRemoteNG.Connection.Protocol;
+using System.Threading;
+using System.Windows.Forms;
+using mRemoteNG.App;
 using mRemoteNG.App.Info;
+using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Messages;
 using mRemoteNG.Tools;
 using mRemoteNG.UI.Controls;
 using mRemoteNG.UI.Forms;
-
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.Config.Settings;
 
 public class SettingsLoader
 {
     private readonly ExternalAppsLoader _externalAppsLoader;
-    private readonly MessageCollector _messageCollector;
-    private readonly MenuStrip _mainMenu;
-    private readonly QuickConnectToolStrip _quickConnectToolStrip;
     private readonly ExternalToolsToolStrip _externalToolsToolStrip;
+    private readonly MenuStrip _mainMenu;
+    private readonly MessageCollector _messageCollector;
     private readonly MultiSshToolStrip _multiSshToolStrip;
-
-    private FrmMain MainForm { get; }
+    private readonly QuickConnectToolStrip _quickConnectToolStrip;
 
 
     public SettingsLoader(FrmMain mainForm,
@@ -55,6 +52,8 @@ public class SettingsLoader
         _mainMenu = mainMenu;
         _externalAppsLoader = new ExternalAppsLoader(MainForm, messageCollector, _externalToolsToolStrip);
     }
+
+    private FrmMain MainForm { get; }
 
     #region Public Methods
 
@@ -211,9 +210,9 @@ public class SettingsLoader
     }
 
     /// <summary>
-    /// This prevents odd positioning issues due to toolbar load order.
-    /// Since all toolbars start in this temp panel, no toolbar load
-    /// can be blocked by pre-existing toolbars.
+    ///     This prevents odd positioning issues due to toolbar load order.
+    ///     Since all toolbars start in this temp panel, no toolbar load
+    ///     can be blocked by pre-existing toolbars.
     /// </summary>
     private void ResetAllToolbarLocations()
     {

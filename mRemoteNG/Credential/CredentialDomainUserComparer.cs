@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-
 namespace mRemoteNG.Credential;
 
 public class CredentialDomainUserComparer : IComparer<ICredentialRecord>, IEqualityComparer<ICredentialRecord>

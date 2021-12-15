@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Credential;
@@ -8,18 +9,18 @@ namespace mRemoteNG.UI.Menu;
 
 public class ToolsMenu : ToolStripMenuItem
 {
-    private ToolStripMenuItem _mMenToolsSshTransfer;
     private ToolStripMenuItem _mMenToolsExternalApps;
     private ToolStripMenuItem _mMenToolsPortScan;
+    private ToolStripMenuItem _mMenToolsSshTransfer;
     private ToolStripMenuItem _mMenToolsUvncsc;
-
-    public Form MainForm { get; set; }
-    public ICredentialRepositoryList CredentialProviderCatalog { get; set; }
 
     public ToolsMenu()
     {
         Initialize();
     }
+
+    public Form MainForm { get; set; }
+    public ICredentialRepositoryList CredentialProviderCatalog { get; set; }
 
     private void Initialize()
     {
@@ -38,21 +39,21 @@ public class ToolsMenu : ToolStripMenuItem
             _mMenToolsPortScan
         });
         Name = "mMenTools";
-        Size = new System.Drawing.Size(48, 20);
+        Size = new Size(48, 20);
         Text = Language._Tools;
         // 
         // mMenToolsSSHTransfer
         // 
         _mMenToolsSshTransfer.Image = Properties.Resources.SyncArrow_16x;
         _mMenToolsSshTransfer.Name = "mMenToolsSSHTransfer";
-        _mMenToolsSshTransfer.Size = new System.Drawing.Size(184, 22);
+        _mMenToolsSshTransfer.Size = new Size(184, 22);
         _mMenToolsSshTransfer.Text = Language.SshFileTransfer;
         _mMenToolsSshTransfer.Click += mMenToolsSSHTransfer_Click;
         // 
         // mMenToolsUVNCSC
         // 
         _mMenToolsUvncsc.Name = "mMenToolsUVNCSC";
-        _mMenToolsUvncsc.Size = new System.Drawing.Size(184, 22);
+        _mMenToolsUvncsc.Size = new Size(184, 22);
         _mMenToolsUvncsc.Text = Language.UltraVNCSingleClick;
         _mMenToolsUvncsc.Visible = false;
         _mMenToolsUvncsc.Click += mMenToolsUVNCSC_Click;
@@ -61,7 +62,7 @@ public class ToolsMenu : ToolStripMenuItem
         // 
         _mMenToolsExternalApps.Image = Properties.Resources.Console_16x;
         _mMenToolsExternalApps.Name = "mMenToolsExternalApps";
-        _mMenToolsExternalApps.Size = new System.Drawing.Size(184, 22);
+        _mMenToolsExternalApps.Size = new Size(184, 22);
         _mMenToolsExternalApps.Text = Language.ExternalTool;
         _mMenToolsExternalApps.Click += mMenToolsExternalApps_Click;
         // 
@@ -69,7 +70,7 @@ public class ToolsMenu : ToolStripMenuItem
         // 
         _mMenToolsPortScan.Image = Properties.Resources.SearchAndApps_16x;
         _mMenToolsPortScan.Name = "mMenToolsPortScan";
-        _mMenToolsPortScan.Size = new System.Drawing.Size(184, 22);
+        _mMenToolsPortScan.Size = new Size(184, 22);
         _mMenToolsPortScan.Text = Language.PortScan;
         _mMenToolsPortScan.Click += mMenToolsPortScan_Click;
     }

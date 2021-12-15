@@ -1,26 +1,26 @@
 ﻿using System;
-using System.Drawing;
 using System.Collections;
+using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
-using System.Windows.Forms;
 using System.Text;
-using WeifenLuo.WinFormsUI.Docking;
+using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
-using mRemoteNG.UI.Forms;
-using mRemoteNG.Themes;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
+using mRemoteNG.UI.Forms;
+using WeifenLuo.WinFormsUI.Docking;
+using ImageConverter = mRemoteNG.Resources.ImageConverter;
 using Message = mRemoteNG.Messages.Message;
 
 namespace mRemoteNG.UI.Window;
 
 public partial class ErrorAndInfoWindow : BaseWindow
 {
-    private ControlLayout _layout = ControlLayout.Vertical;
-    private readonly ThemeManager _themeManager;
     private readonly DisplayProperties _display;
-
-    public DockContent PreviousActiveForm { get; set; }
+    private readonly ThemeManager _themeManager;
+    private ControlLayout _layout = ControlLayout.Vertical;
 
     public ErrorAndInfoWindow() : this(new DockContent())
     {
@@ -32,7 +32,7 @@ public partial class ErrorAndInfoWindow : BaseWindow
         DockPnl = panel;
         _display = new DisplayProperties();
         InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.StatusInformation_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.StatusInformation_16x);
         lblMsgDate.Width = _display.ScaleWidth(lblMsgDate.Width);
         _themeManager = ThemeManager.getInstance();
         ApplyTheme();
@@ -40,6 +40,14 @@ public partial class ErrorAndInfoWindow : BaseWindow
         LayoutVertical();
         FillImageList();
         ApplyLanguage();
+    }
+
+    public DockContent PreviousActiveForm { get; set; }
+
+    private enum ControlLayout
+    {
+        Vertical = 0,
+        Horizontal = 1
     }
 
     #region Form Stuff
@@ -292,7 +300,7 @@ public partial class ErrorAndInfoWindow : BaseWindow
         }
     }
 
-    private void cMenMC_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+    private void cMenMC_Opening(object sender, CancelEventArgs e)
     {
         if (lvErrorCollector.Items.Count > 0)
         {
@@ -399,10 +407,4 @@ public partial class ErrorAndInfoWindow : BaseWindow
     }
 
     #endregion
-
-    private enum ControlLayout
-    {
-        Vertical = 0,
-        Horizontal = 1
-    }
 }

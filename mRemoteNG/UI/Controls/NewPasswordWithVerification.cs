@@ -9,8 +9,15 @@ namespace mRemoteNG.UI.Controls;
 
 public partial class NewPasswordWithVerification : UserControl
 {
-    private bool _useSystemPasswordChar;
     private char _passwordChar;
+    private bool _useSystemPasswordChar;
+
+    public NewPasswordWithVerification()
+    {
+        InitializeComponent();
+        secureTextBox1.TextChanged += OnSecureTextBoxTextChanged;
+        secureTextBox2.TextChanged += OnSecureTextBoxTextChanged;
+    }
 
 
     [Browsable(false)] public SecureString SecureString { get; private set; }
@@ -39,13 +46,6 @@ public partial class NewPasswordWithVerification : UserControl
             secureTextBox1.UseSystemPasswordChar = _useSystemPasswordChar;
             secureTextBox2.UseSystemPasswordChar = _useSystemPasswordChar;
         }
-    }
-
-    public NewPasswordWithVerification()
-    {
-        InitializeComponent();
-        secureTextBox1.TextChanged += OnSecureTextBoxTextChanged;
-        secureTextBox2.TextChanged += OnSecureTextBoxTextChanged;
     }
 
     public void SetPassword(SecureString password)

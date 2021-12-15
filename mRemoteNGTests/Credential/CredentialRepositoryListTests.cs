@@ -6,7 +6,6 @@ using mRemoteNG.Credential.Repositories;
 using NSubstitute;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Credential;
 
 public class CredentialRepositoryListTests

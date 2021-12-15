@@ -1,6 +1,5 @@
 ﻿using mRemoteNG.UI.Controls.ConnectionTree;
 
-
 namespace mRemoteNG.Tree;
 
 public class RootNodeExpander : IConnectionTreeDelegate

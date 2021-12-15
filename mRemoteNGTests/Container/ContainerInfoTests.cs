@@ -5,15 +5,14 @@ using mRemoteNG.Container;
 using mRemoteNGTests.TestHelpers;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Container;
 
 public class ContainerInfoTests
 {
-    private ContainerInfo _containerInfo;
     private ConnectionInfo _con1;
     private ConnectionInfo _con2;
     private ConnectionInfo _con3;
+    private ContainerInfo _containerInfo;
 
     [SetUp]
     public void Setup()
@@ -280,8 +279,8 @@ public class ContainerInfoTests
         _containerInfo.AddChild(_con2);
         _containerInfo.AddChild(_con3);
         var clone = _containerInfo.Clone() as ContainerInfo;
-        var clonedChildNames = clone?.Children.Select((node) => node.Name);
-        var originalChildNames = _containerInfo?.Children.Select((node) => node.Name);
+        var clonedChildNames = clone?.Children.Select(node => node.Name);
+        var originalChildNames = _containerInfo?.Children.Select(node => node.Name);
         Assert.That(clonedChildNames, Is.EquivalentTo(originalChildNames));
     }
 

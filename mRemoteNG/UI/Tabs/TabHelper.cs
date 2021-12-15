@@ -1,6 +1,7 @@
-﻿using mRemoteNG.App;
+﻿using System;
+using mRemoteNG.App;
+using mRemoteNG.Messages;
 using mRemoteNG.UI.Window;
-using System;
 
 namespace mRemoteNG.UI.Tabs;
 
@@ -8,13 +9,15 @@ internal class TabHelper
 {
     private static readonly Lazy<TabHelper> lazyHelper = new(() => new TabHelper());
 
-    public static TabHelper Instance => lazyHelper.Value;
+    private ConnectionWindow currentPanel;
+
+    private ConnectionTab currentTab;
 
     private TabHelper()
     {
     }
 
-    private ConnectionTab currentTab;
+    public static TabHelper Instance => lazyHelper.Value;
 
     public ConnectionTab CurrentTab
     {
@@ -23,8 +26,19 @@ internal class TabHelper
         {
             currentTab = value;
             findCurrentPanel();
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.DebugMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.DebugMsg,
                 "Tab got focused: " + currentTab.TabText);
+        }
+    }
+
+    public ConnectionWindow CurrentPanel
+    {
+        get => currentPanel;
+        set
+        {
+            currentPanel = value;
+            Runtime.MessageCollector.AddMessage(MessageClass.DebugMsg,
+                "Panel got focused: " + currentPanel.TabText);
         }
     }
 
@@ -35,18 +49,5 @@ internal class TabHelper
 
         if (currentForm != null)
             CurrentPanel = (ConnectionWindow)currentForm;
-    }
-
-    private ConnectionWindow currentPanel;
-
-    public ConnectionWindow CurrentPanel
-    {
-        get => currentPanel;
-        set
-        {
-            currentPanel = value;
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.DebugMsg,
-                "Panel got focused: " + currentPanel.TabText);
-        }
     }
 }

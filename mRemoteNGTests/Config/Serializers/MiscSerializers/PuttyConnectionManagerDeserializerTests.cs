@@ -10,8 +10,6 @@ namespace mRemoteNGTests.Config.Serializers.MiscSerializers;
 
 public class PuttyConnectionManagerDeserializerTests
 {
-    private PuttyConnectionManagerDeserializer _deserializer;
-    private ContainerInfo _rootImportedFolder;
     private const string ExpectedRootFolderName = "test_puttyConnectionManager_database";
     private const string ExpectedConnectionDisplayName = "my ssh connection";
     private const string ExpectedConnectionHostname = "server1.mydomain.com";
@@ -21,6 +19,8 @@ public class PuttyConnectionManagerDeserializerTests
     private const string ExpectedPuttySession = "MyCustomPuttySession";
     private const string ExpectedConnectionUsername = "mysshusername";
     private const string ExpectedConnectionPassword = "password123";
+    private PuttyConnectionManagerDeserializer _deserializer;
+    private ContainerInfo _rootImportedFolder;
 
 
     [OneTimeSetUp]

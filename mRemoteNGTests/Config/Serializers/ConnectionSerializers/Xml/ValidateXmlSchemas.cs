@@ -1,24 +1,24 @@
-﻿using mRemoteNG.Connection;
-using mRemoteNG.Security;
-using mRemoteNG.Security.SymmetricEncryption;
-using mRemoteNG.Tree;
-using mRemoteNG.Tree.Root;
-using NUnit.Framework;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
+using mRemoteNG.Connection;
+using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
+using mRemoteNG.Tree;
+using mRemoteNG.Tree.Root;
+using NUnit.Framework;
 
 namespace mRemoteNGTests.Config.Serializers.ConnectionSerializers.Xml;
 
 public class ValidateXmlSchemas
 {
-    private XmlConnectionsSerializer _serializer;
     private ConnectionTreeModel _connectionTreeModel;
     private ICryptographyProvider _cryptographyProvider;
+    private XmlConnectionsSerializer _serializer;
     private XmlReaderSettings _xmlReaderSettings;
 
     [SetUp]

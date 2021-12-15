@@ -24,7 +24,7 @@ public class MessageCollectorSetup
     public static void BuildMessageWritersFromSettings(IList<IMessageWriter> messageWriterList)
     {
 #if DEBUG
-            messageWriterList.Add(BuildDebugConsoleWriter());
+        messageWriterList.Add(BuildDebugConsoleWriter());
 #endif
         messageWriterList.Add(BuildTextLogMessageWriter());
         messageWriterList.Add(BuildNotificationPanelMessageWriter());

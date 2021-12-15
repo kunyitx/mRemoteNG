@@ -1,19 +1,43 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using mRemoteNG.Config.Putty;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Connection.Protocol.Http;
 using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tools;
 using mRemoteNG.Tools.Attributes;
-using mRemoteNG.Resources.Language;
-
 
 namespace mRemoteNG.Connection;
 
 public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 {
+    protected AbstractConnectionRecord(string uniqueId)
+    {
+        ConstantID = uniqueId.ThrowIfNullOrEmpty(nameof(uniqueId));
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual TPropertyType GetPropertyValue<TPropertyType>(string propertyName, TPropertyType value)
+    {
+        return (TPropertyType)GetType().GetProperty(propertyName)?.GetValue(this, null);
+    }
+
+    protected virtual void RaisePropertyChangedEvent(object sender, PropertyChangedEventArgs args)
+    {
+        PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(args.PropertyName));
+    }
+
+    protected void SetField<T>(ref T field, T value, string propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return;
+        field = value;
+        RaisePropertyChangedEvent(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     #region Fields
 
     private string _name;
@@ -101,37 +125,37 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 
     #region Display
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Display))]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Name))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionName))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Display))]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Name))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionName))]
     public virtual string Name
     {
         get => _name;
         set => SetField(ref _name, value, "Name");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Display))]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Description))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDescription))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Display))]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Description))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionDescription))]
     public virtual string Description
     {
         get => GetPropertyValue("Description", _description);
         set => SetField(ref _description, value, "Description");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Display))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Display))]
     [TypeConverter(typeof(ConnectionIcon))]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Icon))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionIcon))]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Icon))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionIcon))]
     public virtual string Icon
     {
         get => GetPropertyValue("Icon", _icon);
         set => SetField(ref _icon, value, "Icon");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Display))]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Panel))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionPanel))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Display))]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Panel))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionPanel))]
     public virtual string Panel
     {
         get => GetPropertyValue("Panel", _panel);
@@ -142,29 +166,29 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 
     #region Connection
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.HostnameIp))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionHostnameIp))]
-    [AttributeUsedInAllProtocolsExcept()]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Connection), 2)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.HostnameIp))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionHostnameIp))]
+    [AttributeUsedInAllProtocolsExcept]
     public virtual string Hostname
     {
         get => _hostname.Trim();
         set => SetField(ref _hostname, value?.Trim(), "Hostname");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Port))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionPort))]
-    [AttributeUsedInAllProtocolsExcept()]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Connection), 2)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Port))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionPort))]
+    [AttributeUsedInAllProtocolsExcept]
     public virtual int Port
     {
         get => GetPropertyValue("Port", _port);
         set => SetField(ref _port, value, "Port");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Username))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUsername))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Connection), 2)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Username))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionUsername))]
     [AttributeUsedInAllProtocolsExcept(ProtocolType.VNC, ProtocolType.Telnet, ProtocolType.Rlogin, ProtocolType.RAW)]
     public virtual string Username
     {
@@ -172,9 +196,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _username, Settings.Default.DoNotTrimUsername ? value : value?.Trim(), "Username");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Password))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionPassword))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Connection), 2)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Password))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionPassword))]
     [PasswordPropertyText(true)]
     [AttributeUsedInAllProtocolsExcept(ProtocolType.Telnet, ProtocolType.Rlogin, ProtocolType.RAW)]
     public virtual string Password
@@ -183,9 +207,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _password, value, "Password");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Domain))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDomain))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Connection), 2)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Domain))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionDomain))]
     [AttributeUsedInProtocol(ProtocolType.RDP, ProtocolType.IntApp, ProtocolType.PowerShell)]
     public string Domain
     {
@@ -193,9 +217,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _domain, value?.Trim(), "Domain");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.VmId))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionVmId))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Connection), 2)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.VmId))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionVmId))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public string VmId
     {
@@ -203,20 +227,20 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vmId, value?.Trim(), "VmId");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.SshTunnel))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSshTunnel))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Connection), 2)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.SshTunnel))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionSshTunnel))]
     [TypeConverter(typeof(SshTunnelTypeConverter))]
-    [AttributeUsedInAllProtocolsExcept()]
+    [AttributeUsedInAllProtocolsExcept]
     public string SSHTunnelConnectionName
     {
         get => GetPropertyValue("SSHTunnelConnectionName", _sshTunnelConnectionName).Trim();
         set => SetField(ref _sshTunnelConnectionName, value?.Trim(), "SSHTunnelConnectionName");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.OpeningCommand))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionOpeningCommand))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.OpeningCommand))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionOpeningCommand))]
     [AttributeUsedInProtocol(ProtocolType.SSH1, ProtocolType.SSH2)]
     public virtual string OpeningCommand
     {
@@ -228,9 +252,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 
     #region Protocol
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Protocol))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionProtocol))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Protocol))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionProtocol))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     public virtual ProtocolType Protocol
     {
@@ -238,9 +262,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _protocol, value, "Protocol");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpVersion))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRdpVersion))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RdpVersion))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRdpVersion))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public virtual RdpVersion RdpVersion
@@ -249,9 +273,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _rdpProtocolVersion, value, nameof(RdpVersion));
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalTool))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalTool))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ExternalTool))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionExternalTool))]
     [TypeConverter(typeof(ExternalToolsTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.IntApp)]
     public string ExtApp
@@ -260,10 +284,10 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _extApp, value, "ExtApp");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.PuttySession))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionPuttySession))]
-    [TypeConverter(typeof(Config.Putty.PuttySessionsManager.SessionList))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.PuttySession))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionPuttySession))]
+    [TypeConverter(typeof(PuttySessionsManager.SessionList))]
     [AttributeUsedInProtocol(ProtocolType.SSH1, ProtocolType.SSH2, ProtocolType.Telnet,
         ProtocolType.RAW, ProtocolType.Rlogin)]
     public virtual string PuttySession
@@ -272,9 +296,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _puttySession, value, "PuttySession");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.SshOptions))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSshOptions))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.SshOptions))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionSshOptions))]
     [AttributeUsedInProtocol(ProtocolType.SSH1, ProtocolType.SSH2)]
     public virtual string SSHOptions
     {
@@ -282,9 +306,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _sshOptions, value, "SSHOptions");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseConsoleSession))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseConsoleSession))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.UseConsoleSession))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionUseConsoleSession))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool UseConsoleSession
@@ -293,9 +317,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _useConsoleSession, value, "UseConsoleSession");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.AuthenticationLevel))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionAuthenticationLevel))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.AuthenticationLevel))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionAuthenticationLevel))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public AuthenticationLevel RDPAuthenticationLevel
@@ -304,9 +328,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _rdpAuthenticationLevel, value, "RDPAuthenticationLevel");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.MinutesToIdleTimeout))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRDPMinutesToIdleTimeout))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.MinutesToIdleTimeout))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRDPMinutesToIdleTimeout))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public virtual int RDPMinutesToIdleTimeout
     {
@@ -321,9 +345,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         }
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.MinutesToIdleTimeout))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRDPAlertIdleTimeout))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.MinutesToIdleTimeout))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRDPAlertIdleTimeout))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool RDPAlertIdleTimeout
     {
@@ -331,9 +355,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _rdpAlertIdleTimeout, value, "RDPAlertIdleTimeout");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.LoadBalanceInfo))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionLoadBalanceInfo))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.LoadBalanceInfo))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionLoadBalanceInfo))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public string LoadBalanceInfo
     {
@@ -341,9 +365,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _loadBalanceInfo, value?.Trim(), "LoadBalanceInfo");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RenderingEngine))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRenderingEngine))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RenderingEngine))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRenderingEngine))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.HTTP, ProtocolType.HTTPS)]
     public HTTPBase.RenderingEngine RenderingEngine
@@ -352,9 +376,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _renderingEngine, value, "RenderingEngine");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseCredSsp))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseCredSsp))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.UseCredSsp))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionUseCredSsp))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool UseCredSsp
@@ -363,9 +387,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _useCredSsp, value, "UseCredSsp");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseVmId))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseVmId))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.UseVmId))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionUseVmId))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool UseVmId
@@ -374,9 +398,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _useVmId, value, "UseVmId");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Protocol), 3)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.UseEnhancedMode))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUseEnhancedMode))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Protocol), 3)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.UseEnhancedMode))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionUseEnhancedMode))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool UseEnhancedMode
@@ -389,9 +413,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 
     #region RD Gateway
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Gateway), 4)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpGatewayUsageMethod))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRdpGatewayUsageMethod))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Gateway), 4)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RdpGatewayUsageMethod))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRdpGatewayUsageMethod))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public RDGatewayUsageMethod RDGatewayUsageMethod
@@ -400,9 +424,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _rdGatewayUsageMethod, value, "RDGatewayUsageMethod");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Gateway), 4)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpGatewayHostname))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRDGatewayHostname))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Gateway), 4)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RdpGatewayHostname))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRDGatewayHostname))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public string RDGatewayHostname
     {
@@ -410,9 +434,10 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _rdGatewayHostname, value?.Trim(), "RDGatewayHostname");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Gateway), 4)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpGatewayUseConnectionCredentials))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRDGatewayUseConnectionCredentials))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Gateway), 4)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RdpGatewayUseConnectionCredentials))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(
+        nameof(Language.PropertyDescriptionRDGatewayUseConnectionCredentials))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public RDGatewayUseConnectionCredentials RDGatewayUseConnectionCredentials
@@ -421,9 +446,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _rdGatewayUseConnectionCredentials, value, "RDGatewayUseConnectionCredentials");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Gateway), 4)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpGatewayUsername))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRDGatewayUsername))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Gateway), 4)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RdpGatewayUsername))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRDGatewayUsername))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public string RDGatewayUsername
     {
@@ -431,9 +456,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _rdGatewayUsername, value?.Trim(), "RDGatewayUsername");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Gateway), 4)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpGatewayPassword))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRdpGatewayPassword))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Gateway), 4)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RdpGatewayPassword))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRdpGatewayPassword))]
     [PasswordPropertyText(true)]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public string RDGatewayPassword
@@ -442,9 +467,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _rdGatewayPassword, value, "RDGatewayPassword");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Gateway), 4)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RdpGatewayDomain))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRDGatewayDomain))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Gateway), 4)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RdpGatewayDomain))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRDGatewayDomain))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public string RDGatewayDomain
     {
@@ -456,9 +481,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 
     #region Appearance
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Resolution))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionResolution))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Resolution))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionResolution))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public RDPResolutions Resolution
@@ -467,9 +492,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _resolution, value, "Resolution");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.AutomaticResize))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionAutomaticResize))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.AutomaticResize))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionAutomaticResize))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool AutomaticResize
@@ -478,9 +503,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _automaticResize, value, "AutomaticResize");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Colors))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionColors))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Colors))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionColors))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public RDPColors Colors
@@ -489,9 +514,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _colors, value, "Colors");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.CacheBitmaps))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionCacheBitmaps))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.CacheBitmaps))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionCacheBitmaps))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool CacheBitmaps
@@ -500,9 +525,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _cacheBitmaps, value, "CacheBitmaps");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisplayWallpaper))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisplayWallpaper))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.DisplayWallpaper))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionDisplayWallpaper))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool DisplayWallpaper
@@ -511,9 +536,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _displayWallpaper, value, "DisplayWallpaper");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisplayThemes))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisplayThemes))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.DisplayThemes))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionDisplayThemes))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool DisplayThemes
@@ -522,9 +547,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _displayThemes, value, "DisplayThemes");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.FontSmoothing))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionEnableFontSmoothing))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.FontSmoothing))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionEnableFontSmoothing))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool EnableFontSmoothing
@@ -533,9 +558,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _enableFontSmoothing, value, "EnableFontSmoothing");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.EnableDesktopComposition))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionEnableDesktopComposition))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.EnableDesktopComposition))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionEnableDesktopComposition))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool EnableDesktopComposition
@@ -544,9 +569,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _enableDesktopComposition, value, "EnableDesktopComposition");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisableFullWindowDrag))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisableFullWindowDrag))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.DisableFullWindowDrag))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionDisableFullWindowDrag))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool DisableFullWindowDrag
@@ -555,9 +580,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _disableFullWindowDrag, value, "DisableFullWindowDrag");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisableMenuAnimations))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisableMenuAnimations))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.DisableMenuAnimations))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionDisableMenuAnimations))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool DisableMenuAnimations
@@ -566,9 +591,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _disableMenuAnimations, value, "DisableMenuAnimations");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisableCursorShadow))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisableCursorShadow))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.DisableCursorShadow))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionDisableCursorShadow))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool DisableCursorShadow
@@ -577,9 +602,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _disableCursorShadow, value, "DisableCursorShadow");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.DisableCursorShadow))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionDisableCursorShadow))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.DisableCursorShadow))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionDisableCursorShadow))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool DisableCursorBlinking
@@ -592,9 +617,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 
     #region Redirect
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RedirectKeys))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectKeys))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RedirectKeys))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRedirectKeys))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool RedirectKeys
@@ -603,9 +628,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _redirectKeys, value, "RedirectKeys");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.DiskDrives))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectDrives))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.DiskDrives))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRedirectDrives))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool RedirectDiskDrives
@@ -614,9 +639,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _redirectDiskDrives, value, "RedirectDiskDrives");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Printers))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectPrinters))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Printers))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRedirectPrinters))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool RedirectPrinters
@@ -625,9 +650,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _redirectPrinters, value, "RedirectPrinters");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Clipboard))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectClipboard))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Clipboard))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRedirectClipboard))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool RedirectClipboard
@@ -637,9 +662,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
     }
 
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Ports))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectPorts))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Ports))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRedirectPorts))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool RedirectPorts
@@ -648,9 +673,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _redirectPorts, value, "RedirectPorts");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.SmartCard))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectSmartCards))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.SmartCard))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRedirectSmartCards))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool RedirectSmartCards
@@ -659,9 +684,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _redirectSmartCards, value, "RedirectSmartCards");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Sounds))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectSounds))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Sounds))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRedirectSounds))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public RDPSounds RedirectSound
@@ -670,9 +695,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _redirectSound, value, "RedirectSound");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.SoundQuality))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSoundQuality))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.SoundQuality))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionSoundQuality))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public RDPSoundQuality SoundQuality
@@ -681,9 +706,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _soundQuality, value, "SoundQuality");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Redirect), 6)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.AudioCapture))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRedirectAudioCapture))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Redirect), 6)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.AudioCapture))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRedirectAudioCapture))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public bool RedirectAudioCapture
@@ -698,9 +723,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 
     [Browsable(false)] public string ConstantID { get; }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalToolBefore))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalToolBefore))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ExternalToolBefore))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionExternalToolBefore))]
     [TypeConverter(typeof(ExternalToolsTypeConverter))]
     public virtual string PreExtApp
     {
@@ -708,9 +733,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _preExtApp, value, "PreExtApp");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ExternalToolAfter))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionExternalToolAfter))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ExternalToolAfter))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionExternalToolAfter))]
     [TypeConverter(typeof(ExternalToolsTypeConverter))]
     public virtual string PostExtApp
     {
@@ -718,27 +743,27 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _postExtApp, value, "PostExtApp");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.MacAddress))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionMACAddress))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.MacAddress))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionMACAddress))]
     public virtual string MacAddress
     {
         get => GetPropertyValue("MacAddress", _macAddress);
         set => SetField(ref _macAddress, value, "MacAddress");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.UserField))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionUser1))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.UserField))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionUser1))]
     public virtual string UserField
     {
         get => GetPropertyValue("UserField", _userField);
         set => SetField(ref _userField, value, "UserField");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Favorite))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionFavorite))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Favorite))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionFavorite))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     public virtual bool Favorite
     {
@@ -746,9 +771,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _favorite, value, "Favorite");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.StartProgram))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionStartProgram))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.StartProgram))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionStartProgram))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public virtual string StartProgram
     {
@@ -756,9 +781,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _startProgram, value, "StartProgram");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.RDPStartProgramWorkDir))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionRDPStartProgramWorkDir))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.RDPStartProgramWorkDir))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionRDPStartProgramWorkDir))]
     [AttributeUsedInProtocol(ProtocolType.RDP)]
     public virtual string StartProgramWorkDir
     {
@@ -772,9 +797,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
 
     // TODO: it seems all these VNC properties were added and serialized but
     // never hooked up to the VNC protocol or shown to the user
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Compression))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionCompression))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Compression))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionCompression))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
@@ -784,9 +809,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncCompression, value, "VNCCompression");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Encoding))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionEncoding))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Encoding))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionEncoding))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
@@ -796,9 +821,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncEncoding, value, "VNCEncoding");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Connection), 2)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.AuthenticationMode))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionAuthenticationMode))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Connection), 2)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.AuthenticationMode))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionAuthenticationMode))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
@@ -808,9 +833,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncAuthMode, value, "VNCAuthMode");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Proxy), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ProxyType))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionVNCProxyType))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Proxy), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ProxyType))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionVNCProxyType))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
@@ -820,9 +845,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncProxyType, value, "VNCProxyType");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Proxy), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ProxyAddress))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionVNCProxyAddress))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Proxy), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ProxyAddress))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionVNCProxyAddress))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
     public string VNCProxyIP
@@ -831,9 +856,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncProxyIp, value, "VNCProxyIP");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Proxy), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ProxyPort))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionVNCProxyPort))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Proxy), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ProxyPort))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionVNCProxyPort))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
     public int VNCProxyPort
@@ -842,9 +867,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncProxyPort, value, "VNCProxyPort");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Proxy), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ProxyUsername))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionVNCProxyUsername))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Proxy), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ProxyUsername))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionVNCProxyUsername))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
     public string VNCProxyUsername
@@ -853,9 +878,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncProxyUsername, value, "VNCProxyUsername");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Proxy), 7)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ProxyPassword))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionVNCProxyPassword))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Proxy), 7)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ProxyPassword))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionVNCProxyPassword))]
     [PasswordPropertyText(true)]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
@@ -865,9 +890,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncProxyPassword, value, "VNCProxyPassword");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Colors))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionColors))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Colors))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionColors))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     [Browsable(false)]
@@ -877,9 +902,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncColors, value, "VNCColors");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.SmartSizeMode))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionSmartSizeMode))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.SmartSizeMode))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionSmartSizeMode))]
     [TypeConverter(typeof(MiscTools.EnumTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     public ProtocolVNC.SmartSizeMode VNCSmartSizeMode
@@ -888,9 +913,9 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
         set => SetField(ref _vncSmartSizeMode, value, "VNCSmartSizeMode");
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Appearance), 5)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.ViewOnly))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionViewOnly))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Appearance), 5)]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.ViewOnly))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionViewOnly))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     [AttributeUsedInProtocol(ProtocolType.VNC)]
     public bool VNCViewOnly
@@ -902,28 +927,4 @@ public abstract class AbstractConnectionRecord : INotifyPropertyChanged
     #endregion
 
     #endregion
-
-    protected AbstractConnectionRecord(string uniqueId)
-    {
-        ConstantID = uniqueId.ThrowIfNullOrEmpty(nameof(uniqueId));
-    }
-
-    protected virtual TPropertyType GetPropertyValue<TPropertyType>(string propertyName, TPropertyType value)
-    {
-        return (TPropertyType)GetType().GetProperty(propertyName)?.GetValue(this, null);
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void RaisePropertyChangedEvent(object sender, PropertyChangedEventArgs args)
-    {
-        PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(args.PropertyName));
-    }
-
-    protected void SetField<T>(ref T field, T value, string propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return;
-        field = value;
-        RaisePropertyChangedEvent(this, new PropertyChangedEventArgs(propertyName));
-    }
 }

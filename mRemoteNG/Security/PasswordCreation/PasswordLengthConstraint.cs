@@ -2,15 +2,12 @@
 using System.Security;
 using mRemoteNG.Resources.Language;
 
-
 namespace mRemoteNG.Security.PasswordCreation;
 
 public class PasswordLengthConstraint : IPasswordConstraint
 {
-    private readonly int _minLength;
     private readonly int _maxLength;
-
-    public string ConstraintHint { get; }
+    private readonly int _minLength;
 
     public PasswordLengthConstraint(int minimumLength, int maxLength = int.MaxValue)
     {
@@ -26,6 +23,8 @@ public class PasswordLengthConstraint : IPasswordConstraint
         _maxLength = maxLength;
         ConstraintHint = string.Format(Language.PasswordLengthConstraintHint, _minLength, _maxLength);
     }
+
+    public string ConstraintHint { get; }
 
     public bool Validate(SecureString password)
     {

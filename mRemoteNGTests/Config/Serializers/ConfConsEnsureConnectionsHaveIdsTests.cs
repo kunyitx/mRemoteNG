@@ -3,7 +3,6 @@ using System.Xml.Linq;
 using mRemoteNG.Config.Serializers;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Config.Serializers;
 
 public class ConfConsEnsureConnectionsHaveIdsTests

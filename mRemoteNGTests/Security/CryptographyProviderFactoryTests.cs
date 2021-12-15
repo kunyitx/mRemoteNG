@@ -4,7 +4,6 @@ using mRemoteNG.Security;
 using mRemoteNG.Security.Factories;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Security;
 
 [TestFixture]

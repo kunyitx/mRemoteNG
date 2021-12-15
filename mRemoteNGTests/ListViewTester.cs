@@ -34,7 +34,6 @@
 
 using System;
 using System.Collections;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using mRemoteNGTests.TestHelpers;
@@ -42,22 +41,23 @@ using mRemoteNGTests.TestHelpers;
 namespace mRemoteNGTests;
 
 /// <summary>
-/// A ControlTester for testing List Views.  
+///     A ControlTester for testing List Views.
 /// </summary>
 /// <remarks>
-/// It includes helper methods for selecting items from the list
-/// and for clearing those selections.</remarks>
+///     It includes helper methods for selecting items from the list
+///     and for clearing those selections.
+/// </remarks>
 public class ListViewTester
 {
-    private readonly string _name;
     private readonly Form _form;
+    private readonly string _name;
 
     /// <summary>
-    /// Creates a ControlTester from the control name and the form instance.
+    ///     Creates a ControlTester from the control name and the form instance.
     /// </summary>
     /// <remarks>
-    /// It is best to use the overloaded Constructor that requires just the name 
-    /// parameter if possible.
+    ///     It is best to use the overloaded Constructor that requires just the name
+    ///     parameter if possible.
     /// </remarks>
     /// <param name="name">The Control name.</param>
     /// <param name="form">The Form instance.</param>
@@ -68,26 +68,26 @@ public class ListViewTester
     }
 
     /// <summary>
-    /// Provides access to all of the Properties of the ListBox.
+    ///     Provides access to all of the Properties of the ListBox.
     /// </summary>
     /// <remarks>
-    /// Allows typed access to all of the properties of the underlying control.
+    ///     Allows typed access to all of the properties of the underlying control.
     /// </remarks>
     /// <value>The underlying control.</value>
     public ListView Properties => _form.FindControl<ListView>(_name);
 
     /// <summary>
-    /// Helper method to return the List View's Items property
+    ///     Helper method to return the List View's Items property
     /// </summary>
     public ListView.ListViewItemCollection Items => Properties.Items;
 
     /// <summary>
-    /// Helper method to return the columns of the list view
+    ///     Helper method to return the columns of the list view
     /// </summary>
     public ListView.ColumnHeaderCollection Columns => Properties.Columns;
 
     /// <summary>
-    /// Clears the selections from the list box.
+    ///     Clears the selections from the list box.
     /// </summary>
     public void ClearSelected()
     {
@@ -95,7 +95,7 @@ public class ListViewTester
     }
 
     /// <summary>
-    /// Selects an item in the ListBox according to its index.
+    ///     Selects an item in the ListBox according to its index.
     /// </summary>
     /// <param name="i">the index to select.</param>
     public void Select(int i)
@@ -113,7 +113,7 @@ public class ListViewTester
     }
 
     /// <summary>
-    /// Selects an item in the list according to its string value.
+    ///     Selects an item in the list according to its string value.
     /// </summary>
     /// <param name="text">The item to select.</param>
     public void Select(string text)
@@ -124,7 +124,7 @@ public class ListViewTester
     }
 
     /// <summary>
-    /// Multiple selection of a range of items
+    ///     Multiple selection of a range of items
     /// </summary>
     /// <param name="items"></param>
     public void SelectItems(string[] items)
@@ -133,7 +133,7 @@ public class ListViewTester
     }
 
     /// <summary>
-    /// Test that only the indicated items are selected
+    ///     Test that only the indicated items are selected
     /// </summary>
     /// <param name="matchList"></param>
     public bool SelectedItemsMatch(string[] matches)

@@ -4,9 +4,8 @@ using System.Windows.Forms;
 using BrightIdeasSoftware;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
-using mRemoteNG.Tree.Root;
 using mRemoteNG.Resources.Language;
-
+using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Tree;
 
@@ -14,9 +13,9 @@ public class ConnectionTreeDragAndDropHandler
 {
     private readonly Color DropAllowedFeedbackColor = Color.Green;
     private readonly Color DropDeniedFeedbackColor = Color.Red;
-    private string _infoMessage;
     private Color _currentFeedbackColor;
     private bool _enableFeedback;
+    private string _infoMessage;
 
 
     public void HandleEvent_ModelDropped(object sender, ModelDropEventArgs e)

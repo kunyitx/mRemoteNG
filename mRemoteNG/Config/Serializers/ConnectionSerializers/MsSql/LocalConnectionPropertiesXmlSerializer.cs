@@ -12,22 +12,6 @@ public class LocalConnectionPropertiesXmlSerializer :
     ISerializer<IEnumerable<LocalConnectionPropertiesModel>, string>,
     IDeserializer<string, IEnumerable<LocalConnectionPropertiesModel>>
 {
-    public Version Version { get; } = new(1, 0);
-
-    public string Serialize(IEnumerable<LocalConnectionPropertiesModel> models)
-    {
-        var localConnections = models
-            .Select(m => new XElement("Node",
-                new XAttribute("ConnectionId", m.ConnectionId),
-                new XAttribute("Connected", m.Connected),
-                new XAttribute("Expanded", m.Expanded),
-                new XAttribute("Favorite", m.Favorite)));
-
-        var root = new XElement("LocalConnections", localConnections);
-        var xdoc = new XDocument(new XDeclaration("1.0", "utf-8", null), root);
-        return WriteXmlToString(xdoc);
-    }
-
     public IEnumerable<LocalConnectionPropertiesModel> Deserialize(string serializedData)
     {
         if (string.IsNullOrWhiteSpace(serializedData))
@@ -44,6 +28,22 @@ public class LocalConnectionPropertiesXmlSerializer :
                 Expanded = bool.Parse(e.Attribute("Expanded")?.Value ?? "False"),
                 Favorite = bool.Parse(e.Attribute("Favorite")?.Value ?? "False")
             });
+    }
+
+    public Version Version { get; } = new(1, 0);
+
+    public string Serialize(IEnumerable<LocalConnectionPropertiesModel> models)
+    {
+        var localConnections = models
+            .Select(m => new XElement("Node",
+                new XAttribute("ConnectionId", m.ConnectionId),
+                new XAttribute("Connected", m.Connected),
+                new XAttribute("Expanded", m.Expanded),
+                new XAttribute("Favorite", m.Favorite)));
+
+        var root = new XElement("LocalConnections", localConnections);
+        var xdoc = new XDocument(new XDeclaration("1.0", "utf-8", null), root);
+        return WriteXmlToString(xdoc);
     }
 
     private static string WriteXmlToString(XNode xmlDocument)

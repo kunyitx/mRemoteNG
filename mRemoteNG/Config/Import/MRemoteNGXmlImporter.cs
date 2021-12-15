@@ -6,7 +6,6 @@ using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
 
-
 namespace mRemoteNG.Config.Import;
 
 // ReSharper disable once InconsistentNaming

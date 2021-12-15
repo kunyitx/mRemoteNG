@@ -7,13 +7,12 @@ using mRemoteNG.UI.Controls.ConnectionTree;
 using NSubstitute;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class PreviouslyOpenedFolderExpanderTests
 {
-    private PreviouslyOpenedFolderExpander _folderExpander;
     private IConnectionTree _connectionTree;
+    private PreviouslyOpenedFolderExpander _folderExpander;
 
     [SetUp]
     public void Setup()

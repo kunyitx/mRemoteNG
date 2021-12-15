@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using mRemoteNG.Connection;
 using mRemoteNG.UI.Forms;
-using mRemoteNG.Properties;
 
 namespace mRemoteNG.Config.Connections;
 
@@ -50,8 +49,8 @@ public class SaveConnectionsOnEdit
     private void SaveConnectionOnEdit(string propertyName = "")
     {
         //OBSOLETE: mRemoteNG.Settings.Default.SaveConnectionsAfterEveryEdit is obsolete and should be removed in a future release
-        if (mRemoteNG.Properties.Settings.Default.SaveConnectionsAfterEveryEdit ||
-            mRemoteNG.Properties.Settings.Default.SaveConnectionsFrequency ==
+        if (Properties.Settings.Default.SaveConnectionsAfterEveryEdit ||
+            Properties.Settings.Default.SaveConnectionsFrequency ==
             (int)ConnectionsBackupFrequencyEnum.OnEdit)
         {
             if (FrmMain.Default.IsClosing)

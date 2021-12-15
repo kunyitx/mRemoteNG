@@ -1,13 +1,14 @@
-﻿using mRemoteNG.Tools;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using mRemoteNG.Config.Connections;
 using mRemoteNG.Config.Putty;
-using mRemoteNG.Properties;
+using mRemoteNG.Config.Settings;
+using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 using mRemoteNG.UI.Controls;
 using mRemoteNG.UI.Forms;
-using mRemoteNG.Resources.Language;
+using Settings = mRemoteNG.Properties.Settings;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -97,7 +98,7 @@ public static class Shutdown
         MultiSshToolStrip multiSshToolStrip,
         FrmMain frmMain)
     {
-        Config.Settings.SettingsSaver.SaveSettings(quickConnectToolStrip, externalToolsToolStrip, multiSshToolStrip,
+        SettingsSaver.SaveSettings(quickConnectToolStrip, externalToolsToolStrip, multiSshToolStrip,
             frmMain);
     }
 

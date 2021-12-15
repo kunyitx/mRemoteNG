@@ -13,6 +13,12 @@ public partial class CredentialRepositoryListView : UserControl
 {
     private ICredentialRepositoryList _credentialRepositoryList = new CredentialRepositoryList();
 
+    public CredentialRepositoryListView()
+    {
+        InitializeComponent();
+        SetupObjectListView();
+    }
+
     public ICredentialRepositoryList CredentialRepositoryList
     {
         get => _credentialRepositoryList;
@@ -29,12 +35,6 @@ public partial class CredentialRepositoryListView : UserControl
     public Func<ICredentialRepository, bool> RepositoryFilter { get; set; }
     public ICredentialRepository SelectedRepository => GetSelectedRepository();
     public Func<ICredentialRepository, bool> DoubleClickHandler { get; set; }
-
-    public CredentialRepositoryListView()
-    {
-        InitializeComponent();
-        SetupObjectListView();
-    }
 
     public void RefreshObjects()
     {

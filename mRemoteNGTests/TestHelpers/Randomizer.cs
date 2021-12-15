@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Enum = System.Enum;
 
 namespace mRemoteNGTests.TestHelpers;
 
@@ -71,10 +70,10 @@ internal static class Randomizer
     }
 
     /// <summary>
-    /// Randomizes the primitive-type settable properties of the given object.
-    /// Returns the same object instance to enable fluent method calls. It will
-    /// never choose the value that the property current holds. For booleans, this
-    /// means they will always be toggled rather than truly randomized.
+    ///     Randomizes the primitive-type settable properties of the given object.
+    ///     Returns the same object instance to enable fluent method calls. It will
+    ///     never choose the value that the property current holds. For booleans, this
+    ///     means they will always be toggled rather than truly randomized.
     /// </summary>
     internal static T RandomizeValues<T>(this T con)
         where T : class
@@ -105,8 +104,8 @@ internal static class Randomizer
     }
 
     /// <summary>
-    /// Toggles all <see cref="bool"/> settable properties
-    /// on the given object.
+    ///     Toggles all <see cref="bool" /> settable properties
+    ///     on the given object.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="obj"></param>

@@ -37,8 +37,8 @@ public class FileTestHelpers
     }
 
     /// <summary>
-    /// Gets a testing directory that should be unique for a
-    /// particular mRemoteNG test.
+    ///     Gets a testing directory that should be unique for a
+    ///     particular mRemoteNG test.
     /// </summary>
     public static string GetTestSpecificTempDirectory()
     {

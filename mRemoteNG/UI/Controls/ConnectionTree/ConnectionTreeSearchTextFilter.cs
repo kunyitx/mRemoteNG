@@ -9,9 +9,9 @@ public class ConnectionTreeSearchTextFilter : IModelFilter
     public string FilterText { get; set; } = "";
 
     /// <summary>
-    /// A list of <see cref="ConnectionInfo"/> objects that should
-    /// always be included in the output, regardless of matching
-    /// the desired <see cref="FilterText"/>.
+    ///     A list of <see cref="ConnectionInfo" /> objects that should
+    ///     always be included in the output, regardless of matching
+    ///     the desired <see cref="FilterText" />.
     /// </summary>
     public List<ConnectionInfo> SpecialInclusionList { get; } = new();
 

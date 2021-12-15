@@ -1,6 +1,6 @@
-﻿using mRemoteNG.Themes;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.Controls;
 

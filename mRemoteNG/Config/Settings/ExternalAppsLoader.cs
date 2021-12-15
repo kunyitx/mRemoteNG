@@ -1,20 +1,20 @@
 ﻿using System;
-using mRemoteNG.App;
-using mRemoteNG.App.Info;
-using mRemoteNG.UI.Forms;
 using System.IO;
 using System.Xml;
+using mRemoteNG.App;
+using mRemoteNG.App.Info;
 using mRemoteNG.Messages;
 using mRemoteNG.Tools;
 using mRemoteNG.UI.Controls;
+using mRemoteNG.UI.Forms;
 
 namespace mRemoteNG.Config.Settings;
 
 public class ExternalAppsLoader
 {
+    private readonly ExternalToolsToolStrip _externalToolsToolStrip;
     private readonly FrmMain _mainForm;
     private readonly MessageCollector _messageCollector;
-    private readonly ExternalToolsToolStrip _externalToolsToolStrip;
 
     public ExternalAppsLoader(FrmMain mainForm,
         MessageCollector messageCollector,

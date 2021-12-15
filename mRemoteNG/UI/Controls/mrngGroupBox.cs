@@ -101,7 +101,7 @@ public class MrngGroupBox : GroupBox
         // NGGroupBox
         // 
         Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
-            GraphicsUnit.Point, (byte)0);
+            GraphicsUnit.Point, 0);
         ResumeLayout(false);
     }
 }

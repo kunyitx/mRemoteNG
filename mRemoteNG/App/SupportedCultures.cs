@@ -14,11 +14,6 @@ public sealed class SupportedCultures : Dictionary<string, string>
 {
     private static SupportedCultures _Instance;
 
-    private static SupportedCultures SingletonInstance
-    {
-        get { return _Instance ?? (_Instance = new SupportedCultures()); }
-    }
-
 
     private SupportedCultures()
     {
@@ -39,6 +34,22 @@ public sealed class SupportedCultures : Dictionary<string, string>
     private SupportedCultures(SerializationInfo info, StreamingContext context)
     {
         throw new NotImplementedException();
+    }
+
+    private static SupportedCultures SingletonInstance
+    {
+        get { return _Instance ?? (_Instance = new SupportedCultures()); }
+    }
+
+    public static List<string> CultureNativeNames
+    {
+        get
+        {
+            var ValueList = new List<string>();
+            foreach (var Value in SingletonInstance.Values) ValueList.Add(Value);
+
+            return ValueList;
+        }
     }
 
     public static bool IsNameSupported(string CultureName)
@@ -69,16 +80,5 @@ public sealed class SupportedCultures : Dictionary<string, string>
     public static string get_CultureNativeName(string CultureName)
     {
         return SingletonInstance[CultureName];
-    }
-
-    public static List<string> CultureNativeNames
-    {
-        get
-        {
-            var ValueList = new List<string>();
-            foreach (var Value in SingletonInstance.Values) ValueList.Add(Value);
-
-            return ValueList;
-        }
     }
 }

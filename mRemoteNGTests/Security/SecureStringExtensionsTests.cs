@@ -3,7 +3,6 @@ using System.Security;
 using mRemoteNG.Security;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Security;
 
 public class SecureStringExtensionsTests

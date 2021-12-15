@@ -6,8 +6,8 @@ using System.Linq;
 namespace mRemoteNG.Tools;
 
 /// <summary>
-/// Represents a type that may or may not have been assigned a value.
-/// A strongly typed collection that contains either 0 or 1 values.
+///     Represents a type that may or may not have been assigned a value.
+///     A strongly typed collection that contains either 0 or 1 values.
 /// </summary>
 /// <typeparam name="T">The underlying type that may or may not have a value</typeparam>
 public class Optional<T> : IEnumerable<T>, IComparable<Optional<T>>
@@ -15,7 +15,7 @@ public class Optional<T> : IEnumerable<T>, IComparable<Optional<T>>
     private readonly T[] _optional;
 
     /// <summary>
-    /// Create a new empty instance of Optional
+    ///     Create a new empty instance of Optional
     /// </summary>
     public Optional()
     {
@@ -23,8 +23,8 @@ public class Optional<T> : IEnumerable<T>, IComparable<Optional<T>>
     }
 
     /// <summary>
-    /// Create a new instance of Optional from the given value.
-    /// If the value is null, the Optional will be empty
+    ///     Create a new instance of Optional from the given value.
+    ///     If the value is null, the Optional will be empty
     /// </summary>
     public Optional(T value)
     {
@@ -33,50 +33,19 @@ public class Optional<T> : IEnumerable<T>, IComparable<Optional<T>>
             : new T[0];
     }
 
-    public override string ToString()
-    {
-        return _optional.Any() ? _optional.First().ToString() : "";
-    }
-
-    public static implicit operator Optional<T>(T value)
-    {
-        return new Optional<T>(value);
-    }
-
-    public static Optional<TOut> FromNullable<TOut>(TOut? value) where TOut : struct
-    {
-        return value.HasValue
-            ? new Optional<TOut>(value.Value)
-            : new Optional<TOut>();
-    }
-
     /// <summary>
-    /// Returns an empty <see cref="Optional{T}"/>
+    ///     Returns an empty <see cref="Optional{T}" />
     /// </summary>
     public static Optional<T> Empty => new();
-
-    #region IEnumerable
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    public IEnumerator<T> GetEnumerator()
-    {
-        return ((IEnumerable<T>)_optional).GetEnumerator();
-    }
-
-    #endregion
 
     #region IComparable
 
     /// <summary>
-    /// Compares this <see cref="Optional{T}"/> to another instance
-    /// of the same type. For purposes of comparison, empty Optional
-    /// objects are treated like Null and will be valued lower than
-    /// an Optional that contains a value. If both Optionals contain
-    /// values, the values are compared directly.
+    ///     Compares this <see cref="Optional{T}" /> to another instance
+    ///     of the same type. For purposes of comparison, empty Optional
+    ///     objects are treated like Null and will be valued lower than
+    ///     an Optional that contains a value. If both Optionals contain
+    ///     values, the values are compared directly.
     /// </summary>
     /// <param name="other"></param>
     public int CompareTo(Optional<T> other)
@@ -100,6 +69,37 @@ public class Optional<T> : IEnumerable<T>, IComparable<Optional<T>>
         throw new ArgumentException(string.Format(
             "Cannot compare objects. Optional type {0} is not comparable to itself",
             typeof(T).FullName));
+    }
+
+    #endregion
+
+    public override string ToString()
+    {
+        return _optional.Any() ? _optional.First().ToString() : "";
+    }
+
+    public static implicit operator Optional<T>(T value)
+    {
+        return new Optional<T>(value);
+    }
+
+    public static Optional<TOut> FromNullable<TOut>(TOut? value) where TOut : struct
+    {
+        return value.HasValue
+            ? new Optional<TOut>(value.Value)
+            : new Optional<TOut>();
+    }
+
+    #region IEnumerable
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        return ((IEnumerable<T>)_optional).GetEnumerator();
     }
 
     #endregion

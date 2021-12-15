@@ -5,14 +5,80 @@ using System.Windows.Forms;
 using mRemoteNG.Config.Connections;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
-using mRemoteNG.Themes;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.Forms;
 
 public partial class FrmExport
 {
+    #region Public Enumerations
+
+    public enum ExportScope
+    {
+        Everything,
+        SelectedFolder,
+        SelectedConnection
+    }
+
+    #endregion
+
     private ThemeManager _themeManager;
+
+    #region Constructors
+
+    public FrmExport()
+    {
+        InitializeComponent();
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.Export_16x);
+        FontOverrider.FontOverride(this);
+        SelectedFolder = null;
+        SelectedConnection = null;
+        btnOK.Enabled = false;
+    }
+
+    #endregion
+
+    #region Private Classes
+
+    [ImmutableObject(true)]
+    private class ExportFormat
+    {
+        #region Constructors
+
+        public ExportFormat(SaveFormat format)
+        {
+            Format = format;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        public SaveFormat Format { get; }
+
+        #endregion
+
+        #region Public Methods
+
+        public override string ToString()
+        {
+            switch (Format)
+            {
+                case SaveFormat.mRXML:
+                    return Language.MremoteNgXml;
+                case SaveFormat.mRCSV:
+                    return Language.MremoteNgCsv;
+                default:
+                    return Format.ToString();
+            }
+        }
+
+        #endregion
+    }
+
+    #endregion
 
     #region Public Properties
 
@@ -122,20 +188,6 @@ public partial class FrmExport
     {
         get => chkInheritance.Checked;
         set => chkInheritance.Checked = value;
-    }
-
-    #endregion
-
-    #region Constructors
-
-    public FrmExport()
-    {
-        InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Export_16x);
-        FontOverrider.FontOverride(this);
-        SelectedFolder = null;
-        SelectedConnection = null;
-        btnOK.Enabled = false;
     }
 
     #endregion
@@ -250,57 +302,6 @@ public partial class FrmExport
 
         btnOK.Text = Language._Ok;
         btnCancel.Text = Language._Cancel;
-    }
-
-    #endregion
-
-    #region Public Enumerations
-
-    public enum ExportScope
-    {
-        Everything,
-        SelectedFolder,
-        SelectedConnection
-    }
-
-    #endregion
-
-    #region Private Classes
-
-    [ImmutableObject(true)]
-    private class ExportFormat
-    {
-        #region Public Properties
-
-        public SaveFormat Format { get; }
-
-        #endregion
-
-        #region Constructors
-
-        public ExportFormat(SaveFormat format)
-        {
-            Format = format;
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        public override string ToString()
-        {
-            switch (Format)
-            {
-                case SaveFormat.mRXML:
-                    return Language.MremoteNgXml;
-                case SaveFormat.mRCSV:
-                    return Language.MremoteNgCsv;
-                default:
-                    return Format.ToString();
-            }
-        }
-
-        #endregion
     }
 
     #endregion

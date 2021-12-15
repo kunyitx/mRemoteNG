@@ -8,9 +8,9 @@ namespace mRemoteNGTests.Config.DataProviders;
 public class FileBackupCreatorTests
 {
     private FileBackupCreator _fileBackupCreator;
+    private string _testFileDirectory;
     private string _testFilePath;
     private string _testFilePathBackup;
-    private string _testFileDirectory;
     private string _testFileRollingBackup;
 
     [SetUp]

@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using AxMSTSCLib;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
-using MSTSCLib;
 using mRemoteNG.Resources.Language;
+using MSTSCLib;
 
 namespace mRemoteNG.Connection.Protocol.RDP;
 
@@ -18,8 +18,8 @@ namespace mRemoteNG.Connection.Protocol.RDP;
     */
 public class RdpProtocol8 : RdpProtocol7
 {
-    private MsRdpClient8NotSafeForScripting RdpClient8 => (MsRdpClient8NotSafeForScripting)((AxHost)Control).GetOcx();
     private Size _controlBeginningSize;
+    private MsRdpClient8NotSafeForScripting RdpClient8 => (MsRdpClient8NotSafeForScripting)((AxHost)Control).GetOcx();
 
     protected override RdpVersion RdpProtocolVersion => RdpVersion.Rdc8;
 
@@ -109,9 +109,7 @@ public class RdpProtocol8 : RdpProtocol7
             Control.Size = InterfaceControl.Size;
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 }

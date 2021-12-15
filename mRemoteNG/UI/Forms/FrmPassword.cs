@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Security;
 using System.Windows.Forms;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security;
 using mRemoteNG.Themes;
 using mRemoteNG.Tools;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Forms;
 
@@ -14,20 +14,13 @@ public partial class FrmPassword : IKeyProvider
     private SecureString _password = new();
 
     /// <summary>
-    /// Puts the dialog into the New Password mode. An extra
-    /// password box is shown which must match the first password
-    /// to continue.
-    /// </summary>
-    private bool NewPasswordMode { get; }
-
-    /// <summary>
-    /// Creates a new password form for entering or setting a password.
+    ///     Creates a new password form for entering or setting a password.
     /// </summary>
     /// <param name="passwordName"></param>
     /// <param name="newPasswordMode">
-    /// Puts the dialog into the New Password mode. An extra
-    /// password box is shown which must match the first password
-    /// to continue.
+    ///     Puts the dialog into the New Password mode. An extra
+    ///     password box is shown which must match the first password
+    ///     to continue.
     /// </param>
     public FrmPassword(string passwordName = null, bool newPasswordMode = true)
     {
@@ -37,8 +30,15 @@ public partial class FrmPassword : IKeyProvider
     }
 
     /// <summary>
-    /// Dispaly a dialog box requesting that the user 
-    /// enter their password.
+    ///     Puts the dialog into the New Password mode. An extra
+    ///     password box is shown which must match the first password
+    ///     to continue.
+    /// </summary>
+    private bool NewPasswordMode { get; }
+
+    /// <summary>
+    ///     Dispaly a dialog box requesting that the user
+    ///     enter their password.
     /// </summary>
     /// <returns></returns>
     public Optional<SecureString> GetKey()

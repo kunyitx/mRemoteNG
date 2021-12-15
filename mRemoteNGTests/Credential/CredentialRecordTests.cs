@@ -4,7 +4,6 @@ using mRemoteNG.Credential;
 using mRemoteNG.Security;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Credential;
 
 public class CredentialRecordTests

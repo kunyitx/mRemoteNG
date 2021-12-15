@@ -3,7 +3,6 @@ using mRemoteNG.UI.Window;
 using NUnit.Framework;
 using WeifenLuo.WinFormsUI.Docking;
 
-
 namespace mRemoteNGTests.UI.Window;
 
 [Apartment(ApartmentState.STA)]

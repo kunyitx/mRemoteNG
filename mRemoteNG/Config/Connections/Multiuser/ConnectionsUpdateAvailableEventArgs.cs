@@ -8,10 +8,6 @@ public delegate void
 
 public class ConnectionsUpdateAvailableEventArgs : EventArgs
 {
-    public IDatabaseConnector DatabaseConnector { get; private set; }
-    public DateTime UpdateTime { get; private set; }
-    public bool Handled { get; set; }
-
     public ConnectionsUpdateAvailableEventArgs(IDatabaseConnector databaseConnector, DateTime updateTime)
     {
         if (databaseConnector == null)
@@ -19,4 +15,8 @@ public class ConnectionsUpdateAvailableEventArgs : EventArgs
         DatabaseConnector = databaseConnector;
         UpdateTime = updateTime;
     }
+
+    public IDatabaseConnector DatabaseConnector { get; }
+    public DateTime UpdateTime { get; }
+    public bool Handled { get; set; }
 }

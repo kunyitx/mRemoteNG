@@ -4,7 +4,7 @@ using System.Drawing;
 namespace mRemoteNG.Themes;
 
 /// <summary>
-/// Class used for the UI to display the color tables,as the Dictionary value keys cannot be directly replaced
+///     Class used for the UI to display the color tables,as the Dictionary value keys cannot be directly replaced
 /// </summary>
 public class PseudoKeyColor
 {
@@ -20,16 +20,10 @@ public class PseudoKeyColor
 }
 
 /// <summary>
-/// Holds the color of a palette that are not included in the dockpanelsuite definition
+///     Holds the color of a palette that are not included in the dockpanelsuite definition
 /// </summary>
 public class ExtendedColorPalette
 {
-    #region Private Variables
-
-    //Collection for color values that are not loaded by dock panels (list, buttons,panel content, etc)
-
-    #endregion
-
     #region Constructors
 
     public ExtendedColorPalette()
@@ -40,6 +34,11 @@ public class ExtendedColorPalette
     }
 
     #endregion
+
+    public Dictionary<string, Color> DefaultColorPalette { get; set; }
+
+
+    public Dictionary<string, Color> ExtColorPalette { get; set; }
 
     #region Public Methods
 
@@ -52,7 +51,8 @@ public class ExtendedColorPalette
     #endregion
 
     /// <summary>
-    /// Obtains a color from the extended palette, if not present obtains it from the default palette, in the extreme case it uses Pink as a signal that a color is missing
+    ///     Obtains a color from the extended palette, if not present obtains it from the default palette, in the extreme case
+    ///     it uses Pink as a signal that a color is missing
     /// </summary>
     /// <param name="colorKey"></param>
     /// <returns></returns>
@@ -73,7 +73,7 @@ public class ExtendedColorPalette
     }
 
     /// <summary>
-    /// Add a color to the extended palette
+    ///     Add a color to the extended palette
     /// </summary>
     /// <param name="colorKey"></param>
     /// <param name="inColor"></param>
@@ -84,7 +84,7 @@ public class ExtendedColorPalette
 
 
     /// <summary>
-    /// Replace the value of a color in the palette
+    ///     Replace the value of a color in the palette
     /// </summary>
     /// <param name="colorKey"></param>
     /// <param name="inColor"></param>
@@ -93,8 +93,9 @@ public class ExtendedColorPalette
         ExtColorPalette[colorKey] = inColor;
     }
 
-    public Dictionary<string, Color> DefaultColorPalette { get; set; }
+    #region Private Variables
 
+    //Collection for color values that are not loaded by dock panels (list, buttons,panel content, etc)
 
-    public Dictionary<string, Color> ExtColorPalette { get; set; }
+    #endregion
 }

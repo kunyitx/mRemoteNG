@@ -14,6 +14,17 @@ public class ContainerInfo : ConnectionInfo, INotifyCollectionChanged
 {
     private bool _isExpanded;
 
+    public ContainerInfo(string uniqueId)
+        : base(uniqueId)
+    {
+        SetDefaults();
+    }
+
+    public ContainerInfo()
+        : this(Guid.NewGuid().ToString())
+    {
+    }
+
     [Browsable(false)] public List<ConnectionInfo> Children { get; } = new();
 
     [Category("")]
@@ -35,16 +46,7 @@ public class ContainerInfo : ConnectionInfo, INotifyCollectionChanged
         set { }
     }
 
-    public ContainerInfo(string uniqueId)
-        : base(uniqueId)
-    {
-        SetDefaults();
-    }
-
-    public ContainerInfo()
-        : this(Guid.NewGuid().ToString())
-    {
-    }
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
 
     public override TreeNodeType GetTreeNodeType()
     {
@@ -264,8 +266,8 @@ public class ContainerInfo : ConnectionInfo, INotifyCollectionChanged
     }
 
     /// <summary>
-    /// Pushes the connection properties of this container to all
-    /// children recursively.
+    ///     Pushes the connection properties of this container to all
+    ///     children recursively.
     /// </summary>
     public void ApplyConnectionPropertiesToChildren()
     {
@@ -275,8 +277,8 @@ public class ContainerInfo : ConnectionInfo, INotifyCollectionChanged
     }
 
     /// <summary>
-    /// Pushes the inheritance settings of this container to all
-    /// children recursively.
+    ///     Pushes the inheritance settings of this container to all
+    ///     children recursively.
     /// </summary>
     public void ApplyInheritancePropertiesToChildren()
     {
@@ -315,8 +317,6 @@ public class ContainerInfo : ConnectionInfo, INotifyCollectionChanged
         if (childAsContainer == null) return;
         childAsContainer.CollectionChanged -= RaiseCollectionChangedEvent;
     }
-
-    public event NotifyCollectionChangedEventHandler CollectionChanged;
 
     private void RaiseCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs args)
     {

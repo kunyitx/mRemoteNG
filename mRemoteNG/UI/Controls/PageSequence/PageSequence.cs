@@ -10,9 +10,6 @@ public class PageSequence : IDisposable
     private readonly Control _pageContainer;
     private readonly IList<SequencedControl> _pages = new List<SequencedControl>();
 
-    public IEnumerable<SequencedControl> Pages => _pages;
-    public int CurrentPageIndex { get; private set; }
-
     public PageSequence(Control pageContainer, IEnumerable<SequencedControl> pages) : this(pageContainer,
         pages.ToArray())
     {
@@ -29,6 +26,14 @@ public class PageSequence : IDisposable
             SubscribeToPageEvents(page);
             _pages.Add(page);
         }
+    }
+
+    public IEnumerable<SequencedControl> Pages => _pages;
+    public int CurrentPageIndex { get; private set; }
+
+    public void Dispose()
+    {
+        Dispose(true);
     }
 
     public virtual void NextPage()
@@ -102,11 +107,6 @@ public class PageSequence : IDisposable
     private void PageOnPageReplacementRequested(object sender, SequencedPageReplcementRequestArgs args)
     {
         ReplacePage(args.NewControl, args.PagePosition);
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
     }
 
     protected virtual void Dispose(bool disposing)

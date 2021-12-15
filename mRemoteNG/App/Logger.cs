@@ -14,14 +14,14 @@ public class Logger
 {
     public static readonly Logger Instance = new();
 
-    public ILog Log { get; private set; }
-
-    public static string DefaultLogPath => BuildLogFilePath();
-
     private Logger()
     {
         Initialize();
     }
+
+    public ILog Log { get; private set; }
+
+    public static string DefaultLogPath => BuildLogFilePath();
 
     private void Initialize()
     {

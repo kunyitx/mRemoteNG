@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Threading;
 using System.ComponentModel;
 using System.Net.Sockets;
+using System.Threading;
 using mRemoteNG.App;
+using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tools;
 using mRemoteNG.UI.Forms;
-using mRemoteNG.Resources.Language;
+using VncSharpCore;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -16,7 +18,7 @@ public class ProtocolVNC : ProtocolBase
 {
     #region Private Declarations
 
-    private VncSharpCore.RemoteDesktop _vnc;
+    private RemoteDesktop _vnc;
     private ConnectionInfo _info;
     private static bool _isConnectionSuccessful;
     private static Exception _socketexception;
@@ -28,7 +30,7 @@ public class ProtocolVNC : ProtocolBase
 
     public ProtocolVNC()
     {
-        Control = new VncSharpCore.RemoteDesktop();
+        Control = new RemoteDesktop();
     }
 
     public override bool Initialize()
@@ -37,7 +39,7 @@ public class ProtocolVNC : ProtocolBase
 
         try
         {
-            _vnc = (VncSharpCore.RemoteDesktop)Control;
+            _vnc = (RemoteDesktop)Control;
             _info = InterfaceControl.Info;
             _vnc.VncPort = _info.Port;
 
@@ -45,7 +47,7 @@ public class ProtocolVNC : ProtocolBase
         }
         catch (Exception ex)
         {
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                 Language.VncSetPropsFailed + Environment.NewLine + ex.Message,
                 true);
             return false;
@@ -62,7 +64,7 @@ public class ProtocolVNC : ProtocolBase
         }
         catch (Exception ex)
         {
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                 Language.ConnectionOpenFailed + Environment.NewLine +
                 ex.Message);
             return false;
@@ -79,7 +81,7 @@ public class ProtocolVNC : ProtocolBase
         }
         catch (Exception ex)
         {
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                 Language.VncConnectionDisconnectFailed + Environment.NewLine +
                 ex.Message, true);
         }
@@ -102,7 +104,7 @@ public class ProtocolVNC : ProtocolBase
         }
         catch (Exception ex)
         {
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                 Language.VncSendSpecialKeysFailed + Environment.NewLine +
                 ex.Message, true);
         }
@@ -126,7 +128,7 @@ public class ProtocolVNC : ProtocolBase
         }
         catch (Exception ex)
         {
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                 Language.VncRefreshFailed + Environment.NewLine + ex.Message,
                 true);
         }
@@ -148,7 +150,7 @@ public class ProtocolVNC : ProtocolBase
         }
         catch (Exception ex)
         {
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                 Language.VncSetEventHandlersFailed + Environment.NewLine +
                 ex.Message, true);
         }
@@ -168,7 +170,7 @@ public class ProtocolVNC : ProtocolBase
         else
         {
             tcpclient.Close();
-            throw new TimeoutException($"Connection timed out to host " + hostName + " on port " + port);
+            throw new TimeoutException("Connection timed out to host " + hostName + " on port " + port);
         }
 
         return false;
@@ -241,7 +243,7 @@ public class ProtocolVNC : ProtocolBase
 
     public enum Compression
     {
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.NoCompression))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.NoCompression))]
         CompNone = 99,
         [Description("0")] Comp0 = 0,
         [Description("1")] Comp1 = 1,
@@ -269,44 +271,44 @@ public class ProtocolVNC : ProtocolBase
 
     public enum AuthMode
     {
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.Vnc))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Vnc))]
         AuthVNC,
 
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.Windows))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Windows))]
         AuthWin
     }
 
     public enum ProxyType
     {
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.None))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.None))]
         ProxyNone,
 
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.Http))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Http))]
         ProxyHTTP,
 
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.Socks5))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Socks5))]
         ProxySocks5,
 
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.UltraVncRepeater))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.UltraVncRepeater))]
         ProxyUltra
     }
 
     public enum Colors
     {
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.Normal))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Normal))]
         ColNormal,
         [Description("8-bit")] Col8Bit
     }
 
     public enum SmartSizeMode
     {
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.NoSmartSize))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.NoSmartSize))]
         SmartSNo,
 
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.Free))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Free))]
         SmartSFree,
 
-        [LocalizedAttributes.LocalizedDescription(nameof(Language.Aspect))]
+        [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.Aspect))]
         SmartSAspect
     }
 

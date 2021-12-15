@@ -10,7 +10,7 @@ namespace mRemoteNG.UI;
 
 public class StatusImageList : IDisposable
 {
-    public ImageList ImageList { get; }
+    private const string DefaultConnectionIcon = "";
 
     public StatusImageList()
     {
@@ -26,6 +26,14 @@ public class StatusImageList : IDisposable
         };
 
         FillImageList(ImageList);
+    }
+
+    public ImageList ImageList { get; }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     public object ImageGetter(object rowObject)
@@ -56,8 +64,6 @@ public class StatusImageList : IDisposable
         var status = connected ? "Play" : "Default";
         return $"Connection_{icon}_{status}";
     }
-
-    private const string DefaultConnectionIcon = "";
 
     private string GetConnectionIcon(ConnectionInfo connection)
     {
@@ -98,12 +104,6 @@ public class StatusImageList : IDisposable
                 $"Unable to fill the image list of type {nameof(StatusImageList)}",
                 ex);
         }
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 
     protected virtual void Dispose(bool disposing)

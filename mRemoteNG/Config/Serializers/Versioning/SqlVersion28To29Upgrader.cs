@@ -1,15 +1,16 @@
-﻿using mRemoteNG.App;
+﻿using System;
+using System.Data;
+using System.Data.Common;
+using mRemoteNG.App;
 using mRemoteNG.Config.DatabaseConnectors;
 using mRemoteNG.Messages;
-using System;
-using System.Data.Common;
 
 namespace mRemoteNG.Config.Serializers.Versioning;
 
 public class SqlVersion28To29Upgrader : IVersionUpgrader
 {
-    private readonly Version version = new(2, 9);
     private readonly IDatabaseConnector _databaseConnector;
+    private readonly Version version = new(2, 9);
 
     public SqlVersion28To29Upgrader(IDatabaseConnector databaseConnector)
     {
@@ -42,7 +43,7 @@ END;GO;
 ALTER TABLE tblRoot MODIFY COLUMN ConfVersion varchar(15);GO;";
         const string msSqlUpdate = @"UPDATE tblRoot SET ConfVersion=@confVersion;";
         using (var sqlTran =
-               _databaseConnector.DbConnection().BeginTransaction(System.Data.IsolationLevel.Serializable))
+               _databaseConnector.DbConnection().BeginTransaction(IsolationLevel.Serializable))
         {
             DbCommand dbCommand;
             if (_databaseConnector.GetType() == typeof(MSSqlDatabaseConnector))
@@ -69,8 +70,8 @@ ALTER TABLE tblRoot MODIFY COLUMN ConfVersion varchar(15);GO;";
             var pConfVersion = dbCommand.CreateParameter();
             pConfVersion.ParameterName = "confVersion";
             pConfVersion.Value = version.ToString();
-            pConfVersion.DbType = System.Data.DbType.String;
-            pConfVersion.Direction = System.Data.ParameterDirection.Input;
+            pConfVersion.DbType = DbType.String;
+            pConfVersion.Direction = ParameterDirection.Input;
             dbCommand.Parameters.Add(pConfVersion);
 
             dbCommand.ExecuteNonQuery();

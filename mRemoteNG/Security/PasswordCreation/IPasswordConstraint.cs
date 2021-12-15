@@ -1,6 +1,5 @@
 ﻿using System.Security;
 
-
 namespace mRemoteNG.Security.PasswordCreation;
 
 public interface IPasswordConstraint

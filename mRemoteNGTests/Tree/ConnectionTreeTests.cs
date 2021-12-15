@@ -5,7 +5,6 @@ using mRemoteNG.Tree.Root;
 using mRemoteNG.UI.Controls.ConnectionTree;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class ConnectionTreeTests

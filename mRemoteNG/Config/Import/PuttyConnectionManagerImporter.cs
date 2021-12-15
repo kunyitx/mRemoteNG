@@ -3,7 +3,6 @@ using mRemoteNG.Config.DataProviders;
 using mRemoteNG.Config.Serializers.MiscSerializers;
 using mRemoteNG.Container;
 
-
 namespace mRemoteNG.Config.Import;
 
 public class PuttyConnectionManagerImporter : IConnectionImporter<string>

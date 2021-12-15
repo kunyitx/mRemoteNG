@@ -1,6 +1,7 @@
-﻿using System.Windows.Forms;
-using mRemoteNG.Themes;
+﻿using System;
+using System.Windows.Forms;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.Forms;
 
@@ -33,14 +34,14 @@ public sealed partial class FrmInputBox : Form
         ForeColor = _themeManager.ActiveTheme.ExtendedPalette.getColor("Dialog_Foreground");
     }
 
-    private void _Ok_Click(object sender, System.EventArgs e)
+    private void _Ok_Click(object sender, EventArgs e)
     {
         DialogResult = DialogResult.OK;
         returnValue = textBox.Text;
         Close();
     }
 
-    private void buttonCancel_Click(object sender, System.EventArgs e)
+    private void buttonCancel_Click(object sender, EventArgs e)
     {
         DialogResult = DialogResult.Cancel;
         Close();

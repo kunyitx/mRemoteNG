@@ -13,10 +13,8 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Csv;
 
 public class CsvConnectionsSerializerMremotengFormat : ISerializer<ConnectionInfo, string>
 {
-    private readonly SaveFilter _saveFilter;
     private readonly ICredentialRepositoryList _credentialRepositoryList;
-
-    public Version Version { get; } = new(2, 7);
+    private readonly SaveFilter _saveFilter;
 
     public CsvConnectionsSerializerMremotengFormat(SaveFilter saveFilter,
         ICredentialRepositoryList credentialRepositoryList)
@@ -28,13 +26,7 @@ public class CsvConnectionsSerializerMremotengFormat : ISerializer<ConnectionInf
         _credentialRepositoryList = credentialRepositoryList;
     }
 
-    public string Serialize(ConnectionTreeModel connectionTreeModel)
-    {
-        connectionTreeModel.ThrowIfNull(nameof(connectionTreeModel));
-
-        var rootNode = connectionTreeModel.RootNodes.First(node => node is RootNodeInfo);
-        return Serialize(rootNode);
-    }
+    public Version Version { get; } = new(2, 7);
 
     public string Serialize(ConnectionInfo serializationTarget)
     {
@@ -44,6 +36,14 @@ public class CsvConnectionsSerializerMremotengFormat : ISerializer<ConnectionInf
         WriteCsvHeader(sb);
         SerializeNodesRecursive(serializationTarget, sb);
         return sb.ToString();
+    }
+
+    public string Serialize(ConnectionTreeModel connectionTreeModel)
+    {
+        connectionTreeModel.ThrowIfNull(nameof(connectionTreeModel));
+
+        var rootNode = connectionTreeModel.RootNodes.First(node => node is RootNodeInfo);
+        return Serialize(rootNode);
     }
 
     private void WriteCsvHeader(StringBuilder sb)

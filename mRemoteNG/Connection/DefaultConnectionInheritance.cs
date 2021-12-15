@@ -1,21 +1,21 @@
 ﻿using System;
 using System.ComponentModel;
 using mRemoteNG.App;
-
+using mRemoteNG.Messages;
 
 namespace mRemoteNG.Connection;
 
 public class DefaultConnectionInheritance : ConnectionInfoInheritance
 {
-    [Browsable(false)] public static DefaultConnectionInheritance Instance { get; } = new();
+    static DefaultConnectionInheritance()
+    {
+    }
 
     private DefaultConnectionInheritance() : base(null, true)
     {
     }
 
-    static DefaultConnectionInheritance()
-    {
-    }
+    [Browsable(false)] public static DefaultConnectionInheritance Instance { get; } = new();
 
 
     public void LoadFrom<TSource>(TSource sourceInstance, Func<string, string> propertyNameMutator = null)
@@ -27,7 +27,7 @@ public class DefaultConnectionInheritance : ConnectionInfoInheritance
             var propertyFromSettings = typeof(TSource).GetProperty(propertyNameMutator(property.Name));
             if (propertyFromSettings == null)
             {
-                Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                     $"DefaultConInherit-LoadFrom: Could not load {property.Name}",
                     true);
                 continue;
@@ -49,7 +49,7 @@ public class DefaultConnectionInheritance : ConnectionInfoInheritance
             var localValue = property.GetValue(Instance, null);
             if (propertyFromSettings == null)
             {
-                Runtime.MessageCollector?.AddMessage(Messages.MessageClass.ErrorMsg,
+                Runtime.MessageCollector?.AddMessage(MessageClass.ErrorMsg,
                     $"DefaultConInherit-SaveTo: Could not load {property.Name}",
                     true);
                 continue;

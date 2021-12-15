@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 using mRemoteNG.App;
 using mRemoteNG.Properties;
 using mRemoteNG.Tools.Cmdline;
@@ -10,6 +11,22 @@ namespace mRemoteNG.Tools;
 
 public class ProcessController : IDisposable
 {
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (!disposing) return;
+
+        if (Process != null)
+            Process.Dispose();
+
+        Handle = IntPtr.Zero;
+    }
+
     #region Public Methods
 
     public bool Start(string fileName, CommandLineArguments arguments = null)
@@ -119,7 +136,7 @@ public class ProcessController : IDisposable
         {
             Process.Refresh();
             Handle = Process.MainWindowHandle;
-            if (Handle == IntPtr.Zero) System.Threading.Thread.Sleep(0);
+            if (Handle == IntPtr.Zero) Thread.Sleep(0);
         }
 
         return Handle;
@@ -147,34 +164,16 @@ public class ProcessController : IDisposable
                 controlHandle = control;
                 break;
             }
-            else
-            {
-                NativeMethods.SendMessage(control, NativeMethods.WM_GETTEXT, new IntPtr(stringBuilder.Capacity),
-                    stringBuilder);
-                if (stringBuilder.ToString() != text) continue;
-                controlHandle = control;
-                break;
-            }
+
+            NativeMethods.SendMessage(control, NativeMethods.WM_GETTEXT, new IntPtr(stringBuilder.Capacity),
+                stringBuilder);
+            if (stringBuilder.ToString() != text) continue;
+            controlHandle = control;
+            break;
         }
 
         return controlHandle;
     }
 
     #endregion
-
-    private void Dispose(bool disposing)
-    {
-        if (!disposing) return;
-
-        if (Process != null)
-            Process.Dispose();
-
-        Handle = IntPtr.Zero;
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
 }

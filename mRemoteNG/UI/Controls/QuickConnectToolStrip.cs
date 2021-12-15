@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -9,36 +10,26 @@ using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Themes;
 using mRemoteNG.Tools;
-using mRemoteNG.Resources.Language;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.UI.Controls;
 
 public class QuickConnectToolStrip : ToolStrip
 {
-    private IContainer components;
-    private ToolStripLabel _lblQuickConnect;
+    private readonly DisplayProperties _display;
+    private readonly ThemeManager _themeManager;
     private ToolStripDropDownButton _btnConnections;
     private MrngToolStripSplitButton _btnQuickConnect;
-    private ContextMenuStrip _mnuQuickConnectProtocol;
     private QuickConnectComboBox _cmbQuickConnect;
-    private ContextMenuStrip _mnuConnections;
     private IConnectionInitiator _connectionInitiator = new ConnectionInitiator();
-    private readonly ThemeManager _themeManager;
-    private WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender vsToolStripExtender;
-    private readonly DisplayProperties _display;
-
-    public IConnectionInitiator ConnectionInitiator
-    {
-        get => _connectionInitiator;
-        set
-        {
-            if (value == null)
-                return;
-            _connectionInitiator = value;
-        }
-    }
+    private ToolStripLabel _lblQuickConnect;
+    private ContextMenuStrip _mnuConnections;
+    private ContextMenuStrip _mnuQuickConnectProtocol;
+    private IContainer components;
+    private VisualStudioToolStripExtender vsToolStripExtender;
 
     public QuickConnectToolStrip()
     {
@@ -49,6 +40,17 @@ public class QuickConnectToolStrip : ToolStrip
         PopulateQuickConnectProtocolMenu();
         ApplyTheme();
         ApplyLanguage();
+    }
+
+    public IConnectionInitiator ConnectionInitiator
+    {
+        get => _connectionInitiator;
+        set
+        {
+            if (value == null)
+                return;
+            _connectionInitiator = value;
+        }
     }
 
     private void ApplyLanguage()
@@ -69,7 +71,7 @@ public class QuickConnectToolStrip : ToolStrip
         //
         //Theming support
         //
-        vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(components);
+        vsToolStripExtender = new VisualStudioToolStripExtender(components);
         // 
         // lblQuickConnect
         // 
@@ -155,6 +157,22 @@ public class QuickConnectToolStrip : ToolStrip
         if (!_themeManager.ActiveAndExtended) return;
         _cmbQuickConnect.BackColor = _themeManager.ActiveTheme.ExtendedPalette.getColor("TextBox_Background");
         _cmbQuickConnect.ForeColor = _themeManager.ActiveTheme.ExtendedPalette.getColor("TextBox_Foreground");
+    }
+
+    // CodeAyalysis doesn't like null propagation
+    [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed",
+        MessageId = "components")]
+    protected override void Dispose(bool disposing)
+    {
+        try
+        {
+            if (!disposing) return;
+            components?.Dispose();
+        }
+        finally
+        {
+            base.Dispose(disposing);
+        }
     }
 
     #region Quick Connect
@@ -299,20 +317,4 @@ public class QuickConnectToolStrip : ToolStrip
     }
 
     #endregion
-
-    // CodeAyalysis doesn't like null propagation
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed",
-        MessageId = "components")]
-    protected override void Dispose(bool disposing)
-    {
-        try
-        {
-            if (!disposing) return;
-            components?.Dispose();
-        }
-        finally
-        {
-            base.Dispose(disposing);
-        }
-    }
 }

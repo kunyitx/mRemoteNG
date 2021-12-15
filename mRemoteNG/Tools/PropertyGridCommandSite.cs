@@ -41,59 +41,11 @@ public class PropertyGridCommandSite : IMenuCommandService, ISite
                         displayName = displayNameAttribute.DisplayName;
                 }
 
-                objectVerbs.Add(new DesignerVerb(displayName, new EventHandler(VerbEventHandler)));
+                objectVerbs.Add(new DesignerVerb(displayName, VerbEventHandler));
             }
 
             return objectVerbs;
         }
-    }
-
-    private void VerbEventHandler(object sender, EventArgs e)
-    {
-        var verb = sender as DesignerVerb;
-        if (verb == null) return;
-
-        // ReSharper disable VBPossibleMistakenCallToGetType.2
-        var methods = TheObject.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
-        // ReSharper restore VBPossibleMistakenCallToGetType.2
-        foreach (var method in methods)
-        {
-            var commandAttributes = method.GetCustomAttributes(typeof(CommandAttribute), true);
-            if (commandAttributes.Length == 0) continue;
-
-            var commandAttribute = (CommandAttribute)commandAttributes[0];
-            if (!commandAttribute.Command) continue;
-
-            var displayName = method.Name;
-            var displayNameAttributes = method.GetCustomAttributes(typeof(DisplayNameAttribute), true);
-            if (displayNameAttributes.Length != 0)
-            {
-                var displayNameAttribute = (DisplayNameAttribute)displayNameAttributes[0];
-                if (!string.IsNullOrEmpty(displayNameAttribute.DisplayName))
-                    displayName = displayNameAttribute.DisplayName;
-            }
-
-            if (verb.Text != displayName) continue;
-            method.Invoke(TheObject, null);
-            return;
-        }
-    }
-
-    public object GetService(Type serviceType)
-    {
-        return serviceType == typeof(IMenuCommandService) ? this : null;
-    }
-
-    public IComponent Component => throw new NotSupportedException();
-
-    public IContainer Container => null;
-
-    public bool DesignMode => true;
-
-    public string Name
-    {
-        get => throw new NotSupportedException();
-        set => throw new NotSupportedException();
     }
 
     public void AddCommand(MenuCommand command)
@@ -130,14 +82,62 @@ public class PropertyGridCommandSite : IMenuCommandService, ISite
     {
         throw new NotSupportedException();
     }
+
+    public object GetService(Type serviceType)
+    {
+        return serviceType == typeof(IMenuCommandService) ? this : null;
+    }
+
+    public IComponent Component => throw new NotSupportedException();
+
+    public IContainer Container => null;
+
+    public bool DesignMode => true;
+
+    public string Name
+    {
+        get => throw new NotSupportedException();
+        set => throw new NotSupportedException();
+    }
+
+    private void VerbEventHandler(object sender, EventArgs e)
+    {
+        var verb = sender as DesignerVerb;
+        if (verb == null) return;
+
+        // ReSharper disable VBPossibleMistakenCallToGetType.2
+        var methods = TheObject.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
+        // ReSharper restore VBPossibleMistakenCallToGetType.2
+        foreach (var method in methods)
+        {
+            var commandAttributes = method.GetCustomAttributes(typeof(CommandAttribute), true);
+            if (commandAttributes.Length == 0) continue;
+
+            var commandAttribute = (CommandAttribute)commandAttributes[0];
+            if (!commandAttribute.Command) continue;
+
+            var displayName = method.Name;
+            var displayNameAttributes = method.GetCustomAttributes(typeof(DisplayNameAttribute), true);
+            if (displayNameAttributes.Length != 0)
+            {
+                var displayNameAttribute = (DisplayNameAttribute)displayNameAttributes[0];
+                if (!string.IsNullOrEmpty(displayNameAttribute.DisplayName))
+                    displayName = displayNameAttribute.DisplayName;
+            }
+
+            if (verb.Text != displayName) continue;
+            method.Invoke(TheObject, null);
+            return;
+        }
+    }
 }
 
 public class CommandAttribute : Attribute
 {
-    public bool Command { get; set; }
-
     public CommandAttribute(bool isCommand = true)
     {
         Command = isCommand;
     }
+
+    public bool Command { get; set; }
 }

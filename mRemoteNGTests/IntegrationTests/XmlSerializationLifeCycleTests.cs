@@ -1,4 +1,8 @@
-﻿using mRemoteNG.Connection;
+﻿using System;
+using System.Linq;
+using System.Text;
+using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
+using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Security;
 using mRemoteNG.Security.Factories;
@@ -6,22 +10,17 @@ using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using mRemoteNGTests.TestHelpers;
 using NUnit.Framework;
-using System;
-using System.Linq;
-using System.Text;
-using mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
-
 
 namespace mRemoteNGTests.IntegrationTests;
 
 public class XmlSerializationLifeCycleTests
 {
-    private XmlConnectionsSerializer _serializer;
-    private XmlConnectionsDeserializer _deserializer;
-    private ConnectionTreeModel _originalModel;
-
     private readonly ICryptoProviderFactory _cryptoFactory =
         new CryptoProviderFactory(BlockCipherEngines.AES, BlockCipherModes.GCM);
+
+    private XmlConnectionsDeserializer _deserializer;
+    private ConnectionTreeModel _originalModel;
+    private XmlConnectionsSerializer _serializer;
 
     [SetUp]
     public void Setup()

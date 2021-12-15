@@ -10,10 +10,8 @@ namespace mRemoteNG.UI.Controls;
 //Extended button class, the button onPaint completely repaint the control
 public class MrngButton : Button
 {
-    private ThemeManager _themeManager;
-
     /// <summary>
-    /// Store the mouse state, required for coloring the component according to the mouse state
+    ///     Store the mouse state, required for coloring the component according to the mouse state
     /// </summary>
     public enum MouseState
     {
@@ -21,6 +19,8 @@ public class MrngButton : Button
         DOWN,
         OUT
     }
+
+    private ThemeManager _themeManager;
 
     public MrngButton()
     {
@@ -30,7 +30,7 @@ public class MrngButton : Button
     public MouseState _mice { get; set; }
 
     /// <summary>
-    /// Rewrite the function to allow for coloring the component depending on the mouse state
+    ///     Rewrite the function to allow for coloring the component depending on the mouse state
     /// </summary>
     protected override void OnCreateControl()
     {
@@ -69,7 +69,7 @@ public class MrngButton : Button
 
 
     /// <summary>
-    /// Repaint the componente, the elements considered are the clipping rectangle, text and an icon
+    ///     Repaint the componente, the elements considered are the clipping rectangle, text and an icon
     /// </summary>
     /// <param name="e"></param>
     protected override void OnPaint(PaintEventArgs e)
@@ -137,7 +137,7 @@ public class MrngButton : Button
         // NGButton
         // 
         Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
-            GraphicsUnit.Point, (byte)0);
+            GraphicsUnit.Point, 0);
         ResumeLayout(false);
     }
 }

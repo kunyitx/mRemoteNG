@@ -1,15 +1,39 @@
-﻿using mRemoteNG.Themes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Media;
 using System.Windows.Forms;
-using mRemoteNG.UI.Controls;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
+using mRemoteNG.UI.Controls;
 
 namespace mRemoteNG.UI.TaskDialog;
 
 public partial class frmTaskDialog : Form
 {
+    //--------------------------------------------------------------------------------
+
+    #region CONSTRUCTOR
+
+    //--------------------------------------------------------------------------------
+    public frmTaskDialog()
+    {
+        InitializeComponent();
+
+        // _isVista = VistaTaskDialog.IsAvailableOnThisOS;
+        if (!_isVista && CTaskDialog.UseToolWindowOnXp) // <- shall we use the smaller toolbar?
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+
+        MainInstruction = "Main Instruction";
+        Content = "";
+        ExpandedInfo = "";
+        Footer = "";
+        VerificationText = "";
+    }
+
+    #endregion
+
     //--------------------------------------------------------------------------------
 
     #region PRIVATE members
@@ -24,7 +48,7 @@ public partial class frmTaskDialog : Form
     private readonly DisplayProperties _display = new();
     private Control _focusControl;
 
-    private bool _isVista = false;
+    private readonly bool _isVista = false;
 
     private int _mainInstructionLeftMargin;
     private int _mainInstructionRightMargin;
@@ -106,28 +130,6 @@ public partial class frmTaskDialog : Form
     }
 
     private bool Expanded { get; set; }
-
-    #endregion
-
-    //--------------------------------------------------------------------------------
-
-    #region CONSTRUCTOR
-
-    //--------------------------------------------------------------------------------
-    public frmTaskDialog()
-    {
-        InitializeComponent();
-
-        // _isVista = VistaTaskDialog.IsAvailableOnThisOS;
-        if (!_isVista && CTaskDialog.UseToolWindowOnXp) // <- shall we use the smaller toolbar?
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
-
-        MainInstruction = "Main Instruction";
-        Content = "";
-        ExpandedInfo = "";
-        Footer = "";
-        VerificationText = "";
-    }
 
     #endregion
 
@@ -409,7 +411,7 @@ public partial class frmTaskDialog : Form
         var b = new Bitmap(w, h);
 
         using var g = Graphics.FromImage(b);
-        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
         g.DrawImage(srcImg, 0, 0, w, h);
 
         return b;
@@ -493,16 +495,16 @@ public partial class frmTaskDialog : Form
             switch (MainIcon)
             {
                 case ESysIcons.Error:
-                    System.Media.SystemSounds.Hand.Play();
+                    SystemSounds.Hand.Play();
                     break;
                 case ESysIcons.Information:
-                    System.Media.SystemSounds.Asterisk.Play();
+                    SystemSounds.Asterisk.Play();
                     break;
                 case ESysIcons.Question:
-                    System.Media.SystemSounds.Asterisk.Play();
+                    SystemSounds.Asterisk.Play();
                     break;
                 case ESysIcons.Warning:
-                    System.Media.SystemSounds.Exclamation.Play();
+                    SystemSounds.Exclamation.Play();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

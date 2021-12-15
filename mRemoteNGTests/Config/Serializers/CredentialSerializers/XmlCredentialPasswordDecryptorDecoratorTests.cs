@@ -9,9 +9,9 @@ namespace mRemoteNGTests.Config.Serializers.CredentialSerializers;
 
 public class XmlCredentialPasswordDecryptorDecoratorTests
 {
-    private XmlCredentialPasswordDecryptorDecorator _sut;
     private readonly SecureString _decryptionKey = "myKey1".ConvertToSecureString();
-    private string _unencryptedPassword = "myPassword1";
+    private XmlCredentialPasswordDecryptorDecorator _sut;
+    private readonly string _unencryptedPassword = "myPassword1";
 
     [SetUp]
     public void Setup()

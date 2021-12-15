@@ -9,13 +9,17 @@ using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Messages;
 
-
 namespace mRemoteNG.Config.Putty;
 
 public class PuttySessionsRegistryProvider : AbstractPuttySessionsProvider
 {
     private const string PuttySessionsKey = "Software\\SimonTatham\\PuTTY\\Sessions";
     private static ManagementEventWatcher _eventWatcher;
+
+    private void OnManagementEventArrived(object sender, EventArrivedEventArgs e)
+    {
+        RaiseSessionChangedEvent(new PuttySessionChangedEventArgs());
+    }
 
     #region Public Methods
 
@@ -128,9 +132,4 @@ public class PuttySessionsRegistryProvider : AbstractPuttySessionsProvider
     }
 
     #endregion
-
-    private void OnManagementEventArrived(object sender, EventArrivedEventArgs e)
-    {
-        RaiseSessionChangedEvent(new PuttySessionChangedEventArgs());
-    }
 }

@@ -1,26 +1,33 @@
 ﻿using System;
 using System.IO;
 using mRemoteNG.App;
+using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using static System.IO.FileMode;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Tools;
 
 internal class SecureTransfer : IDisposable
 {
+    public enum SSHTransferProtocol
+    {
+        SCP = 0,
+        SFTP = 1
+    }
+
     private readonly string Host;
-    private readonly string User;
     private readonly string Password;
     private readonly int Port;
     public readonly SSHTransferProtocol Protocol;
-    public string SrcFile;
+    private readonly string User;
+    public AsyncCallback asyncCallback;
+    public SftpUploadAsyncResult asyncResult;
     public string DstFile;
     public ScpClient ScpClt;
     public SftpClient SftpClt;
-    public SftpUploadAsyncResult asyncResult;
-    public AsyncCallback asyncCallback;
+    public string SrcFile;
 
 
     public SecureTransfer()
@@ -53,6 +60,12 @@ internal class SecureTransfer : IDisposable
         DstFile = dest;
     }
 
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
     public void Connect()
     {
         if (Protocol == SSHTransferProtocol.SCP)
@@ -82,7 +95,7 @@ internal class SecureTransfer : IDisposable
         {
             if (!ScpClt.IsConnected)
             {
-                Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                     Language.SshTransferFailed + Environment.NewLine +
                     "SCP Not Connected!");
                 return;
@@ -95,7 +108,7 @@ internal class SecureTransfer : IDisposable
         {
             if (!SftpClt.IsConnected)
             {
-                Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                     Language.SshTransferFailed + Environment.NewLine +
                     "SFTP Not Connected!");
                 return;
@@ -107,12 +120,6 @@ internal class SecureTransfer : IDisposable
         }
     }
 
-    public enum SSHTransferProtocol
-    {
-        SCP = 0,
-        SFTP = 1
-    }
-
     private void Dispose(bool disposing)
     {
         if (!disposing) return;
@@ -120,11 +127,5 @@ internal class SecureTransfer : IDisposable
         if (Protocol == SSHTransferProtocol.SCP) ScpClt.Dispose();
 
         if (Protocol == SSHTransferProtocol.SFTP) SftpClt.Dispose();
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
     }
 }

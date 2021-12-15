@@ -12,8 +12,8 @@ namespace mRemoteNGTests.Config.Serializers;
 
 public class DataTableDeserializerTests
 {
-    private DataTableDeserializer _deserializer;
     private ICryptographyProvider _cryptographyProvider;
+    private DataTableDeserializer _deserializer;
 
     [SetUp]
     public void Setup()

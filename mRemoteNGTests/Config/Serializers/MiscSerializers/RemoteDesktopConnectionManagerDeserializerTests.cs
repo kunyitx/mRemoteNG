@@ -12,9 +12,6 @@ namespace mRemoteNGTests.Config.Serializers.MiscSerializers;
 
 public class RemoteDesktopConnectionManagerDeserializerTests
 {
-    private string _connectionFileContents;
-    private RemoteDesktopConnectionManagerDeserializer _deserializer;
-    private ConnectionTreeModel _connectionTreeModel;
     private const string ExpectedName = "server1_displayname";
     private const string ExpectedHostname = "server1";
     private const string ExpectedDescription = "Comment text here";
@@ -38,6 +35,9 @@ public class RemoteDesktopConnectionManagerDeserializerTests
     private const bool ExpectedPrinterRedirection = true;
     private const AuthenticationLevel ExpectedAuthLevel = AuthenticationLevel.AuthRequired;
     private const string ExpectedStartProgram = "alternate shell";
+    private string _connectionFileContents;
+    private ConnectionTreeModel _connectionTreeModel;
+    private RemoteDesktopConnectionManagerDeserializer _deserializer;
 
     [OneTimeSetUp]
     public void OnetimeSetup()

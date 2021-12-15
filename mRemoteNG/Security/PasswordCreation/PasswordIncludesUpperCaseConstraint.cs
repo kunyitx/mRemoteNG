@@ -9,8 +9,6 @@ public class PasswordIncludesUpperCaseConstraint : IPasswordConstraint
 {
     private readonly int _minimumCount;
 
-    public string ConstraintHint { get; }
-
     public PasswordIncludesUpperCaseConstraint(int minimumCount = 1)
     {
         if (minimumCount < 0)
@@ -19,6 +17,8 @@ public class PasswordIncludesUpperCaseConstraint : IPasswordConstraint
         _minimumCount = minimumCount;
         ConstraintHint = string.Format(Language.PasswordContainsUpperCaseConstraintHint, _minimumCount);
     }
+
+    public string ConstraintHint { get; }
 
     public bool Validate(SecureString password)
     {

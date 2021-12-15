@@ -6,8 +6,8 @@ namespace CustomActions
 {
     public class KbInstalledChecker
     {
-        private readonly Session _session;
         private readonly InstalledWindowsUpdateChecker _installedUpdateChecker;
+        private readonly Session _session;
 
         public KbInstalledChecker(Session session)
         {

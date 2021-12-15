@@ -6,10 +6,15 @@ namespace mRemoteNG.UI;
 public class FullscreenHandler
 {
     private readonly Form _handledForm;
-    private FormWindowState _savedWindowState;
     private FormBorderStyle _savedBorderStyle;
     private Rectangle _savedBounds;
+    private FormWindowState _savedWindowState;
     private bool _value;
+
+    public FullscreenHandler(Form handledForm)
+    {
+        _handledForm = handledForm;
+    }
 
     public bool Value
     {
@@ -23,11 +28,6 @@ public class FullscreenHandler
                 ExitFullscreen();
             _value = value;
         }
-    }
-
-    public FullscreenHandler(Form handledForm)
-    {
-        _handledForm = handledForm;
     }
 
     private void EnterFullscreen()

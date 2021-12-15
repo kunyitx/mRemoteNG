@@ -1,23 +1,92 @@
 ﻿using Microsoft.Win32;
 using SecretServerAuthentication.TSS;
 using SecretServerRestClient.TSS;
+using AuthenticationHeaderValue = System.Net.Http.Headers.AuthenticationHeaderValue;
 
 namespace ExternalConnectors.TSS;
 
 public class SecretServerInterface
 {
+    private static void FetchSecret(int secretID, out string secretUsername, out string secretPassword,
+        out string secretDomain)
+    {
+        var authUsername = SSConnectionData.ssUsername;
+        var authPassword = SSConnectionData.ssPassword;
+        var baseURL = SSConnectionData.ssUrl;
+
+        SecretModel secret;
+        if (SSConnectionData.ssSSO)
+        {
+            // REQUIRES IIS CONFIG! https://docs.thycotic.com/ss/11.0.0/api-scripting/webservice-iwa-powershell
+            var handler = new HttpClientHandler { UseDefaultCredentials = true };
+            using (var httpClient = new HttpClient(handler))
+            {
+                // Call REST API:
+                var client = new SecretsServiceClient($"{baseURL}/winauthwebservices/api", httpClient);
+                secret = client.GetSecretAsync(false, true, secretID, null).Result;
+            }
+        }
+        else
+        {
+            using (var httpClient = new HttpClient())
+            {
+                // Authenticate:
+                var tokenClient = new OAuth2ServiceClient(baseURL, httpClient);
+                var token = tokenClient.AuthorizeAsync(Grant_type.Password, authUsername, authPassword, null).Result;
+                var tokenResult = token.Access_token;
+
+                // Set credentials (token):
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", tokenResult);
+
+                // Call REST API:
+                var client = new SecretsServiceClient($"{baseURL}/api", httpClient);
+                secret = client.GetSecretAsync(false, true, secretID, null).Result;
+            }
+        }
+
+        // clear return variables
+        secretDomain = "";
+        secretUsername = "";
+        secretPassword = "";
+
+        // parse data and extract what we need
+        foreach (var item in secret.Items)
+            if (item.FieldName.ToLower().Equals("domain"))
+                secretDomain = item.ItemValue;
+            else if (item.FieldName.ToLower().Equals("username"))
+                secretUsername = item.ItemValue;
+            else if (item.FieldName.ToLower().Equals("password"))
+                secretPassword = item.ItemValue;
+    }
+
+    // input must be in form "SSAPI:xxxx" where xxx is the secret id to fetch
+    public static void FetchSecretFromServer(string input, out string username, out string password, out string domain)
+    {
+        // get secret id
+        if (!input.StartsWith("SSAPI:"))
+            throw new Exception("calling this function requires SSAPI: input");
+        var secretID = int.Parse(input.Substring(6));
+
+        // init connection credentials, display popup if necessary
+        SSConnectionData.Init();
+
+        // get the secret
+        FetchSecret(secretID, out username, out password, out domain);
+    }
+
     private static class SSConnectionData
     {
         public static string ssUsername = "";
         public static string ssPassword = "";
         public static string ssUrl = "";
-        public static bool ssSSO = false;
+        public static bool ssSSO;
 
-        public static bool initdone = false;
+        public static bool initdone;
 
         public static void Init()
         {
-            if (ssPassword != "" || initdone == true)
+            if (ssPassword != "" || initdone)
                 return;
 
             var key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\mRemoteSSInterface");
@@ -63,82 +132,10 @@ public class SecretServerInterface
                 key.SetValue("URL", ssUrl);
                 key.SetValue("SSO", ssSSO);
             }
-            catch (Exception)
-            {
-                throw;
-            }
             finally
             {
                 key.Close();
             }
         }
-    }
-
-    private static void FetchSecret(int secretID, out string secretUsername, out string secretPassword,
-        out string secretDomain)
-    {
-        var authUsername = SSConnectionData.ssUsername;
-        var authPassword = SSConnectionData.ssPassword;
-        var baseURL = SSConnectionData.ssUrl;
-
-        SecretModel secret;
-        if (SSConnectionData.ssSSO)
-        {
-            // REQUIRES IIS CONFIG! https://docs.thycotic.com/ss/11.0.0/api-scripting/webservice-iwa-powershell
-            var handler = new HttpClientHandler() { UseDefaultCredentials = true };
-            using (var httpClient = new HttpClient(handler))
-            {
-                // Call REST API:
-                var client = new SecretsServiceClient($"{baseURL}/winauthwebservices/api", httpClient);
-                secret = client.GetSecretAsync(false, true, secretID, null).Result;
-            }
-        }
-        else
-        {
-            using (var httpClient = new HttpClient())
-            {
-                // Authenticate:
-                var tokenClient = new OAuth2ServiceClient(baseURL, httpClient);
-                var token = tokenClient.AuthorizeAsync(Grant_type.Password, authUsername, authPassword, null).Result;
-                var tokenResult = token.Access_token;
-
-                // Set credentials (token):
-                httpClient.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResult);
-
-                // Call REST API:
-                var client = new SecretsServiceClient($"{baseURL}/api", httpClient);
-                secret = client.GetSecretAsync(false, true, secretID, null).Result;
-            }
-        }
-
-        // clear return variables
-        secretDomain = "";
-        secretUsername = "";
-        secretPassword = "";
-
-        // parse data and extract what we need
-        foreach (var item in secret.Items)
-            if (item.FieldName.ToLower().Equals("domain"))
-                secretDomain = item.ItemValue;
-            else if (item.FieldName.ToLower().Equals("username"))
-                secretUsername = item.ItemValue;
-            else if (item.FieldName.ToLower().Equals("password"))
-                secretPassword = item.ItemValue;
-    }
-
-    // input must be in form "SSAPI:xxxx" where xxx is the secret id to fetch
-    public static void FetchSecretFromServer(string input, out string username, out string password, out string domain)
-    {
-        // get secret id
-        if (!input.StartsWith("SSAPI:"))
-            throw new Exception("calling this function requires SSAPI: input");
-        var secretID = int.Parse(input.Substring(6));
-
-        // init connection credentials, display popup if necessary
-        SSConnectionData.Init();
-
-        // get the secret
-        FetchSecret(secretID, out username, out password, out domain);
     }
 }

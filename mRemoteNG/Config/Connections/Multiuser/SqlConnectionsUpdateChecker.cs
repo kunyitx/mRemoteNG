@@ -12,7 +12,6 @@ public class SqlConnectionsUpdateChecker : IConnectionsUpdateChecker
 {
     private readonly IDatabaseConnector _dbConnector;
     private readonly DbCommand _dbQuery;
-    private DateTime LastUpdateTime => Runtime.ConnectionsService.LastSqlUpdate;
     private DateTime _lastDatabaseUpdateTime;
 
 
@@ -22,6 +21,8 @@ public class SqlConnectionsUpdateChecker : IConnectionsUpdateChecker
         _dbQuery = _dbConnector.DbCommand("SELECT * FROM tblUpdate");
         _lastDatabaseUpdateTime = default;
     }
+
+    private DateTime LastUpdateTime => Runtime.ConnectionsService.LastSqlUpdate;
 
     public bool IsUpdateAvailable()
     {
@@ -39,6 +40,18 @@ public class SqlConnectionsUpdateChecker : IConnectionsUpdateChecker
         var thread = new Thread(() => IsUpdateAvailable());
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
+    }
+
+
+    public event EventHandler UpdateCheckStarted;
+
+    public event UpdateCheckFinishedEventHandler UpdateCheckFinished;
+
+    public event ConnectionsUpdateAvailableEventHandler ConnectionsUpdateAvailable;
+
+    public void Dispose()
+    {
+        Dispose(true);
     }
 
     private void ConnectToSqlDb()
@@ -92,15 +105,10 @@ public class SqlConnectionsUpdateChecker : IConnectionsUpdateChecker
         return lastUpdateInDb;
     }
 
-
-    public event EventHandler UpdateCheckStarted;
-
     private void RaiseUpdateCheckStartedEvent()
     {
         UpdateCheckStarted?.Invoke(this, EventArgs.Empty);
     }
-
-    public event UpdateCheckFinishedEventHandler UpdateCheckFinished;
 
     private void RaiseUpdateCheckFinishedEvent(bool updateAvailable)
     {
@@ -108,18 +116,11 @@ public class SqlConnectionsUpdateChecker : IConnectionsUpdateChecker
         UpdateCheckFinished?.Invoke(this, args);
     }
 
-    public event ConnectionsUpdateAvailableEventHandler ConnectionsUpdateAvailable;
-
     private void RaiseConnectionsUpdateAvailableEvent()
     {
         Runtime.MessageCollector.AddMessage(MessageClass.DebugMsg, "Remote connection update is available");
         var args = new ConnectionsUpdateAvailableEventArgs(_dbConnector, _lastDatabaseUpdateTime);
         ConnectionsUpdateAvailable?.Invoke(this, args);
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
     }
 
     private void Dispose(bool itIsSafeToDisposeManagedObjects)

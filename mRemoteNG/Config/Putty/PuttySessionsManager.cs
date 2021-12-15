@@ -10,18 +10,56 @@ namespace mRemoteNG.Config.Putty;
 
 public class PuttySessionsManager
 {
-    public static PuttySessionsManager Instance { get; } = new();
-
     private readonly List<AbstractPuttySessionsProvider> _providers = new();
-
-    public IEnumerable<AbstractPuttySessionsProvider> Providers => _providers;
-
-    public List<RootPuttySessionsNodeInfo> RootPuttySessionsNodes { get; } = new();
 
     private PuttySessionsManager()
     {
         AddProvider(new PuttySessionsRegistryProvider());
     }
+
+    public static PuttySessionsManager Instance { get; } = new();
+
+    public IEnumerable<AbstractPuttySessionsProvider> Providers => _providers;
+
+    public List<RootPuttySessionsNodeInfo> RootPuttySessionsNodes { get; } = new();
+
+    public event NotifyCollectionChangedEventHandler PuttySessionsCollectionChanged;
+
+    protected void RaisePuttySessionCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        PuttySessionsCollectionChanged?.Invoke(sender, args);
+    }
+
+    public event NotifyCollectionChangedEventHandler SessionProvidersCollectionChanged;
+
+    protected void RaiseSessionProvidersCollectionChangedEvent(NotifyCollectionChangedEventArgs args)
+    {
+        SessionProvidersCollectionChanged?.Invoke(this, args);
+    }
+
+    #region Public Classes
+
+    public class SessionList : StringConverter
+    {
+        public static string[] Names => Instance.GetSessionNames();
+
+        public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+        {
+            return new StandardValuesCollection(Names);
+        }
+
+        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+    }
+
+    #endregion
 
 
     #region Public Methods
@@ -120,42 +158,4 @@ public class PuttySessionsManager
     }
 
     #endregion
-
-    #region Public Classes
-
-    public class SessionList : StringConverter
-    {
-        public static string[] Names => Instance.GetSessionNames();
-
-        public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
-        {
-            return new StandardValuesCollection(Names);
-        }
-
-        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
-        {
-            return true;
-        }
-
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
-    }
-
-    #endregion
-
-    public event NotifyCollectionChangedEventHandler PuttySessionsCollectionChanged;
-
-    protected void RaisePuttySessionCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs args)
-    {
-        PuttySessionsCollectionChanged?.Invoke(sender, args);
-    }
-
-    public event NotifyCollectionChangedEventHandler SessionProvidersCollectionChanged;
-
-    protected void RaiseSessionProvidersCollectionChangedEvent(NotifyCollectionChangedEventArgs args)
-    {
-        SessionProvidersCollectionChanged?.Invoke(this, args);
-    }
 }

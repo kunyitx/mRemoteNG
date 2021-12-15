@@ -2,7 +2,6 @@
 using mRemoteNG.Tree.Root;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class RootNodeInfoTests

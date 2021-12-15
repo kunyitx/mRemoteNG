@@ -4,9 +4,6 @@ namespace mRemoteNG.Credential;
 
 public class CredentialChangedEventArgs : EventArgs
 {
-    public ICredentialRecord CredentialRecord { get; }
-    public ICredentialRepository Repository { get; }
-
     public CredentialChangedEventArgs(ICredentialRecord credentialRecord, ICredentialRepository repository)
     {
         if (credentialRecord == null)
@@ -17,4 +14,7 @@ public class CredentialChangedEventArgs : EventArgs
         CredentialRecord = credentialRecord;
         Repository = repository;
     }
+
+    public ICredentialRecord CredentialRecord { get; }
+    public ICredentialRepository Repository { get; }
 }

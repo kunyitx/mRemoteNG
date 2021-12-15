@@ -1,16 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tools;
 using mRemoteNG.Tools.Clipboard;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
-using mRemoteNG.Resources.Language;
 
 // ReSharper disable UnusedParameter.Local
 
@@ -19,43 +20,43 @@ namespace mRemoteNG.UI.Controls;
 
 public sealed class ConnectionContextMenu : ContextMenuStrip
 {
+    private readonly IConnectionInitiator _connectionInitiator;
+    private readonly ConnectionTree.ConnectionTree _connectionTree;
+    private ToolStripMenuItem _cMenInheritanceSubMenu;
     private ToolStripMenuItem _cMenTreeAddConnection;
     private ToolStripMenuItem _cMenTreeAddFolder;
-    private ToolStripSeparator _cMenTreeSep1;
+    private ToolStripMenuItem _cMenTreeApplyDefaultInheritance;
+    private ToolStripMenuItem _cMenTreeApplyInheritanceToChildren;
     private ToolStripMenuItem _cMenTreeConnect;
     private ToolStripMenuItem _cMenTreeConnectWithOptions;
-    private ToolStripMenuItem _cMenTreeConnectWithOptionsConnectToConsoleSession;
-    private ToolStripMenuItem _cMenTreeConnectWithOptionsNoCredentials;
+    private ToolStripMenuItem _cMenTreeConnectWithOptionsChoosePanelBeforeConnecting;
     private ToolStripMenuItem _cMenTreeConnectWithOptionsConnectInFullscreen;
+    private ToolStripMenuItem _cMenTreeConnectWithOptionsConnectToConsoleSession;
+    private ToolStripMenuItem _cMenTreeConnectWithOptionsDontConnectToConsoleSession;
+    private ToolStripMenuItem _cMenTreeConnectWithOptionsNoCredentials;
     private ToolStripMenuItem _cMenTreeConnectWithOptionsViewOnly;
+    private ToolStripMenuItem _cMenTreeCopyHostname;
+    private ToolStripMenuItem _cMenTreeDelete;
     private ToolStripMenuItem _cMenTreeDisconnect;
+    private ToolStripMenuItem _cMenTreeDuplicate;
+    private ToolStripMenuItem _cMenTreeExportFile;
+    private ToolStripMenuItem _cMenTreeImport;
+    private ToolStripMenuItem _cMenTreeImportActiveDirectory;
+    private ToolStripMenuItem _cMenTreeImportFile;
+    private ToolStripMenuItem _cMenTreeImportPortScan;
+    private ToolStripMenuItem _cMenTreeMoveDown;
+    private ToolStripMenuItem _cMenTreeMoveUp;
+    private ToolStripMenuItem _cMenTreeRename;
+    private ToolStripSeparator _cMenTreeSep1;
     private ToolStripSeparator _cMenTreeSep2;
-    private ToolStripMenuItem _cMenTreeToolsTransferFile;
+    private ToolStripSeparator _cMenTreeSep3;
+    private ToolStripSeparator _cMenTreeSep4;
+    private ToolStripMenuItem _cMenTreeToolsExternalApps;
     private ToolStripMenuItem _cMenTreeToolsSort;
     private ToolStripMenuItem _cMenTreeToolsSortAscending;
     private ToolStripMenuItem _cMenTreeToolsSortDescending;
-    private ToolStripSeparator _cMenTreeSep3;
-    private ToolStripMenuItem _cMenTreeRename;
-    private ToolStripMenuItem _cMenTreeDelete;
-    private ToolStripMenuItem _cMenTreeCopyHostname;
-    private ToolStripSeparator _cMenTreeSep4;
-    private ToolStripMenuItem _cMenTreeMoveUp;
-    private ToolStripMenuItem _cMenTreeMoveDown;
-    private ToolStripMenuItem _cMenTreeToolsExternalApps;
-    private ToolStripMenuItem _cMenTreeDuplicate;
-    private ToolStripMenuItem _cMenInheritanceSubMenu;
-    private ToolStripMenuItem _cMenTreeConnectWithOptionsChoosePanelBeforeConnecting;
-    private ToolStripMenuItem _cMenTreeConnectWithOptionsDontConnectToConsoleSession;
-    private ToolStripMenuItem _cMenTreeImport;
-    private ToolStripMenuItem _cMenTreeExportFile;
+    private ToolStripMenuItem _cMenTreeToolsTransferFile;
     private ToolStripSeparator _toolStripSeparator1;
-    private ToolStripMenuItem _cMenTreeImportFile;
-    private ToolStripMenuItem _cMenTreeImportActiveDirectory;
-    private ToolStripMenuItem _cMenTreeImportPortScan;
-    private ToolStripMenuItem _cMenTreeApplyInheritanceToChildren;
-    private ToolStripMenuItem _cMenTreeApplyDefaultInheritance;
-    private readonly ConnectionTree.ConnectionTree _connectionTree;
-    private readonly IConnectionInitiator _connectionInitiator;
 
 
     public ConnectionContextMenu(ConnectionTree.ConnectionTree connectionTree)
@@ -120,8 +121,8 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         // cMenTree
         // 
-        Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, 0);
+        Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
         Items.AddRange(new ToolStripItem[]
         {
             _cMenTreeConnect,
@@ -149,13 +150,13 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         });
         Name = "cMenTree";
         RenderMode = ToolStripRenderMode.Professional;
-        Size = new System.Drawing.Size(200, 364);
+        Size = new Size(200, 364);
         // 
         // cMenTreeConnect
         // 
         _cMenTreeConnect.Image = Properties.Resources.Run_16x;
         _cMenTreeConnect.Name = "_cMenTreeConnect";
-        _cMenTreeConnect.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeConnect.Size = new Size(199, 22);
         _cMenTreeConnect.Text = "Connect";
         _cMenTreeConnect.Click += OnConnectClicked;
         // 
@@ -171,14 +172,14 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
             _cMenTreeConnectWithOptionsViewOnly
         });
         _cMenTreeConnectWithOptions.Name = "_cMenTreeConnectWithOptions";
-        _cMenTreeConnectWithOptions.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeConnectWithOptions.Size = new Size(199, 22);
         _cMenTreeConnectWithOptions.Text = "Connect (with options)";
         // 
         // cMenTreeConnectWithOptionsConnectToConsoleSession
         // 
         _cMenTreeConnectWithOptionsConnectToConsoleSession.Name =
             "_cMenTreeConnectWithOptionsConnectToConsoleSession";
-        _cMenTreeConnectWithOptionsConnectToConsoleSession.Size = new System.Drawing.Size(245, 22);
+        _cMenTreeConnectWithOptionsConnectToConsoleSession.Size = new Size(245, 22);
         _cMenTreeConnectWithOptionsConnectToConsoleSession.Text = "Connect to console session";
         _cMenTreeConnectWithOptionsConnectToConsoleSession.Click += OnConnectToConsoleSessionClicked;
         // 
@@ -186,7 +187,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeConnectWithOptionsDontConnectToConsoleSession.Name =
             "_cMenTreeConnectWithOptionsDontConnectToConsoleSession";
-        _cMenTreeConnectWithOptionsDontConnectToConsoleSession.Size = new System.Drawing.Size(245, 22);
+        _cMenTreeConnectWithOptionsDontConnectToConsoleSession.Size = new Size(245, 22);
         _cMenTreeConnectWithOptionsDontConnectToConsoleSession.Text = "Don\'t connect to console session";
         _cMenTreeConnectWithOptionsDontConnectToConsoleSession.Visible = false;
         _cMenTreeConnectWithOptionsDontConnectToConsoleSession.Click += OnDontConnectToConsoleSessionClicked;
@@ -195,7 +196,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeConnectWithOptionsConnectInFullscreen.Image = Properties.Resources.FullScreen_16x;
         _cMenTreeConnectWithOptionsConnectInFullscreen.Name = "_cMenTreeConnectWithOptionsConnectInFullscreen";
-        _cMenTreeConnectWithOptionsConnectInFullscreen.Size = new System.Drawing.Size(245, 22);
+        _cMenTreeConnectWithOptionsConnectInFullscreen.Size = new Size(245, 22);
         _cMenTreeConnectWithOptionsConnectInFullscreen.Text = "Connect in fullscreen";
         _cMenTreeConnectWithOptionsConnectInFullscreen.Click += OnConnectInFullscreenClicked;
         // 
@@ -203,7 +204,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeConnectWithOptionsNoCredentials.Image = Properties.Resources.UniqueKeyError_16x;
         _cMenTreeConnectWithOptionsNoCredentials.Name = "_cMenTreeConnectWithOptionsNoCredentials";
-        _cMenTreeConnectWithOptionsNoCredentials.Size = new System.Drawing.Size(245, 22);
+        _cMenTreeConnectWithOptionsNoCredentials.Size = new Size(245, 22);
         _cMenTreeConnectWithOptionsNoCredentials.Text = "Connect without credentials";
         _cMenTreeConnectWithOptionsNoCredentials.Click += OnConnectWithNoCredentialsClick;
         // 
@@ -212,7 +213,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         _cMenTreeConnectWithOptionsChoosePanelBeforeConnecting.Image = Properties.Resources.Panel_16x;
         _cMenTreeConnectWithOptionsChoosePanelBeforeConnecting.Name =
             "_cMenTreeConnectWithOptionsChoosePanelBeforeConnecting";
-        _cMenTreeConnectWithOptionsChoosePanelBeforeConnecting.Size = new System.Drawing.Size(245, 22);
+        _cMenTreeConnectWithOptionsChoosePanelBeforeConnecting.Size = new Size(245, 22);
         _cMenTreeConnectWithOptionsChoosePanelBeforeConnecting.Text = "Choose panel before connecting";
         _cMenTreeConnectWithOptionsChoosePanelBeforeConnecting.Click += OnChoosePanelBeforeConnectingClicked;
         // 
@@ -221,7 +222,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         _cMenTreeConnectWithOptionsViewOnly.Image = Properties.Resources.Monitor_16x;
         _cMenTreeConnectWithOptionsViewOnly.Name =
             "_cMenTreeConnectWithOptionsViewOnly";
-        _cMenTreeConnectWithOptionsViewOnly.Size = new System.Drawing.Size(245, 22);
+        _cMenTreeConnectWithOptionsViewOnly.Size = new Size(245, 22);
         _cMenTreeConnectWithOptionsViewOnly.Text = Language.ConnectInViewOnlyMode;
         _cMenTreeConnectWithOptionsViewOnly.Click += ConnectWithOptionsViewOnlyOnClick;
         // 
@@ -229,40 +230,40 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeDisconnect.Image = Properties.Resources.Stop_16x;
         _cMenTreeDisconnect.Name = "_cMenTreeDisconnect";
-        _cMenTreeDisconnect.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeDisconnect.Size = new Size(199, 22);
         _cMenTreeDisconnect.Text = "Disconnect";
         _cMenTreeDisconnect.Click += OnDisconnectClicked;
         // 
         // cMenTreeSep1
         // 
         _cMenTreeSep1.Name = "_cMenTreeSep1";
-        _cMenTreeSep1.Size = new System.Drawing.Size(196, 6);
+        _cMenTreeSep1.Size = new Size(196, 6);
         // 
         // cMenTreeToolsExternalApps
         // 
         _cMenTreeToolsExternalApps.Image = Properties.Resources.Console_16x;
         _cMenTreeToolsExternalApps.Name = "_cMenTreeToolsExternalApps";
-        _cMenTreeToolsExternalApps.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeToolsExternalApps.Size = new Size(199, 22);
         _cMenTreeToolsExternalApps.Text = "External Applications";
         // 
         // cMenTreeToolsTransferFile
         // 
         _cMenTreeToolsTransferFile.Image = Properties.Resources.SyncArrow_16x;
         _cMenTreeToolsTransferFile.Name = "_cMenTreeToolsTransferFile";
-        _cMenTreeToolsTransferFile.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeToolsTransferFile.Size = new Size(199, 22);
         _cMenTreeToolsTransferFile.Text = "Transfer File (SSH)";
         _cMenTreeToolsTransferFile.Click += OnTransferFileClicked;
         // 
         // cMenTreeSep2
         // 
         _cMenTreeSep2.Name = "_cMenTreeSep2";
-        _cMenTreeSep2.Size = new System.Drawing.Size(196, 6);
+        _cMenTreeSep2.Size = new Size(196, 6);
         // 
         // cMenTreeDuplicate
         // 
         _cMenTreeDuplicate.Image = Properties.Resources.Copy_16x;
         _cMenTreeDuplicate.Name = "_cMenTreeDuplicate";
-        _cMenTreeDuplicate.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeDuplicate.Size = new Size(199, 22);
         _cMenTreeDuplicate.Text = "Duplicate";
         _cMenTreeDuplicate.Click += OnDuplicateClicked;
         // 
@@ -270,7 +271,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeRename.Image = Properties.Resources.Rename_16x;
         _cMenTreeRename.Name = "_cMenTreeRename";
-        _cMenTreeRename.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeRename.Size = new Size(199, 22);
         _cMenTreeRename.Text = "Rename";
         _cMenTreeRename.Click += OnRenameClicked;
         // 
@@ -278,21 +279,21 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeDelete.Image = Properties.Resources.Close_16x;
         _cMenTreeDelete.Name = "_cMenTreeDelete";
-        _cMenTreeDelete.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeDelete.Size = new Size(199, 22);
         _cMenTreeDelete.Text = "Delete";
         _cMenTreeDelete.Click += OnDeleteClicked;
         // 
         // cMenTreeCopyHostname
         // 
         _cMenTreeCopyHostname.Name = "_cMenTreeCopyHostname";
-        _cMenTreeCopyHostname.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeCopyHostname.Size = new Size(199, 22);
         _cMenTreeCopyHostname.Text = "Copy Hostname";
         _cMenTreeCopyHostname.Click += OnCopyHostnameClicked;
         // 
         // cMenTreeSep3
         // 
         _cMenTreeSep3.Name = "_cMenTreeSep3";
-        _cMenTreeSep3.Size = new System.Drawing.Size(196, 6);
+        _cMenTreeSep3.Size = new Size(196, 6);
         // 
         // cMenTreeImport
         // 
@@ -303,47 +304,47 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
             _cMenTreeImportPortScan
         });
         _cMenTreeImport.Name = "_cMenTreeImport";
-        _cMenTreeImport.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeImport.Size = new Size(199, 22);
         _cMenTreeImport.Text = "&Import";
         // 
         // cMenTreeImportFile
         // 
         _cMenTreeImportFile.Name = "_cMenTreeImportFile";
-        _cMenTreeImportFile.Size = new System.Drawing.Size(226, 22);
+        _cMenTreeImportFile.Size = new Size(226, 22);
         _cMenTreeImportFile.Text = "Import from &File...";
         _cMenTreeImportFile.Click += OnImportFileClicked;
         // 
         // cMenTreeImportActiveDirectory
         // 
         _cMenTreeImportActiveDirectory.Name = "_cMenTreeImportActiveDirectory";
-        _cMenTreeImportActiveDirectory.Size = new System.Drawing.Size(226, 22);
+        _cMenTreeImportActiveDirectory.Size = new Size(226, 22);
         _cMenTreeImportActiveDirectory.Text = "Import from &Active Directory...";
         _cMenTreeImportActiveDirectory.Click += OnImportActiveDirectoryClicked;
         // 
         // cMenTreeImportPortScan
         // 
         _cMenTreeImportPortScan.Name = "_cMenTreeImportPortScan";
-        _cMenTreeImportPortScan.Size = new System.Drawing.Size(226, 22);
+        _cMenTreeImportPortScan.Size = new Size(226, 22);
         _cMenTreeImportPortScan.Text = "Import from &Port Scan...";
         _cMenTreeImportPortScan.Click += OnImportPortScanClicked;
         // 
         // cMenTreeExportFile
         // 
         _cMenTreeExportFile.Name = "_cMenTreeExportFile";
-        _cMenTreeExportFile.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeExportFile.Size = new Size(199, 22);
         _cMenTreeExportFile.Text = "&Export to File...";
         _cMenTreeExportFile.Click += OnExportFileClicked;
         // 
         // cMenTreeSep4
         // 
         _cMenTreeSep4.Name = "_cMenTreeSep4";
-        _cMenTreeSep4.Size = new System.Drawing.Size(196, 6);
+        _cMenTreeSep4.Size = new Size(196, 6);
         // 
         // cMenTreeAddConnection
         // 
         _cMenTreeAddConnection.Image = Properties.Resources.AddItem_16x;
         _cMenTreeAddConnection.Name = "_cMenTreeAddConnection";
-        _cMenTreeAddConnection.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeAddConnection.Size = new Size(199, 22);
         _cMenTreeAddConnection.Text = "New Connection";
         _cMenTreeAddConnection.Click += OnAddConnectionClicked;
         // 
@@ -351,14 +352,14 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeAddFolder.Image = Properties.Resources.AddFolder_16x;
         _cMenTreeAddFolder.Name = "_cMenTreeAddFolder";
-        _cMenTreeAddFolder.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeAddFolder.Size = new Size(199, 22);
         _cMenTreeAddFolder.Text = "New Folder";
         _cMenTreeAddFolder.Click += OnAddFolderClicked;
         // 
         // ToolStripSeparator1
         // 
         _toolStripSeparator1.Name = "_toolStripSeparator1";
-        _toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
+        _toolStripSeparator1.Size = new Size(196, 6);
         // 
         // cMenTreeToolsSort
         // 
@@ -368,14 +369,14 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
             _cMenTreeToolsSortDescending
         });
         _cMenTreeToolsSort.Name = "_cMenTreeToolsSort";
-        _cMenTreeToolsSort.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeToolsSort.Size = new Size(199, 22);
         _cMenTreeToolsSort.Text = "Sort";
         // 
         // cMenTreeToolsSortAscending
         // 
         _cMenTreeToolsSortAscending.Image = Properties.Resources.SortAscending_16x;
         _cMenTreeToolsSortAscending.Name = "_cMenTreeToolsSortAscending";
-        _cMenTreeToolsSortAscending.Size = new System.Drawing.Size(161, 22);
+        _cMenTreeToolsSortAscending.Size = new Size(161, 22);
         _cMenTreeToolsSortAscending.Text = "Ascending (A-Z)";
         _cMenTreeToolsSortAscending.Click += OnSortAscendingClicked;
         // 
@@ -383,7 +384,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeToolsSortDescending.Image = Properties.Resources.SortDescending_16x;
         _cMenTreeToolsSortDescending.Name = "_cMenTreeToolsSortDescending";
-        _cMenTreeToolsSortDescending.Size = new System.Drawing.Size(161, 22);
+        _cMenTreeToolsSortDescending.Size = new Size(161, 22);
         _cMenTreeToolsSortDescending.Text = "Descending (Z-A)";
         _cMenTreeToolsSortDescending.Click += OnSortDescendingClicked;
         // 
@@ -391,7 +392,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeMoveUp.Image = Properties.Resources.GlyphUp_16x;
         _cMenTreeMoveUp.Name = "_cMenTreeMoveUp";
-        _cMenTreeMoveUp.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeMoveUp.Size = new Size(199, 22);
         _cMenTreeMoveUp.Text = "Move up";
         _cMenTreeMoveUp.Click += OnMoveUpClicked;
         // 
@@ -399,7 +400,7 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
         // 
         _cMenTreeMoveDown.Image = Properties.Resources.GlyphDown_16x;
         _cMenTreeMoveDown.Name = "_cMenTreeMoveDown";
-        _cMenTreeMoveDown.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeMoveDown.Size = new Size(199, 22);
         _cMenTreeMoveDown.Text = "Move down";
         _cMenTreeMoveDown.Click += OnMoveDownClicked;
         // 
@@ -411,20 +412,20 @@ public sealed class ConnectionContextMenu : ContextMenuStrip
             _cMenTreeApplyDefaultInheritance
         });
         _cMenInheritanceSubMenu.Name = "_cMenInheritanceSubMenu";
-        _cMenInheritanceSubMenu.Size = new System.Drawing.Size(199, 22);
+        _cMenInheritanceSubMenu.Size = new Size(199, 22);
         _cMenInheritanceSubMenu.Text = "Inheritance";
         // 
         // _cMenTreeApplyInheritanceToChildren
         // 
         _cMenTreeApplyInheritanceToChildren.Name = "_cMenTreeApplyInheritanceToChildren";
-        _cMenTreeApplyInheritanceToChildren.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeApplyInheritanceToChildren.Size = new Size(199, 22);
         _cMenTreeApplyInheritanceToChildren.Text = "Apply inheritance to children";
         _cMenTreeApplyInheritanceToChildren.Click += OnApplyInheritanceToChildrenClicked;
         // 
         // _cMenTreeApplyDefaultInheritance
         // 
         _cMenTreeApplyDefaultInheritance.Name = "_cMenTreeApplyDefaultInheritance";
-        _cMenTreeApplyDefaultInheritance.Size = new System.Drawing.Size(199, 22);
+        _cMenTreeApplyDefaultInheritance.Size = new Size(199, 22);
         _cMenTreeApplyDefaultInheritance.Text = "Apply default inheritance";
         _cMenTreeApplyDefaultInheritance.Click += OnApplyDefaultInheritanceClicked;
     }

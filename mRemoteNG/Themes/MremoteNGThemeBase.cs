@@ -1,12 +1,12 @@
-﻿namespace mRemoteNG.Themes;
-
-using System.Drawing;
-using UI.Tabs;
+﻿using System.Drawing;
+using mRemoteNG.UI.Tabs;
 using WeifenLuo.WinFormsUI.Docking;
 using WeifenLuo.WinFormsUI.ThemeVS2015;
 
+namespace mRemoteNG.Themes;
+
 /// <summary>
-/// Visual Studio 2015 Light theme.
+///     Visual Studio 2015 Light theme.
 /// </summary>
 public class MremoteNGThemeBase : VS2015ThemeBase
 {

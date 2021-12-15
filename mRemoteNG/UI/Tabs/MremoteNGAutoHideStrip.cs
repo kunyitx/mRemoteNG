@@ -8,18 +8,6 @@ namespace mRemoteNG.UI.Tabs;
 
 internal sealed class MremoteNGAutoHideStrip : AutoHideStripBase
 {
-    private class TabNG : Tab
-    {
-        internal TabNG(IDockContent content)
-            : base(content)
-        {
-        }
-
-        public int TabX { get; set; }
-
-        public int TabWidth { get; set; }
-    }
-
     private const int _ImageHeight = 16;
     private const int _ImageWidth = 16;
     private const int _ImageGapTop = 2;
@@ -32,88 +20,21 @@ internal sealed class MremoteNGAutoHideStrip : AutoHideStripBase
     private const int _TabGapLeft = 4;
     private const int _TabGapBetween = 10;
 
-    #region Customizable Properties
+    private static DockState[] _dockStates;
 
-    public Font TextFont => DockPanel.Theme.Skin.AutoHideStripSkin.TextFont;
+    private static GraphicsPath _graphicsPath;
 
-    private static StringFormat _stringFormatTabHorizontal;
-
-    private StringFormat StringFormatTabHorizontal
+    public MremoteNGAutoHideStrip(DockPanel panel)
+        : base(panel)
     {
-        get
-        {
-            if (_stringFormatTabHorizontal == null)
-                _stringFormatTabHorizontal = new StringFormat
-                {
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center,
-                    FormatFlags = StringFormatFlags.NoWrap,
-                    Trimming = StringTrimming.None
-                };
-
-            if (RightToLeft == RightToLeft.Yes)
-                _stringFormatTabHorizontal.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
-            else
-                _stringFormatTabHorizontal.FormatFlags &= ~StringFormatFlags.DirectionRightToLeft;
-
-            return _stringFormatTabHorizontal;
-        }
+        SetStyle(ControlStyles.ResizeRedraw |
+                 ControlStyles.UserPaint |
+                 ControlStyles.AllPaintingInWmPaint |
+                 ControlStyles.OptimizedDoubleBuffer, true);
+        BackColor = SystemColors.ControlLight;
     }
-
-    private static StringFormat _stringFormatTabVertical;
-
-    private StringFormat StringFormatTabVertical
-    {
-        get
-        {
-            if (_stringFormatTabVertical == null)
-            {
-                _stringFormatTabVertical = new StringFormat();
-                _stringFormatTabVertical.Alignment = StringAlignment.Near;
-                _stringFormatTabVertical.LineAlignment = StringAlignment.Center;
-                _stringFormatTabVertical.FormatFlags =
-                    StringFormatFlags.NoWrap | StringFormatFlags.DirectionVertical;
-                _stringFormatTabVertical.Trimming = StringTrimming.None;
-            }
-
-            if (RightToLeft == RightToLeft.Yes)
-                _stringFormatTabVertical.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
-            else
-                _stringFormatTabVertical.FormatFlags &= ~StringFormatFlags.DirectionRightToLeft;
-
-            return _stringFormatTabVertical;
-        }
-    }
-
-    private static int ImageHeight => _ImageHeight;
-
-    private static int ImageWidth => _ImageWidth;
-
-    private static int ImageGapTop => _ImageGapTop;
-
-    private static int ImageGapLeft => _ImageGapLeft;
-
-    private static int ImageGapRight => _ImageGapRight;
-
-    private static int ImageGapBottom => _ImageGapBottom;
-
-    private static int TextGapLeft => _TextGapLeft;
-
-    private static int TextGapRight => _TextGapRight;
-
-    private static int TabGapTop => _TabGapTop;
-
-    private static int TabGapLeft => _TabGapLeft;
-
-    private static int TabGapBetween => _TabGapBetween;
-
-    private static Pen PenTabBorder => SystemPens.GrayText;
-
-    #endregion
 
     private static Matrix MatrixIdentity { get; } = new();
-
-    private static DockState[] _dockStates;
 
     private static DockState[] DockStates
     {
@@ -132,8 +53,6 @@ internal sealed class MremoteNGAutoHideStrip : AutoHideStripBase
         }
     }
 
-    private static GraphicsPath _graphicsPath;
-
     internal static GraphicsPath GraphicsPath
     {
         get
@@ -143,16 +62,6 @@ internal sealed class MremoteNGAutoHideStrip : AutoHideStripBase
 
             return _graphicsPath;
         }
-    }
-
-    public MremoteNGAutoHideStrip(DockPanel panel)
-        : base(panel)
-    {
-        SetStyle(ControlStyles.ResizeRedraw |
-                 ControlStyles.UserPaint |
-                 ControlStyles.AllPaintingInWmPaint |
-                 ControlStyles.OptimizedDoubleBuffer, true);
-        BackColor = SystemColors.ControlLight;
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -416,8 +325,7 @@ internal sealed class MremoteNGAutoHideStrip : AutoHideStripBase
 
         if (!transformed)
             return new Rectangle(x, y, width, height);
-        else
-            return GetTransformedRectangle(dockState, new Rectangle(x, y, width, height));
+        return GetTransformedRectangle(dockState, new Rectangle(x, y, width, height));
     }
 
     private Rectangle GetTransformedRectangle(DockState dockState, Rectangle rect)
@@ -486,4 +394,95 @@ internal sealed class MremoteNGAutoHideStrip : AutoHideStripBase
     {
         return new TabNG(content);
     }
+
+    private class TabNG : Tab
+    {
+        internal TabNG(IDockContent content)
+            : base(content)
+        {
+        }
+
+        public int TabX { get; set; }
+
+        public int TabWidth { get; set; }
+    }
+
+    #region Customizable Properties
+
+    public Font TextFont => DockPanel.Theme.Skin.AutoHideStripSkin.TextFont;
+
+    private static StringFormat _stringFormatTabHorizontal;
+
+    private StringFormat StringFormatTabHorizontal
+    {
+        get
+        {
+            if (_stringFormatTabHorizontal == null)
+                _stringFormatTabHorizontal = new StringFormat
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center,
+                    FormatFlags = StringFormatFlags.NoWrap,
+                    Trimming = StringTrimming.None
+                };
+
+            if (RightToLeft == RightToLeft.Yes)
+                _stringFormatTabHorizontal.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
+            else
+                _stringFormatTabHorizontal.FormatFlags &= ~StringFormatFlags.DirectionRightToLeft;
+
+            return _stringFormatTabHorizontal;
+        }
+    }
+
+    private static StringFormat _stringFormatTabVertical;
+
+    private StringFormat StringFormatTabVertical
+    {
+        get
+        {
+            if (_stringFormatTabVertical == null)
+            {
+                _stringFormatTabVertical = new StringFormat();
+                _stringFormatTabVertical.Alignment = StringAlignment.Near;
+                _stringFormatTabVertical.LineAlignment = StringAlignment.Center;
+                _stringFormatTabVertical.FormatFlags =
+                    StringFormatFlags.NoWrap | StringFormatFlags.DirectionVertical;
+                _stringFormatTabVertical.Trimming = StringTrimming.None;
+            }
+
+            if (RightToLeft == RightToLeft.Yes)
+                _stringFormatTabVertical.FormatFlags |= StringFormatFlags.DirectionRightToLeft;
+            else
+                _stringFormatTabVertical.FormatFlags &= ~StringFormatFlags.DirectionRightToLeft;
+
+            return _stringFormatTabVertical;
+        }
+    }
+
+    private static int ImageHeight => _ImageHeight;
+
+    private static int ImageWidth => _ImageWidth;
+
+    private static int ImageGapTop => _ImageGapTop;
+
+    private static int ImageGapLeft => _ImageGapLeft;
+
+    private static int ImageGapRight => _ImageGapRight;
+
+    private static int ImageGapBottom => _ImageGapBottom;
+
+    private static int TextGapLeft => _TextGapLeft;
+
+    private static int TextGapRight => _TextGapRight;
+
+    private static int TabGapTop => _TabGapTop;
+
+    private static int TabGapLeft => _TabGapLeft;
+
+    private static int TabGapBetween => _TabGapBetween;
+
+    private static Pen PenTabBorder => SystemPens.GrayText;
+
+    #endregion
 }

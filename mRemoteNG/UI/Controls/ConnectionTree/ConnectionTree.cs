@@ -10,12 +10,12 @@ using mRemoteNG.Config.Putty;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Themes;
 using mRemoteNG.Tools.Clipboard;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.ClickHandlers;
 using mRemoteNG.Tree.Root;
-using mRemoteNG.Resources.Language;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -23,19 +23,26 @@ namespace mRemoteNG.UI.Controls.ConnectionTree;
 
 public partial class ConnectionTree : TreeListView, IConnectionTree
 {
+    private readonly ConnectionTreeSearchTextFilter _connectionTreeSearchTextFilter = new();
     private readonly ConnectionTreeDragAndDropHandler _dragAndDropHandler = new();
     private readonly PuttySessionsManager _puttySessionsManager = PuttySessionsManager.Instance;
     private readonly StatusImageList _statusImageList = new();
-    private ThemeManager _themeManager;
-
-    private readonly ConnectionTreeSearchTextFilter _connectionTreeSearchTextFilter = new();
+    private bool _allowEdit;
+    private ConnectionTreeModel _connectionTreeModel;
+    private ConnectionContextMenu _contextMenu;
 
     private bool _nodeInEditMode;
-    private bool _allowEdit;
-    private ConnectionContextMenu _contextMenu;
-    private ConnectionTreeModel _connectionTreeModel;
+    private readonly ThemeManager _themeManager;
 
-    public ConnectionInfo SelectedNode => (ConnectionInfo)SelectedObject;
+    public ConnectionTree()
+    {
+        InitializeComponent();
+        SetupConnectionTreeView();
+        UseOverlays = false;
+        _themeManager = ThemeManager.getInstance();
+        _themeManager.ThemeChanged += ThemeManagerOnThemeChanged;
+        ApplyTheme();
+    }
 
     public NodeSearcher NodeSearcher { get; private set; }
 
@@ -49,6 +56,8 @@ public partial class ConnectionTree : TreeListView, IConnectionTree
     public ITreeNodeClickHandler<ConnectionInfo> SingleClickHandler { get; set; } =
         new TreeNodeCompositeClickHandler();
 
+    public ConnectionInfo SelectedNode => (ConnectionInfo)SelectedObject;
+
     public ConnectionTreeModel ConnectionTreeModel
     {
         get { return _connectionTreeModel; }
@@ -61,16 +70,6 @@ public partial class ConnectionTree : TreeListView, IConnectionTree
             _connectionTreeModel = value;
             PopulateTreeView(value);
         }
-    }
-
-    public ConnectionTree()
-    {
-        InitializeComponent();
-        SetupConnectionTreeView();
-        UseOverlays = false;
-        _themeManager = ThemeManager.getInstance();
-        _themeManager.ThemeChanged += ThemeManagerOnThemeChanged;
-        ApplyTheme();
     }
 
     private void ThemeManagerOnThemeChanged()
@@ -167,7 +166,7 @@ public partial class ConnectionTree : TreeListView, IConnectionTree
     }
 
     /// <summary>
-    /// Resizes the given column to ensure that all content is shown
+    ///     Resizes the given column to ensure that all content is shown
     /// </summary>
     private void AutoResizeColumn(ColumnHeader column)
     {
@@ -355,8 +354,8 @@ public partial class ConnectionTree : TreeListView, IConnectionTree
     }
 
     /// <summary>
-    /// Copies the Hostname of the selected connection (or the Name of
-    /// the selected container) to the given <see cref="IClipboard"/>.
+    ///     Copies the Hostname of the selected connection (or the Name of
+    ///     the selected container) to the given <see cref="IClipboard" />.
     /// </summary>
     /// <param name="clipboard"></param>
     public void CopyHostnameSelectedNode(IClipboard clipboard)
@@ -388,8 +387,8 @@ public partial class ConnectionTree : TreeListView, IConnectionTree
     }
 
     /// <summary>
-    /// Expands all tree objects and recalculates the
-    /// column widths.
+    ///     Expands all tree objects and recalculates the
+    ///     column widths.
     /// </summary>
     public override void ExpandAll()
     {
@@ -398,7 +397,7 @@ public partial class ConnectionTree : TreeListView, IConnectionTree
     }
 
     /// <summary>
-    /// Filters tree items based on the given <see cref="filterText"/>
+    ///     Filters tree items based on the given <see cref="filterText" />
     /// </summary>
     /// <param name="filterText">The text to filter by</param>
     public void ApplyFilter(string filterText)
@@ -409,7 +408,7 @@ public partial class ConnectionTree : TreeListView, IConnectionTree
     }
 
     /// <summary>
-    /// Removes all item filtering from the connection tree
+    ///     Removes all item filtering from the connection tree
     /// </summary>
     public void RemoveFilter()
     {

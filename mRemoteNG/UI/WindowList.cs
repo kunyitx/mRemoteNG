@@ -6,6 +6,49 @@ namespace mRemoteNG.UI;
 
 public class WindowList : CollectionBase
 {
+    private void CleanUp()
+    {
+        for (var i = 0; i <= List.Count - 1; i++)
+        {
+            if (i > List.Count - 1)
+            {
+                CleanUp();
+                return;
+            }
+
+            var baseWindow = List[i] as BaseWindow;
+            if (baseWindow != null && !baseWindow.IsDisposed) continue;
+            List.RemoveAt(i);
+            CleanUp();
+            return;
+        }
+    }
+
+    private BaseWindow IndexByObject(object Index)
+    {
+        try
+        {
+            var objectIndex = List.IndexOf(Index);
+            return IndexByNumber(objectIndex);
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            throw new ArgumentOutOfRangeException(e.ParamName, "Object was not present in the collection.");
+        }
+    }
+
+    private BaseWindow IndexByNumber(int Index)
+    {
+        try
+        {
+            return List[Index] as BaseWindow;
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            throw new ArgumentOutOfRangeException(e.ParamName, e.ActualValue, "Index was out of bounds");
+        }
+    }
+
     #region Public Properties
 
     public BaseWindow this[object Index]
@@ -62,50 +105,6 @@ public class WindowList : CollectionBase
     }
 
     #endregion
-
-
-    private void CleanUp()
-    {
-        for (var i = 0; i <= List.Count - 1; i++)
-        {
-            if (i > List.Count - 1)
-            {
-                CleanUp();
-                return;
-            }
-
-            var baseWindow = List[i] as BaseWindow;
-            if (baseWindow != null && !baseWindow.IsDisposed) continue;
-            List.RemoveAt(i);
-            CleanUp();
-            return;
-        }
-    }
-
-    private BaseWindow IndexByObject(object Index)
-    {
-        try
-        {
-            var objectIndex = List.IndexOf(Index);
-            return IndexByNumber(objectIndex);
-        }
-        catch (ArgumentOutOfRangeException e)
-        {
-            throw new ArgumentOutOfRangeException(e.ParamName, "Object was not present in the collection.");
-        }
-    }
-
-    private BaseWindow IndexByNumber(int Index)
-    {
-        try
-        {
-            return List[Index] as BaseWindow;
-        }
-        catch (ArgumentOutOfRangeException e)
-        {
-            throw new ArgumentOutOfRangeException(e.ParamName, e.ActualValue, "Index was out of bounds");
-        }
-    }
 
     /*
     private void uiFormClosing(object sender, FormClosingEventArgs e)

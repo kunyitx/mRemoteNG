@@ -6,8 +6,9 @@ using mRemoteNG.App.Info;
 using mRemoteNG.Config.Putty;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Properties;
-using mRemoteNG.Tools;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
 
@@ -17,7 +18,7 @@ public sealed partial class AdvancedPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Settings_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.Settings_16x);
         var display = new DisplayProperties();
         var img = display.ScaleImage(Properties.Resources.PuttyConfig);
         btnLaunchPutty.Image = img;

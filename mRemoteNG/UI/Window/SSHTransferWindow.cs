@@ -1,19 +1,46 @@
-﻿using mRemoteNG.App;
-using System;
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Threading;
-using mRemoteNG.Tools;
-using WeifenLuo.WinFormsUI.Docking;
 using System.Windows.Forms;
+using mRemoteNG.App;
 using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 using mRemoteNG.UI.Controls;
 using mRemoteNG.UI.Forms;
-using mRemoteNG.Resources.Language;
+using Renci.SshNet.Common;
+using WeifenLuo.WinFormsUI.Docking;
+using ImageConverter = mRemoteNG.Resources.ImageConverter;
 
 namespace mRemoteNG.UI.Window;
 
 public class SSHTransferWindow : BaseWindow
 {
+    #region Private Properties
+
+    private readonly OpenFileDialog oDlg;
+
+    #endregion
+
+    #region Public Methods
+
+    public SSHTransferWindow()
+    {
+        WindowType = WindowType.SSHTransfer;
+        DockPnl = new DockContent();
+        InitializeComponent();
+
+        oDlg = new OpenFileDialog
+        {
+            Filter = @"All Files (*.*)|*.*",
+            CheckFileExists = true
+        };
+    }
+
+    #endregion
+
     #region Form Init
 
     private MrngProgressBar pbStatus;
@@ -40,7 +67,7 @@ public class SSHTransferWindow : BaseWindow
     private void InitializeComponent()
     {
         var resources =
-            new System.ComponentModel.ComponentResourceManager(typeof(SSHTransferWindow));
+            new ComponentResourceManager(typeof(SSHTransferWindow));
         grpFiles = new MrngGroupBox();
         lblLocalFile = new MrngLabel();
         txtLocalFile = new MrngTextBox();
@@ -74,9 +101,9 @@ public class SSHTransferWindow : BaseWindow
         grpFiles.Controls.Add(lblRemoteFile);
         grpFiles.Controls.Add(btnBrowse);
         grpFiles.FlatStyle = FlatStyle.Flat;
-        grpFiles.Location = new System.Drawing.Point(12, 172);
+        grpFiles.Location = new Point(12, 172);
         grpFiles.Name = "grpFiles";
-        grpFiles.Size = new System.Drawing.Size(668, 175);
+        grpFiles.Size = new Size(668, 175);
         grpFiles.TabIndex = 2000;
         grpFiles.TabStop = false;
         grpFiles.Text = "Files";
@@ -84,20 +111,20 @@ public class SSHTransferWindow : BaseWindow
         // lblLocalFile
         // 
         lblLocalFile.AutoSize = true;
-        lblLocalFile.Location = new System.Drawing.Point(6, 30);
+        lblLocalFile.Location = new Point(6, 30);
         lblLocalFile.Name = "lblLocalFile";
-        lblLocalFile.Size = new System.Drawing.Size(55, 13);
+        lblLocalFile.Size = new Size(55, 13);
         lblLocalFile.TabIndex = 10;
         lblLocalFile.Text = "Local file:";
         // 
         // txtLocalFile
         // 
         txtLocalFile.BorderStyle = BorderStyle.FixedSingle;
-        txtLocalFile.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
-        txtLocalFile.Location = new System.Drawing.Point(105, 28);
+        txtLocalFile.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
+        txtLocalFile.Location = new Point(105, 28);
         txtLocalFile.Name = "txtLocalFile";
-        txtLocalFile.Size = new System.Drawing.Size(455, 22);
+        txtLocalFile.Size = new Size(455, 22);
         txtLocalFile.TabIndex = 20;
         // 
         // btnTransfer
@@ -105,31 +132,31 @@ public class SSHTransferWindow : BaseWindow
         btnTransfer._mice = MrngButton.MouseState.HOVER;
         btnTransfer.FlatStyle = FlatStyle.Flat;
         btnTransfer.Image = Properties.Resources.SyncArrow_16x;
-        btnTransfer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-        btnTransfer.Location = new System.Drawing.Point(562, 145);
+        btnTransfer.ImageAlign = ContentAlignment.MiddleLeft;
+        btnTransfer.Location = new Point(562, 145);
         btnTransfer.Name = "btnTransfer";
-        btnTransfer.Size = new System.Drawing.Size(100, 24);
+        btnTransfer.Size = new Size(100, 24);
         btnTransfer.TabIndex = 10000;
         btnTransfer.Text = "Transfer";
         btnTransfer.UseVisualStyleBackColor = true;
-        btnTransfer.Click += new EventHandler(btnTransfer_Click);
+        btnTransfer.Click += btnTransfer_Click;
         // 
         // txtRemoteFile
         // 
         txtRemoteFile.BorderStyle = BorderStyle.FixedSingle;
-        txtRemoteFile.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
-        txtRemoteFile.Location = new System.Drawing.Point(105, 60);
+        txtRemoteFile.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
+        txtRemoteFile.Location = new Point(105, 60);
         txtRemoteFile.Name = "txtRemoteFile";
-        txtRemoteFile.Size = new System.Drawing.Size(542, 22);
+        txtRemoteFile.Size = new Size(542, 22);
         txtRemoteFile.TabIndex = 50;
         // 
         // lblRemoteFile
         // 
         lblRemoteFile.AutoSize = true;
-        lblRemoteFile.Location = new System.Drawing.Point(6, 67);
+        lblRemoteFile.Location = new Point(6, 67);
         lblRemoteFile.Name = "lblRemoteFile";
-        lblRemoteFile.Size = new System.Drawing.Size(68, 13);
+        lblRemoteFile.Size = new Size(68, 13);
         lblRemoteFile.TabIndex = 40;
         lblRemoteFile.Text = "Remote file:";
         // 
@@ -137,13 +164,13 @@ public class SSHTransferWindow : BaseWindow
         // 
         btnBrowse._mice = MrngButton.MouseState.HOVER;
         btnBrowse.FlatStyle = FlatStyle.Flat;
-        btnBrowse.Location = new System.Drawing.Point(566, 28);
+        btnBrowse.Location = new Point(566, 28);
         btnBrowse.Name = "btnBrowse";
-        btnBrowse.Size = new System.Drawing.Size(81, 22);
+        btnBrowse.Size = new Size(81, 22);
         btnBrowse.TabIndex = 30;
         btnBrowse.Text = "Browse";
         btnBrowse.UseVisualStyleBackColor = true;
-        btnBrowse.Click += new EventHandler(btnBrowse_Click);
+        btnBrowse.Click += btnBrowse_Click;
         // 
         // grpConnection
         // 
@@ -159,9 +186,9 @@ public class SSHTransferWindow : BaseWindow
         grpConnection.Controls.Add(txtPassword);
         grpConnection.Controls.Add(txtUser);
         grpConnection.FlatStyle = FlatStyle.Flat;
-        grpConnection.Location = new System.Drawing.Point(12, 12);
+        grpConnection.Location = new Point(12, 12);
         grpConnection.Name = "grpConnection";
-        grpConnection.Size = new System.Drawing.Size(668, 154);
+        grpConnection.Size = new Size(668, 154);
         grpConnection.TabIndex = 1000;
         grpConnection.TabStop = false;
         grpConnection.Text = "Connection";
@@ -170,9 +197,9 @@ public class SSHTransferWindow : BaseWindow
         // 
         radProtSFTP.AutoSize = true;
         radProtSFTP.FlatStyle = FlatStyle.Flat;
-        radProtSFTP.Location = new System.Drawing.Point(164, 113);
+        radProtSFTP.Location = new Point(164, 113);
         radProtSFTP.Name = "radProtSFTP";
-        radProtSFTP.Size = new System.Drawing.Size(47, 17);
+        radProtSFTP.Size = new Size(47, 17);
         radProtSFTP.TabIndex = 90;
         radProtSFTP.Text = "SFTP";
         radProtSFTP.UseVisualStyleBackColor = true;
@@ -182,9 +209,9 @@ public class SSHTransferWindow : BaseWindow
         radProtSCP.AutoSize = true;
         radProtSCP.Checked = true;
         radProtSCP.FlatStyle = FlatStyle.Flat;
-        radProtSCP.Location = new System.Drawing.Point(105, 113);
+        radProtSCP.Location = new Point(105, 113);
         radProtSCP.Name = "radProtSCP";
-        radProtSCP.Size = new System.Drawing.Size(43, 17);
+        radProtSCP.Size = new Size(43, 17);
         radProtSCP.TabIndex = 80;
         radProtSCP.TabStop = true;
         radProtSCP.Text = "SCP";
@@ -193,56 +220,56 @@ public class SSHTransferWindow : BaseWindow
         // lblProtocol
         // 
         lblProtocol.AutoSize = true;
-        lblProtocol.Location = new System.Drawing.Point(6, 117);
+        lblProtocol.Location = new Point(6, 117);
         lblProtocol.Name = "lblProtocol";
-        lblProtocol.Size = new System.Drawing.Size(53, 13);
+        lblProtocol.Size = new Size(53, 13);
         lblProtocol.TabIndex = 90;
         lblProtocol.Text = "Protocol:";
         // 
         // lblPassword
         // 
         lblPassword.AutoSize = true;
-        lblPassword.Location = new System.Drawing.Point(6, 88);
+        lblPassword.Location = new Point(6, 88);
         lblPassword.Name = "lblPassword";
-        lblPassword.Size = new System.Drawing.Size(59, 13);
+        lblPassword.Size = new Size(59, 13);
         lblPassword.TabIndex = 70;
         lblPassword.Text = "Password:";
         // 
         // lblUser
         // 
         lblUser.AutoSize = true;
-        lblUser.Location = new System.Drawing.Point(6, 58);
+        lblUser.Location = new Point(6, 58);
         lblUser.Name = "lblUser";
-        lblUser.Size = new System.Drawing.Size(33, 13);
+        lblUser.Size = new Size(33, 13);
         lblUser.TabIndex = 50;
         lblUser.Text = "User:";
         // 
         // lblPort
         // 
         lblPort.AutoSize = true;
-        lblPort.Location = new System.Drawing.Point(228, 115);
+        lblPort.Location = new Point(228, 115);
         lblPort.Name = "lblPort";
-        lblPort.Size = new System.Drawing.Size(31, 13);
+        lblPort.Size = new Size(31, 13);
         lblPort.TabIndex = 30;
         lblPort.Text = "Port:";
         // 
         // lblHost
         // 
         lblHost.AutoSize = true;
-        lblHost.Location = new System.Drawing.Point(6, 27);
+        lblHost.Location = new Point(6, 27);
         lblHost.Name = "lblHost";
-        lblHost.Size = new System.Drawing.Size(34, 13);
+        lblHost.Size = new Size(34, 13);
         lblHost.TabIndex = 10;
         lblHost.Text = "Host:";
         // 
         // txtPort
         // 
         txtPort.BorderStyle = BorderStyle.FixedSingle;
-        txtPort.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
-        txtPort.Location = new System.Drawing.Point(271, 110);
+        txtPort.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
+        txtPort.Location = new Point(271, 110);
         txtPort.Name = "txtPort";
-        txtPort.Size = new System.Drawing.Size(30, 22);
+        txtPort.Size = new Size(30, 22);
         txtPort.TabIndex = 100;
         txtPort.Text = "22";
         txtPort.TextAlign = HorizontalAlignment.Center;
@@ -250,68 +277,62 @@ public class SSHTransferWindow : BaseWindow
         // txtHost
         // 
         txtHost.BorderStyle = BorderStyle.FixedSingle;
-        txtHost.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
-        txtHost.Location = new System.Drawing.Point(105, 19);
+        txtHost.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
+        txtHost.Location = new Point(105, 19);
         txtHost.Name = "txtHost";
-        txtHost.Size = new System.Drawing.Size(471, 22);
+        txtHost.Size = new Size(471, 22);
         txtHost.TabIndex = 20;
         // 
         // txtPassword
         // 
         txtPassword.BorderStyle = BorderStyle.FixedSingle;
-        txtPassword.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
-        txtPassword.Location = new System.Drawing.Point(105, 81);
+        txtPassword.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
+        txtPassword.Location = new Point(105, 81);
         txtPassword.Name = "txtPassword";
-        txtPassword.Size = new System.Drawing.Size(471, 22);
+        txtPassword.Size = new Size(471, 22);
         txtPassword.TabIndex = 60;
         txtPassword.UseSystemPasswordChar = true;
         // 
         // txtUser
         // 
         txtUser.BorderStyle = BorderStyle.FixedSingle;
-        txtUser.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
-        txtUser.Location = new System.Drawing.Point(105, 51);
+        txtUser.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
+        txtUser.Location = new Point(105, 51);
         txtUser.Name = "txtUser";
-        txtUser.Size = new System.Drawing.Size(471, 22);
+        txtUser.Size = new Size(471, 22);
         txtUser.TabIndex = 40;
         // 
         // pbStatus
         // 
-        pbStatus.Location = new System.Drawing.Point(12, 353);
+        pbStatus.Location = new Point(12, 353);
         pbStatus.Name = "pbStatus";
-        pbStatus.Size = new System.Drawing.Size(668, 23);
+        pbStatus.Size = new Size(668, 23);
         pbStatus.Style = ProgressBarStyle.Continuous;
         pbStatus.TabIndex = 3000;
         // 
         // SSHTransferWindow
         // 
-        AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+        AutoScaleDimensions = new SizeF(96F, 96F);
         AutoScaleMode = AutoScaleMode.Dpi;
-        ClientSize = new System.Drawing.Size(692, 423);
+        ClientSize = new Size(692, 423);
         Controls.Add(grpFiles);
         Controls.Add(grpConnection);
         Controls.Add(pbStatus);
-        Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
+        Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
         Name = "SSHTransferWindow";
         TabText = "SSH File Transfer";
         Text = "SSH File Transfer";
-        Load += new EventHandler(SSHTransfer_Load);
+        Load += SSHTransfer_Load;
         grpFiles.ResumeLayout(false);
         grpFiles.PerformLayout();
         grpConnection.ResumeLayout(false);
         grpConnection.PerformLayout();
         ResumeLayout(false);
     }
-
-    #endregion
-
-    #region Private Properties
-
-    private readonly OpenFileDialog oDlg;
 
     #endregion
 
@@ -349,7 +370,7 @@ public class SSHTransferWindow : BaseWindow
     {
         ApplyTheme();
         ApplyLanguage();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.SyncArrow_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.SyncArrow_16x);
         var display = new DisplayProperties();
         btnTransfer.Image = display.ScaleImage(btnTransfer.Image);
     }
@@ -424,10 +445,10 @@ public class SSHTransferWindow : BaseWindow
 
     private void AsyncCallback(IAsyncResult ar)
     {
-        Runtime.MessageCollector.AddMessage(MessageClass.InformationMsg, $"SFTP AsyncCallback completed.", true);
+        Runtime.MessageCollector.AddMessage(MessageClass.InformationMsg, "SFTP AsyncCallback completed.", true);
     }
 
-    private void ScpClt_Uploading(object sender, Renci.SshNet.Common.ScpUploadEventArgs e)
+    private void ScpClt_Uploading(object sender, ScpUploadEventArgs e)
     {
         // If the file size is over 2 gigs, convert to kb. This means we'll support a 2TB file.
         var max = e.Size > int.MaxValue ? Convert.ToInt32(e.Size / 1024) : Convert.ToInt32(e.Size);
@@ -496,10 +517,8 @@ public class SSHTransferWindow : BaseWindow
 
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
 
@@ -558,23 +577,6 @@ public class SSHTransferWindow : BaseWindow
         curVal = transferredBytes;
 
         SetStatus();
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    public SSHTransferWindow()
-    {
-        WindowType = WindowType.SSHTransfer;
-        DockPnl = new DockContent();
-        InitializeComponent();
-
-        oDlg = new OpenFileDialog
-        {
-            Filter = @"All Files (*.*)|*.*",
-            CheckFileExists = true
-        };
     }
 
     #endregion

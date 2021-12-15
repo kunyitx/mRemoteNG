@@ -3,18 +3,17 @@ using System.ComponentModel;
 using System.Configuration;
 using mRemoteNG.App;
 
-
 namespace mRemoteNG.Connection;
 
 public class DefaultConnectionInfo : ConnectionInfo
 {
-    [Browsable(false)] public static DefaultConnectionInfo Instance { get; } = new();
-
     private DefaultConnectionInfo()
     {
         IsDefault = true;
         Inheritance = DefaultConnectionInheritance.Instance;
     }
+
+    [Browsable(false)] public static DefaultConnectionInfo Instance { get; } = new();
 
     public void LoadFrom<TSource>(TSource sourceInstance, Func<string, string> propertyNameMutator = null)
     {
@@ -51,7 +50,7 @@ public class DefaultConnectionInfo : ConnectionInfo
     public void SaveTo<TDestination>(TDestination destinationInstance, Func<string, string> propertyNameMutator = null)
     {
         if (propertyNameMutator == null)
-            propertyNameMutator = (a) => a;
+            propertyNameMutator = a => a;
 
         var connectionProperties = GetSerializableProperties();
 

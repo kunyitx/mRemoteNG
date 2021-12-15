@@ -14,7 +14,6 @@ public static class RdpExtensions
 
         if (resolutionParts == null || resolutionParts.Length != 2)
             return new Rectangle(0, 0, 0, 0);
-        else
-            return new Rectangle(0, 0, Convert.ToInt32(resolutionParts[0]), Convert.ToInt32(resolutionParts[1]));
+        return new Rectangle(0, 0, Convert.ToInt32(resolutionParts[0]), Convert.ToInt32(resolutionParts[1]));
     }
 }

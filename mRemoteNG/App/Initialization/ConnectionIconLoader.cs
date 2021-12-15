@@ -2,7 +2,6 @@
 using System.IO;
 using mRemoteNG.Connection;
 
-
 namespace mRemoteNG.App.Initialization;
 
 public class ConnectionIconLoader

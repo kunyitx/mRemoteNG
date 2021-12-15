@@ -6,8 +6,8 @@ namespace mRemoteNGTests.TestHelpers;
 internal static class ConnectionInfoHelpers
 {
     /// <summary>
-    /// Returns a <see cref="ConnectionInfo"/> object with randomized
-    /// values in all fields.
+    ///     Returns a <see cref="ConnectionInfo" /> object with randomized
+    ///     values in all fields.
     /// </summary>
     internal static ConnectionInfo GetRandomizedConnectionInfo(bool randomizeInheritance = false)
     {

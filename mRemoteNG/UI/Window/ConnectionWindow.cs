@@ -12,21 +12,138 @@ using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Themes;
 using mRemoteNG.Tools;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.Tabs;
 using mRemoteNG.UI.TaskDialog;
 using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Window;
 
 public partial class ConnectionWindow : BaseWindow
 {
     private readonly IConnectionInitiator _connectionInitiator = new ConnectionInitiator();
-    private VisualStudioToolStripExtender vsToolStripExtender;
     private readonly ToolStripRenderer _toolStripProfessionalRenderer = new ToolStripProfessionalRenderer();
+    private VisualStudioToolStripExtender vsToolStripExtender;
+
+    public void reconnectAll(IConnectionInitiator initiator)
+    {
+        var controlList = new List<InterfaceControl>();
+        try
+        {
+            foreach (var dockContent in connDock.DocumentsToArray())
+            {
+                var tab = (ConnectionTab)dockContent;
+                controlList.Add((InterfaceControl)tab.Tag);
+            }
+
+            foreach (var iControl in controlList)
+            {
+                iControl.Protocol.Close();
+                initiator.OpenConnection(iControl.Info, ConnectionInfo.Force.DoNotJump);
+            }
+        }
+        catch (Exception ex)
+        {
+            Runtime.MessageCollector.AddExceptionMessage("reconnectAll (UI.Window.ConnectionWindow) failed", ex);
+        }
+
+        // ReSharper disable once RedundantAssignment
+        controlList = null;
+    }
+
+    #region Events
+
+    private void ConnDockOnActiveContentChanged(object sender, EventArgs e)
+    {
+        var ic = GetInterfaceControl();
+        if (ic?.Info == null) return;
+        FrmMain.Default.SelectedConnection = ic.Info;
+    }
+
+    #endregion
+
+    #region Tab Menu
+
+    private void ShowHideMenuButtons(object sender, CancelEventArgs e)
+    {
+        try
+        {
+            var interfaceControl = GetInterfaceControl();
+            if (interfaceControl == null) return;
+
+            if (interfaceControl.Protocol is ISupportsViewOnly viewOnly)
+            {
+                cmenTabViewOnly.Visible = true;
+                cmenTabViewOnly.Checked = viewOnly.ViewOnly;
+            }
+            else
+            {
+                cmenTabViewOnly.Visible = false;
+            }
+
+            if (interfaceControl.Info.Protocol == ProtocolType.RDP)
+            {
+                var rdp = (RdpProtocol6)interfaceControl.Protocol;
+                cmenTabFullscreen.Visible = true;
+                cmenTabFullscreen.Checked = rdp.Fullscreen;
+                cmenTabSmartSize.Visible = true;
+                cmenTabSmartSize.Checked = rdp.SmartSize;
+            }
+            else
+            {
+                cmenTabFullscreen.Visible = false;
+                cmenTabSmartSize.Visible = false;
+            }
+
+            if (interfaceControl.Info.Protocol == ProtocolType.VNC)
+            {
+                var vnc = (ProtocolVNC)interfaceControl.Protocol;
+                cmenTabSendSpecialKeys.Visible = true;
+                cmenTabSmartSize.Visible = true;
+                cmenTabStartChat.Visible = true;
+                cmenTabRefreshScreen.Visible = true;
+                cmenTabTransferFile.Visible = false;
+            }
+            else
+            {
+                cmenTabSendSpecialKeys.Visible = false;
+                cmenTabStartChat.Visible = false;
+                cmenTabRefreshScreen.Visible = false;
+                cmenTabTransferFile.Visible = false;
+            }
+
+            if ((interfaceControl.Info.Protocol == ProtocolType.SSH1) |
+                (interfaceControl.Info.Protocol == ProtocolType.SSH2))
+                cmenTabTransferFile.Visible = true;
+
+            cmenTabPuttySettings.Visible = interfaceControl.Protocol is PuttyBase;
+
+            AddExternalApps();
+        }
+        catch (Exception ex)
+        {
+            Runtime.MessageCollector.AddExceptionMessage("ShowHideMenuButtons (UI.Window.ConnectionWindow) failed",
+                ex);
+        }
+    }
+
+    #endregion
+
+    #region Protocols
+
+    public void Prot_Event_Closed(object sender)
+    {
+        var protocolBase = sender as ProtocolBase;
+        if (!(protocolBase?.InterfaceControl.Parent is ConnectionTab tabPage)) return;
+        if (tabPage.Disposing || tabPage.IsDisposed) return;
+        tabPage.protocolClose = true;
+        Invoke(() => tabPage.Close());
+    }
+
+    #endregion
 
     #region Public Methods
 
@@ -155,32 +272,6 @@ public partial class ConnectionWindow : BaseWindow
     }
 
     #endregion
-
-    public void reconnectAll(IConnectionInitiator initiator)
-    {
-        var controlList = new List<InterfaceControl>();
-        try
-        {
-            foreach (var dockContent in connDock.DocumentsToArray())
-            {
-                var tab = (ConnectionTab)dockContent;
-                controlList.Add((InterfaceControl)tab.Tag);
-            }
-
-            foreach (var iControl in controlList)
-            {
-                iControl.Protocol.Close();
-                initiator.OpenConnection(iControl.Info, ConnectionInfo.Force.DoNotJump);
-            }
-        }
-        catch (Exception ex)
-        {
-            Runtime.MessageCollector.AddExceptionMessage("reconnectAll (UI.Window.ConnectionWindow) failed", ex);
-        }
-
-        // ReSharper disable once RedundantAssignment
-        controlList = null;
-    }
 
     #region Form
 
@@ -332,84 +423,6 @@ public partial class ConnectionWindow : BaseWindow
     private void Connection_ResizeEnd(object sender, EventArgs e)
     {
         ResizeEnd?.Invoke(sender, e);
-    }
-
-    #endregion
-
-    #region Events
-
-    private void ConnDockOnActiveContentChanged(object sender, EventArgs e)
-    {
-        var ic = GetInterfaceControl();
-        if (ic?.Info == null) return;
-        FrmMain.Default.SelectedConnection = ic.Info;
-    }
-
-    #endregion
-
-    #region Tab Menu
-
-    private void ShowHideMenuButtons(object sender, CancelEventArgs e)
-    {
-        try
-        {
-            var interfaceControl = GetInterfaceControl();
-            if (interfaceControl == null) return;
-
-            if (interfaceControl.Protocol is ISupportsViewOnly viewOnly)
-            {
-                cmenTabViewOnly.Visible = true;
-                cmenTabViewOnly.Checked = viewOnly.ViewOnly;
-            }
-            else
-            {
-                cmenTabViewOnly.Visible = false;
-            }
-
-            if (interfaceControl.Info.Protocol == ProtocolType.RDP)
-            {
-                var rdp = (RdpProtocol6)interfaceControl.Protocol;
-                cmenTabFullscreen.Visible = true;
-                cmenTabFullscreen.Checked = rdp.Fullscreen;
-                cmenTabSmartSize.Visible = true;
-                cmenTabSmartSize.Checked = rdp.SmartSize;
-            }
-            else
-            {
-                cmenTabFullscreen.Visible = false;
-                cmenTabSmartSize.Visible = false;
-            }
-
-            if (interfaceControl.Info.Protocol == ProtocolType.VNC)
-            {
-                var vnc = (ProtocolVNC)interfaceControl.Protocol;
-                cmenTabSendSpecialKeys.Visible = true;
-                cmenTabSmartSize.Visible = true;
-                cmenTabStartChat.Visible = true;
-                cmenTabRefreshScreen.Visible = true;
-                cmenTabTransferFile.Visible = false;
-            }
-            else
-            {
-                cmenTabSendSpecialKeys.Visible = false;
-                cmenTabStartChat.Visible = false;
-                cmenTabRefreshScreen.Visible = false;
-                cmenTabTransferFile.Visible = false;
-            }
-
-            if ((interfaceControl.Info.Protocol == ProtocolType.SSH1) |
-                (interfaceControl.Info.Protocol == ProtocolType.SSH2))
-                cmenTabTransferFile.Visible = true;
-
-            cmenTabPuttySettings.Visible = interfaceControl.Protocol is PuttyBase;
-
-            AddExternalApps();
-        }
-        catch (Exception ex)
-        {
-            Runtime.MessageCollector.AddExceptionMessage("ShowHideMenuButtons (UI.Window.ConnectionWindow) failed",
-                ex);
-        }
     }
 
     #endregion
@@ -725,7 +738,7 @@ public partial class ConnectionWindow : BaseWindow
                 return;
             }
 
-            Invoke(new Action(() => Prot_Event_Closed(interfaceControl.Protocol)));
+            Invoke(() => Prot_Event_Closed(interfaceControl.Protocol));
             _connectionInitiator.OpenConnection(interfaceControl.Info, ConnectionInfo.Force.DoNotJump);
         }
         catch (Exception ex)
@@ -751,19 +764,6 @@ public partial class ConnectionWindow : BaseWindow
         {
             Runtime.MessageCollector.AddExceptionMessage("RenameTab (UI.Window.ConnectionWindow) failed", ex);
         }
-    }
-
-    #endregion
-
-    #region Protocols
-
-    public void Prot_Event_Closed(object sender)
-    {
-        var protocolBase = sender as ProtocolBase;
-        if (!(protocolBase?.InterfaceControl.Parent is ConnectionTab tabPage)) return;
-        if (tabPage.Disposing || tabPage.IsDisposed) return;
-        tabPage.protocolClose = true;
-        Invoke(new Action(() => tabPage.Close()));
     }
 
     #endregion

@@ -9,8 +9,8 @@ namespace mRemoteNG.Config.Serializers.CredentialProviderSerializer;
 
 public class CredentialRepositoryListDeserializer
 {
-    private readonly ISecureSerializer<IEnumerable<ICredentialRecord>, string> _serializer;
     private readonly ISecureDeserializer<string, IEnumerable<ICredentialRecord>> _deserializer;
+    private readonly ISecureSerializer<IEnumerable<ICredentialRecord>, string> _serializer;
 
     public CredentialRepositoryListDeserializer(
         ISecureSerializer<IEnumerable<ICredentialRecord>, string> serializer,

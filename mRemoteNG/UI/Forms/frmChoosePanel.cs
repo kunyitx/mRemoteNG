@@ -1,8 +1,10 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using mRemoteNG.App;
+using mRemoteNG.Resources;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Themes;
 using mRemoteNG.UI.Panels;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Forms;
 
@@ -13,7 +15,7 @@ public partial class FrmChoosePanel
     public FrmChoosePanel()
     {
         InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Panel_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.Panel_16x);
         _panelAdder = new PanelAdder();
     }
 
@@ -23,7 +25,7 @@ public partial class FrmChoosePanel
         set => cbPanels.SelectedItem = value;
     }
 
-    private void frmChoosePanel_Load(object sender, System.EventArgs e)
+    private void frmChoosePanel_Load(object sender, EventArgs e)
     {
         ApplyLanguage();
         ApplyTheme();
@@ -69,7 +71,7 @@ public partial class FrmChoosePanel
         }
     }
 
-    private void btnNew_Click(object sender, System.EventArgs e)
+    private void btnNew_Click(object sender, EventArgs e)
     {
         using var frmInputBox =
             new FrmInputBox(Language.NewPanel, Language.PanelName + ":", Language.NewPanel);
@@ -81,7 +83,7 @@ public partial class FrmChoosePanel
         cbPanels.Focus();
     }
 
-    private void btnOK_Click(object sender, System.EventArgs e)
+    private void btnOK_Click(object sender, EventArgs e)
     {
         DialogResult = DialogResult.OK;
     }

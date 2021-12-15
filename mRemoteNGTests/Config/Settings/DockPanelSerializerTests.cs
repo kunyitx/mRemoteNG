@@ -8,8 +8,8 @@ namespace mRemoteNGTests.Config.Settings;
 
 public class DockPanelSerializerTests
 {
-    private DockPanelLayoutSerializer _dockPanelLayoutSerializer;
     private DockPanel _dockPanel;
+    private DockPanelLayoutSerializer _dockPanelLayoutSerializer;
 
     [SetUp]
     public void Setup()

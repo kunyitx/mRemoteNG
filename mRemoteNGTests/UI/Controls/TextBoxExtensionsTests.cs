@@ -8,8 +8,6 @@ namespace mRemoteNGTests.UI.Controls;
 [Apartment(ApartmentState.STA)]
 public class TextBoxExtensionsTests
 {
-    private TextBoxExtensionsTestForm _textBoxExtensionsTestForm;
-
     [SetUp]
     public void Setup()
     {
@@ -27,6 +25,8 @@ public class TextBoxExtensionsTests
 
         _textBoxExtensionsTestForm = null;
     }
+
+    private TextBoxExtensionsTestForm _textBoxExtensionsTestForm;
 
     [Test]
     public void SetCueBannerSetsTheBannerText()

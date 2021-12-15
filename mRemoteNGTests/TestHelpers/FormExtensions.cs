@@ -6,7 +6,7 @@ namespace mRemoteNGTests.TestHelpers;
 public static class FormExtensions
 {
     /// <summary>
-    /// Finds a control with the specified name on a form.
+    ///     Finds a control with the specified name on a form.
     /// </summary>
     /// <typeparam name="T">The type of control to find.</typeparam>
     /// <param name="form">The form.</param>

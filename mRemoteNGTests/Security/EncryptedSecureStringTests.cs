@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace mRemoteNGTests.Security;
 
-[TestFixture()]
+[TestFixture]
 public class EncryptedSecureStringTests
 {
     private readonly string _clearTextData = "MySecureData";

@@ -12,7 +12,7 @@ public static class ProgramRoot
     private static Mutex _mutex;
 
     /// <summary>
-    /// The main entry point for the application.
+    ///     The main entry point for the application.
     /// </summary>
     [STAThread]
     public static void Main(string[] args)

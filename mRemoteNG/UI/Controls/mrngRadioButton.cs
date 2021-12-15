@@ -1,7 +1,7 @@
-﻿using mRemoteNG.Themes;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.Controls;
 
@@ -9,10 +9,10 @@ namespace mRemoteNG.UI.Controls;
 // and glyph color inconsistency
 internal class MrngRadioButton : RadioButton
 {
-    private ThemeManager _themeManager;
     private readonly Rectangle _circle;
     private readonly Rectangle _circleSmall;
     private readonly int _textXCoord;
+    private ThemeManager _themeManager;
 
     // Constructor
     public MrngRadioButton()
@@ -25,14 +25,6 @@ internal class MrngRadioButton : RadioButton
             display.ScaleHeight(12));
         _textXCoord = display.ScaleWidth(16);
         ThemeManager.getInstance().ThemeChanged += OnCreateControl;
-    }
-
-
-    private enum MouseState
-    {
-        HOVER,
-        DOWN,
-        OUT
     }
 
     private MouseState _mice { get; set; }
@@ -128,7 +120,15 @@ internal class MrngRadioButton : RadioButton
         // NGRadioButton
         // 
         Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
-            GraphicsUnit.Point, (byte)0);
+            GraphicsUnit.Point, 0);
         ResumeLayout(false);
+    }
+
+
+    private enum MouseState
+    {
+        HOVER,
+        DOWN,
+        OUT
     }
 }

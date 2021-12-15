@@ -9,8 +9,8 @@ namespace mRemoteNGTests.Config.DataProviders;
 public class FileDataProviderWithRollingBackupTests
 {
     private FileDataProviderWithRollingBackup _dataProvider;
-    private string _testFilePath;
     private string _testFileDirectory;
+    private string _testFilePath;
     private string _testFileRollingBackup;
 
     [SetUp]

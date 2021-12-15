@@ -6,12 +6,15 @@ using mRemoteNG.Container;
 using mRemoteNG.Properties;
 using mRemoteNG.Tree.Root;
 
-
 namespace mRemoteNG.Tree;
 
 public sealed class ConnectionTreeModel : INotifyCollectionChanged, INotifyPropertyChanged
 {
     public List<ContainerInfo> RootNodes { get; } = new();
+
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public void AddRootNode(ContainerInfo rootNode)
     {
@@ -71,14 +74,10 @@ public sealed class ConnectionTreeModel : INotifyCollectionChanged, INotifyPrope
         connectionInfo?.RemoveParent();
     }
 
-    public event NotifyCollectionChangedEventHandler CollectionChanged;
-
     private void RaiseCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs args)
     {
         CollectionChanged?.Invoke(sender, args);
     }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     private void RaisePropertyChangedEvent(object sender, PropertyChangedEventArgs args)
     {

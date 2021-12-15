@@ -1,7 +1,7 @@
 ﻿using System;
-using mRemoteNG.Themes;
 using System.Drawing;
 using System.Windows.Forms;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.Controls;
 
@@ -10,8 +10,8 @@ namespace mRemoteNG.UI.Controls;
 [ToolboxBitmap(typeof(Label))]
 public class MrngLabel : Label
 {
-    private ThemeManager _themeManager;
     private TextFormatFlags _textFormatFlags;
+    private ThemeManager _themeManager;
 
     public MrngLabel()
     {
@@ -103,7 +103,7 @@ public class MrngLabel : Label
         // NGLabel
         // 
         Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
-            GraphicsUnit.Point, (byte)0);
+            GraphicsUnit.Point, 0);
         ResumeLayout(false);
     }
 }

@@ -7,12 +7,9 @@ namespace mRemoteNG.Security.Authentication;
 
 public class PasswordAuthenticator : IAuthenticator
 {
-    private readonly ICryptographyProvider _cryptographyProvider;
-    private readonly string _cipherText;
     private readonly Func<Optional<SecureString>> _authenticationRequestor;
-
-    public int MaxAttempts { get; set; } = 3;
-    public SecureString LastAuthenticatedPassword { get; private set; }
+    private readonly string _cipherText;
+    private readonly ICryptographyProvider _cryptographyProvider;
 
     public PasswordAuthenticator(ICryptographyProvider cryptographyProvider,
         string cipherText,
@@ -22,6 +19,9 @@ public class PasswordAuthenticator : IAuthenticator
         _cipherText = cipherText.ThrowIfNullOrEmpty(nameof(cipherText));
         _authenticationRequestor = authenticationRequestor.ThrowIfNull(nameof(authenticationRequestor));
     }
+
+    public int MaxAttempts { get; set; } = 3;
+    public SecureString LastAuthenticatedPassword { get; private set; }
 
     public bool Authenticate(SecureString password)
     {

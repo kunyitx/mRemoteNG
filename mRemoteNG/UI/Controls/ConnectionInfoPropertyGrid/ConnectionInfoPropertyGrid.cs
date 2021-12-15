@@ -12,23 +12,29 @@ using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security;
 using mRemoteNG.Tools;
 using mRemoteNG.Tools.Attributes;
 using mRemoteNG.Tree.Root;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Controls.ConnectionInfoPropertyGrid;
 
 public partial class ConnectionInfoPropertyGrid : FilteredPropertyGrid.FilteredPropertyGrid
 {
     private readonly Dictionary<Type, IEnumerable<PropertyInfo>> _propertyCache = new();
-    private ConnectionInfo _selectedConnectionInfo;
     private PropertyMode _propertyMode;
+    private ConnectionInfo _selectedConnectionInfo;
+
+    public ConnectionInfoPropertyGrid()
+    {
+        InitializeComponent();
+        PropertyValueChanged += pGrid_PropertyValueChanged;
+    }
 
     /// <summary>
-    /// The <see cref="ConnectionInfo"/> currently being shown by this
-    /// property grid.
+    ///     The <see cref="ConnectionInfo" /> currently being shown by this
+    ///     property grid.
     /// </summary>
     public ConnectionInfo SelectedConnectionInfo
     {
@@ -45,7 +51,7 @@ public partial class ConnectionInfoPropertyGrid : FilteredPropertyGrid.FilteredP
     }
 
     /// <summary>
-    /// Determines which set of properties this grid will display.
+    ///     Determines which set of properties this grid will display.
     /// </summary>
     public PropertyMode PropertyMode
     {
@@ -60,31 +66,25 @@ public partial class ConnectionInfoPropertyGrid : FilteredPropertyGrid.FilteredP
     }
 
     /// <summary>
-    /// Is the property grid showing the selected connection's
-    /// inheritance info? If false, the connection's normal
-    /// properties are shown instead.
+    ///     Is the property grid showing the selected connection's
+    ///     inheritance info? If false, the connection's normal
+    ///     properties are shown instead.
     /// </summary>
     public bool IsShowingInheritance => PropertyMode == PropertyMode.Inheritance ||
                                         PropertyMode == PropertyMode.DefaultInheritance;
 
     /// <summary>
-    /// This indicates whether the current <see cref="SelectedConnectionInfo"/>
-    /// is a <see cref="DefaultConnectionInfo"/>.
+    ///     This indicates whether the current <see cref="SelectedConnectionInfo" />
+    ///     is a <see cref="DefaultConnectionInfo" />.
     /// </summary>
     public bool IsShowingDefaultProperties => PropertyMode == PropertyMode.DefaultConnection ||
                                               PropertyMode == PropertyMode.DefaultInheritance;
 
     /// <summary>
-    /// True when the <see cref="SelectedConnectionInfo"/> is
-    /// of type <see cref="RootNodeInfo"/>.
+    ///     True when the <see cref="SelectedConnectionInfo" /> is
+    ///     of type <see cref="RootNodeInfo" />.
     /// </summary>
     public bool RootNodeSelected { get; private set; }
-
-    public ConnectionInfoPropertyGrid()
-    {
-        InitializeComponent();
-        PropertyValueChanged += pGrid_PropertyValueChanged;
-    }
 
     private void SetGridObject()
     {
@@ -208,7 +208,6 @@ public partial class ConnectionInfoPropertyGrid : FilteredPropertyGrid.FilteredP
     }
 
     /// <summary>
-    /// 
     /// </summary>
     private List<string> SpecialRdpExclusions()
     {

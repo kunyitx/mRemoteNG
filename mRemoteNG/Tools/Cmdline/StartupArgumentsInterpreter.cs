@@ -8,7 +8,6 @@ using mRemoteNG.Messages;
 using mRemoteNG.Properties;
 using mRemoteNG.Resources.Language;
 
-
 namespace mRemoteNG.Tools.Cmdline;
 
 public class StartupArgumentsInterpreter

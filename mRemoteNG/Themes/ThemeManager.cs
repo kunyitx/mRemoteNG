@@ -1,11 +1,12 @@
-﻿using mRemoteNG.App;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using mRemoteNG.App;
+using mRemoteNG.App.Info;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
 using WeifenLuo.WinFormsUI.Docking;
@@ -13,8 +14,8 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace mRemoteNG.Themes;
 
 /// <summary>
-/// Main class of the theming component. Centralizes creation, loading and deletion of themes
-/// Implemented as a singleton
+///     Main class of the theming component. Centralizes creation, loading and deletion of themes
+///     Implemented as a singleton
 /// </summary>
 public class ThemeManager
 {
@@ -24,7 +25,7 @@ public class ThemeManager
     private Hashtable themes;
     private bool _themeActive;
     private static ThemeManager themeInstance;
-    private readonly string themePath = App.Info.SettingsFileInfo.ThemeFolder;
+    private readonly string themePath = SettingsFileInfo.ThemeFolder;
 
     #endregion
 
@@ -82,7 +83,7 @@ public class ThemeManager
             //In install mode first time is necessary to copy the themes folder
             if (!Directory.Exists(themePath)) Directory.CreateDirectory(themePath);
 
-            var orig = new DirectoryInfo(App.Info.SettingsFileInfo.InstalledThemeFolder);
+            var orig = new DirectoryInfo(SettingsFileInfo.InstalledThemeFolder);
             var files = orig.GetFiles();
             foreach (var file in files)
                 if (!File.Exists(Path.Combine(themePath, file.Name)))
@@ -216,7 +217,7 @@ public class ThemeManager
     }
 
     /// <summary>
-    /// Add a new theme based on an existing one by cloning and renaming, the theme is saved to disk
+    ///     Add a new theme based on an existing one by cloning and renaming, the theme is saved to disk
     /// </summary>
     /// <param name="baseTheme"></param>
     /// <param name="newThemeName"></param>

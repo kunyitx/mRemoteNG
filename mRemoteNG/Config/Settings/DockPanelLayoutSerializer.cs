@@ -1,8 +1,8 @@
-﻿using mRemoteNG.Config.Serializers;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
+using mRemoteNG.Config.Serializers;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.Config.Settings;

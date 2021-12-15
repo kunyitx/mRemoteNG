@@ -1,18 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
-using mRemoteNG.Connection;
 using mRemoteNG.Container;
-using mRemoteNG.Tools;
 using mRemoteNG.Resources.Language;
-
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.Tree.Root;
 
 [DefaultProperty("Name")]
 public class RootNodeInfo : ContainerInfo
 {
-    private string _name;
     private string _customPassword = "";
+    private string _name;
 
     public RootNodeInfo(RootNodeType rootType, string uniqueId)
         : base(uniqueId)
@@ -28,21 +26,21 @@ public class RootNodeInfo : ContainerInfo
 
     #region Public Properties
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous))]
     [Browsable(true)]
-    [LocalizedAttributes.LocalizedDefaultValue(nameof(Language.Connections))]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.Name))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionName))]
+    [LocalizedAttributes.LocalizedDefaultValueAttribute(nameof(Language.Connections))]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.Name))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionName))]
     public override string Name
     {
         get => _name;
         set => _name = value;
     }
 
-    [LocalizedAttributes.LocalizedCategory(nameof(Language.Miscellaneous))]
+    [LocalizedAttributes.LocalizedCategoryAttribute(nameof(Language.Miscellaneous))]
     [Browsable(true)]
-    [LocalizedAttributes.LocalizedDisplayName(nameof(Language.PasswordProtect))]
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.PropertyDescriptionPasswordProtect))]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute(nameof(Language.PasswordProtect))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.PropertyDescriptionPasswordProtect))]
     [TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
     public new bool Password { get; set; }
 

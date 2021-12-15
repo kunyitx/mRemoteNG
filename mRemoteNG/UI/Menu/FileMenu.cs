@@ -1,33 +1,34 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.Window;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Menu;
 
 public class FileMenu : ToolStripMenuItem
 {
-    private ToolStripMenuItem _mMenToolsOptions;
-    private ToolStripMenuItem _mMenFileNew;
+    private ToolStripMenuItem _mMenFileExit;
     private ToolStripMenuItem _mMenFileLoad;
+    private ToolStripMenuItem _mMenFileNew;
     private ToolStripMenuItem _mMenFileSave;
     private ToolStripMenuItem _mMenFileSaveAs;
-    private ToolStripMenuItem _mMenFileExit;
-    private ToolStripSeparator _mMenFileSep2;
     private ToolStripSeparator _mMenFileSep1;
-
-    public ConnectionTreeWindow TreeWindow { get; set; }
-    public IConnectionInitiator ConnectionInitiator { get; set; }
+    private ToolStripSeparator _mMenFileSep2;
+    private ToolStripMenuItem _mMenToolsOptions;
 
     public FileMenu()
     {
         Initialize();
     }
+
+    public ConnectionTreeWindow TreeWindow { get; set; }
+    public IConnectionInitiator ConnectionInitiator { get; set; }
 
     private void Initialize()
     {
@@ -55,7 +56,7 @@ public class FileMenu : ToolStripMenuItem
             _mMenFileExit
         });
         Name = "mMenFile";
-        Size = new System.Drawing.Size(37, 20);
+        Size = new Size(37, 20);
         Text = Language._File;
         // 
         // mMenFileNew
@@ -63,7 +64,7 @@ public class FileMenu : ToolStripMenuItem
         _mMenFileNew.Image = Properties.Resources.NewFile_16x;
         _mMenFileNew.Name = "mMenFileNew";
         _mMenFileLoad.ShortcutKeys = Keys.Control | Keys.N;
-        _mMenFileNew.Size = new System.Drawing.Size(281, 22);
+        _mMenFileNew.Size = new Size(281, 22);
         _mMenFileNew.Text = Language.NewConnectionFile;
         _mMenFileNew.Click += mMenFileNew_Click;
         // 
@@ -72,7 +73,7 @@ public class FileMenu : ToolStripMenuItem
         _mMenFileLoad.Image = Properties.Resources.OpenFile_16x;
         _mMenFileLoad.Name = "mMenFileLoad";
         _mMenFileLoad.ShortcutKeys = Keys.Control | Keys.O;
-        _mMenFileLoad.Size = new System.Drawing.Size(281, 22);
+        _mMenFileLoad.Size = new Size(281, 22);
         _mMenFileLoad.Text = Language.OpenConnectionFile;
         _mMenFileLoad.Click += mMenFileLoad_Click;
         // 
@@ -80,7 +81,7 @@ public class FileMenu : ToolStripMenuItem
         // 
         _mMenFileSave.Name = "mMenFileSave";
         _mMenFileSave.ShortcutKeys = Keys.Control | Keys.S;
-        _mMenFileSave.Size = new System.Drawing.Size(281, 22);
+        _mMenFileSave.Size = new Size(281, 22);
         _mMenFileSave.Text = Language.SaveConnectionFile;
         _mMenFileSave.Click += mMenFileSave_Click;
         // 
@@ -89,25 +90,25 @@ public class FileMenu : ToolStripMenuItem
         _mMenFileSaveAs.Name = "mMenFileSaveAs";
         _mMenFileSaveAs.ShortcutKeys = Keys.Control | Keys.Shift
                                                     | Keys.S;
-        _mMenFileSaveAs.Size = new System.Drawing.Size(281, 22);
+        _mMenFileSaveAs.Size = new Size(281, 22);
         _mMenFileSaveAs.Text = Language.SaveConnectionFileAs;
         _mMenFileSaveAs.Click += mMenFileSaveAs_Click;
         // 
         // mMenFileSep2
         // 
         _mMenFileSep2.Name = "mMenFileSep2";
-        _mMenFileSep2.Size = new System.Drawing.Size(278, 6);
+        _mMenFileSep2.Size = new Size(278, 6);
         // 
         // mMenFileSep1
         // 
         _mMenFileSep1.Name = "mMenFileSep3";
-        _mMenFileSep1.Size = new System.Drawing.Size(278, 6);
+        _mMenFileSep1.Size = new Size(278, 6);
         // 
         // mMenToolsOptions
         // 
         _mMenToolsOptions.Image = Properties.Resources.Settings_16x;
         _mMenToolsOptions.Name = "mMenToolsOptions";
-        _mMenToolsOptions.Size = new System.Drawing.Size(184, 22);
+        _mMenToolsOptions.Size = new Size(184, 22);
         _mMenToolsOptions.Text = Language.Options;
         _mMenToolsOptions.Click += mMenToolsOptions_Click;
         // 
@@ -116,7 +117,7 @@ public class FileMenu : ToolStripMenuItem
         _mMenFileExit.Image = Properties.Resources.CloseSolution_16x;
         _mMenFileExit.Name = "mMenFileExit";
         _mMenFileExit.ShortcutKeys = Keys.Alt | Keys.F4;
-        _mMenFileExit.Size = new System.Drawing.Size(281, 22);
+        _mMenFileExit.Size = new Size(281, 22);
         _mMenFileExit.Text = Language.Exit;
         _mMenFileExit.Click += mMenFileExit_Click;
     }

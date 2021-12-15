@@ -4,9 +4,10 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
-using mRemoteNG.Themes;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.Controls;
 
@@ -16,16 +17,23 @@ namespace mRemoteNG.UI.Controls;
  */
 public class MrngIpTextBox : UserControl
 {
-    private Panel panel1;
+    private IContainer components;
+    private MrngLabel label1;
+    private MrngLabel label2;
+    private MrngLabel label3;
     public MrngTextBox Octet1;
     public MrngTextBox Octet2;
     public MrngTextBox Octet3;
     public MrngTextBox Octet4;
-    private MrngLabel label1;
-    private MrngLabel label2;
-    private MrngLabel label3;
+    private Panel panel1;
     private ToolTip toolTip1;
-    private System.ComponentModel.IContainer components;
+
+    public MrngIpTextBox()
+    {
+        // This call is required by the Windows.Forms Form Designer.
+        InitializeComponent();
+        SetTabSTopProperties();
+    }
 
     /* Sets and Gets the tooltiptext on toolTip1 */
     public string ToolTipText
@@ -65,13 +73,6 @@ public class MrngIpTextBox : UserControl
                 Octet4.Text = "";
             }
         }
-    }
-
-    public MrngIpTextBox()
-    {
-        // This call is required by the Windows.Forms Form Designer.
-        InitializeComponent();
-        SetTabSTopProperties();
     }
 
     private void SetTabSTopProperties()

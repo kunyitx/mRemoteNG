@@ -4,7 +4,6 @@ using System.Linq;
 using System.Xml.Linq;
 using mRemoteNG.Credential;
 
-
 namespace mRemoteNG.Config.Serializers.CredentialProviderSerializer;
 
 public class CredentialRepositoryListSerializer

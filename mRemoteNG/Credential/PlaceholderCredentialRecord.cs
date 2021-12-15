@@ -9,6 +9,11 @@ namespace mRemoteNG.Credential;
 
 public class PlaceholderCredentialRecord : ICredentialRecord
 {
+    public PlaceholderCredentialRecord(IEnumerable<Guid> id)
+    {
+        Id = id.FirstOrDefault();
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     public Guid Id { get; }
@@ -20,11 +25,6 @@ public class PlaceholderCredentialRecord : ICredentialRecord
     [ReadOnly(true)] public SecureString Password { get; set; } = new();
 
     [ReadOnly(true)] public string Domain { get; set; } = Language.CredentialUnavailable;
-
-    public PlaceholderCredentialRecord(IEnumerable<Guid> id)
-    {
-        Id = id.FirstOrDefault();
-    }
 
     public override string ToString()
     {

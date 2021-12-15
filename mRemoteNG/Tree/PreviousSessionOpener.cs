@@ -1,9 +1,8 @@
-﻿using mRemoteNG.Connection;
-using mRemoteNG.Container;
-using System;
+﻿using System;
 using System.Linq;
+using mRemoteNG.Connection;
+using mRemoteNG.Container;
 using mRemoteNG.UI.Controls.ConnectionTree;
-
 
 namespace mRemoteNG.Tree;
 

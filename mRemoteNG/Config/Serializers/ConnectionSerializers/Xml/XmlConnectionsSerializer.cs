@@ -15,11 +15,8 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
 public class XmlConnectionsSerializer : ISerializer<ConnectionTreeModel, string>,
     ISerializer<ConnectionInfo, string>
 {
-    private readonly ICryptographyProvider _cryptographyProvider;
     private readonly ISerializer<ConnectionInfo, XElement> _connectionNodeSerializer;
-
-    public Version Version => _connectionNodeSerializer.Version;
-    public bool UseFullEncryption { get; set; }
+    private readonly ICryptographyProvider _cryptographyProvider;
 
     public XmlConnectionsSerializer(ICryptographyProvider cryptographyProvider,
         ISerializer<ConnectionInfo, XElement> connectionNodeSerializer)
@@ -28,15 +25,19 @@ public class XmlConnectionsSerializer : ISerializer<ConnectionTreeModel, string>
         _connectionNodeSerializer = connectionNodeSerializer;
     }
 
-    public string Serialize(ConnectionTreeModel connectionTreeModel)
-    {
-        var rootNode = (RootNodeInfo)connectionTreeModel.RootNodes.First(node => node is RootNodeInfo);
-        return SerializeConnectionsData(rootNode);
-    }
+    public bool UseFullEncryption { get; set; }
 
     public string Serialize(ConnectionInfo serializationTarget)
     {
         return SerializeConnectionsData(serializationTarget);
+    }
+
+    public Version Version => _connectionNodeSerializer.Version;
+
+    public string Serialize(ConnectionTreeModel connectionTreeModel)
+    {
+        var rootNode = (RootNodeInfo)connectionTreeModel.RootNodes.First(node => node is RootNodeInfo);
+        return SerializeConnectionsData(rootNode);
     }
 
     private string SerializeConnectionsData(ConnectionInfo serializationTarget)

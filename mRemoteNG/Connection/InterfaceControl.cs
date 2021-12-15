@@ -1,28 +1,16 @@
-﻿using mRemoteNG.App;
-using mRemoteNG.Connection.Protocol;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using mRemoteNG.App;
+using mRemoteNG.Connection.Protocol;
+using mRemoteNG.Messages;
 using mRemoteNG.UI.Tabs;
 using WeifenLuo.WinFormsUI.Docking;
-
 
 namespace mRemoteNG.Connection;
 
 public sealed partial class InterfaceControl
 {
-    public ProtocolBase Protocol { get; set; }
-
-    public ConnectionInfo Info { get; set; }
-
-    // in case the connection is through a SSH tunnel the Info is a copy of original info with hostname and port number overwritten with localhost and local tunnel port
-    // and the original Info is saved in the following variable
-    public ConnectionInfo OriginalInfo { get; set; }
-
-    // in case the connection is through a SSH tunnel the Info of the SSHTunnelConnection is also saved for reference in log messages etc.
-    public ConnectionInfo SSHTunnelInfo { get; set; }
-
-
     public InterfaceControl(Control parent, ProtocolBase protocol, ConnectionInfo info)
     {
         try
@@ -37,11 +25,22 @@ public sealed partial class InterfaceControl
         }
         catch (Exception ex)
         {
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                 "Couldn\'t create new InterfaceControl" + Environment.NewLine +
                 ex.Message);
         }
     }
+
+    public ProtocolBase Protocol { get; set; }
+
+    public ConnectionInfo Info { get; set; }
+
+    // in case the connection is through a SSH tunnel the Info is a copy of original info with hostname and port number overwritten with localhost and local tunnel port
+    // and the original Info is saved in the following variable
+    public ConnectionInfo OriginalInfo { get; set; }
+
+    // in case the connection is through a SSH tunnel the Info of the SSHTunnelConnection is also saved for reference in log messages etc.
+    public ConnectionInfo SSHTunnelInfo { get; set; }
 
     public static InterfaceControl FindInterfaceControl(DockPanel DockPnl)
     {

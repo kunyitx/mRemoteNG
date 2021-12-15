@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
 using mRemoteNG.Connection;
 using mRemoteNG.Tree.Root;
-using System.Net;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -11,9 +11,25 @@ namespace mRemoteNG.Config.Putty;
 
 public abstract class AbstractPuttySessionsProvider
 {
+    public delegate void PuttySessionChangedEventHandler(object sender, PuttySessionChangedEventArgs e);
+
     public virtual RootPuttySessionsNodeInfo RootInfo { get; } = new();
 
     protected virtual List<PuttySessionInfo> Sessions => RootInfo.Children.OfType<PuttySessionInfo>().ToList();
+
+    public event PuttySessionChangedEventHandler PuttySessionChanged;
+
+    protected virtual void RaiseSessionChangedEvent(PuttySessionChangedEventArgs args)
+    {
+        PuttySessionChanged?.Invoke(this, args);
+    }
+
+    public event NotifyCollectionChangedEventHandler PuttySessionsCollectionChanged;
+
+    protected void RaisePuttySessionCollectionChangedEvent(NotifyCollectionChangedEventArgs args)
+    {
+        PuttySessionsCollectionChanged?.Invoke(this, args);
+    }
 
     #region Public Methods
 
@@ -82,20 +98,4 @@ public abstract class AbstractPuttySessionsProvider
     }
 
     #endregion
-
-    public delegate void PuttySessionChangedEventHandler(object sender, PuttySessionChangedEventArgs e);
-
-    public event PuttySessionChangedEventHandler PuttySessionChanged;
-
-    protected virtual void RaiseSessionChangedEvent(PuttySessionChangedEventArgs args)
-    {
-        PuttySessionChanged?.Invoke(this, args);
-    }
-
-    public event NotifyCollectionChangedEventHandler PuttySessionsCollectionChanged;
-
-    protected void RaisePuttySessionCollectionChangedEvent(NotifyCollectionChangedEventArgs args)
-    {
-        PuttySessionsCollectionChanged?.Invoke(this, args);
-    }
 }

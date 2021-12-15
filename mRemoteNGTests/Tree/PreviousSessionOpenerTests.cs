@@ -6,14 +6,13 @@ using mRemoteNG.UI.Controls.ConnectionTree;
 using NSubstitute;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class PreviousSessionOpenerTests
 {
-    private PreviousSessionOpener _previousSessionOpener;
     private IConnectionInitiator _connectionInitiator;
     private IConnectionTree _connectionTree;
+    private PreviousSessionOpener _previousSessionOpener;
 
     [SetUp]
     public void Setup()

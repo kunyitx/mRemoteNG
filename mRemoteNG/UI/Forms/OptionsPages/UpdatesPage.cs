@@ -5,10 +5,11 @@ using mRemoteNG.App;
 using mRemoteNG.App.Info;
 using mRemoteNG.App.Update;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tools;
 using mRemoteNG.UI.TaskDialog;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
 
@@ -24,7 +25,7 @@ public sealed partial class UpdatesPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.RunUpdate_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.RunUpdate_16x);
     }
 
     #region Public Methods

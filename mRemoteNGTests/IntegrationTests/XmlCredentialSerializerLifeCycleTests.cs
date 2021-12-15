@@ -1,26 +1,26 @@
-﻿using mRemoteNG.Config.Serializers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security;
+using mRemoteNG.Config.Serializers;
 using mRemoteNG.Config.Serializers.CredentialSerializer;
 using mRemoteNG.Credential;
 using mRemoteNG.Security;
 using mRemoteNG.Security.Factories;
 using NSubstitute;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
 
 namespace mRemoteNGTests.IntegrationTests;
 
 public class XmlCredentialSerializerLifeCycleTests
 {
-    private ISecureSerializer<IEnumerable<ICredentialRecord>, string> _serializer;
-    private ISecureDeserializer<string, IEnumerable<ICredentialRecord>> _deserializer;
-    private readonly Guid _id = Guid.NewGuid();
     private const string Title = "mycredential1";
     private const string Username = "user1";
     private const string Domain = "domain1";
+    private readonly Guid _id = Guid.NewGuid();
     private readonly SecureString _key = "myPassword1!".ConvertToSecureString();
+    private ISecureDeserializer<string, IEnumerable<ICredentialRecord>> _deserializer;
+    private ISecureSerializer<IEnumerable<ICredentialRecord>, string> _serializer;
 
     [SetUp]
     public void Setup()

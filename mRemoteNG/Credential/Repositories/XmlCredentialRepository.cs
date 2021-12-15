@@ -10,12 +10,8 @@ namespace mRemoteNG.Credential.Repositories;
 
 public class XmlCredentialRepository : ICredentialRepository
 {
-    private readonly CredentialRecordSaver _credentialRecordSaver;
     private readonly CredentialRecordLoader _credentialRecordLoader;
-
-    public ICredentialRepositoryConfig Config { get; }
-    public IList<ICredentialRecord> CredentialRecords { get; }
-    public bool IsLoaded { get; private set; }
+    private readonly CredentialRecordSaver _credentialRecordSaver;
 
     public XmlCredentialRepository(ICredentialRepositoryConfig config,
         CredentialRecordSaver credentialRecordSaver,
@@ -37,6 +33,10 @@ public class XmlCredentialRepository : ICredentialRepository
         _credentialRecordLoader = credentialRecordLoader;
     }
 
+    public ICredentialRepositoryConfig Config { get; }
+    public IList<ICredentialRecord> CredentialRecords { get; }
+    public bool IsLoaded { get; private set; }
+
     public void LoadCredentials(SecureString key)
     {
         var credentials = _credentialRecordLoader.Load(key);
@@ -48,11 +48,6 @@ public class XmlCredentialRepository : ICredentialRepository
 
         IsLoaded = true;
         Config.Key = key;
-    }
-
-    private bool ThisIsADuplicateCredentialRecord(ICredentialRecord newCredential)
-    {
-        return CredentialRecords.Any(cred => cred.Id.Equals(newCredential.Id));
     }
 
     public void UnloadCredentials()
@@ -69,6 +64,11 @@ public class XmlCredentialRepository : ICredentialRepository
 
     public event EventHandler RepositoryConfigUpdated;
     public event EventHandler<CollectionUpdatedEventArgs<ICredentialRecord>> CredentialsUpdated;
+
+    private bool ThisIsADuplicateCredentialRecord(ICredentialRecord newCredential)
+    {
+        return CredentialRecords.Any(cred => cred.Id.Equals(newCredential.Id));
+    }
 
     protected virtual void RaiseRepositoryConfigUpdatedEvent(PropertyChangedEventArgs args)
     {

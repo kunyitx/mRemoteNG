@@ -26,11 +26,11 @@
 
 using System;
 using System.Collections;
-using System.Configuration;
-using System.Windows.Forms;
 using System.Collections.Specialized;
-using System.Xml;
+using System.Configuration;
 using System.IO;
+using System.Windows.Forms;
+using System.Xml;
 
 //using mRemoteNG.App;
 
@@ -86,6 +86,24 @@ public class PortableSettingsProvider : SettingsProvider, IApplicationSettingsPr
     }
 
     public override string Name => _className;
+
+    public void Reset(SettingsContext context)
+    {
+        _localSettingsNode.RemoveAll();
+        _globalSettingsNode.RemoveAll();
+
+        _xmlDocument.Save(_filePath);
+    }
+
+    public SettingsPropertyValue GetPreviousVersion(SettingsContext context, SettingsProperty property)
+    {
+        // do nothing
+        return new SettingsPropertyValue(property);
+    }
+
+    public void Upgrade(SettingsContext context, SettingsPropertyCollection properties)
+    {
+    }
 
     public override void Initialize(string name, NameValueCollection config)
     {
@@ -188,23 +206,5 @@ public class PortableSettingsProvider : SettingsProvider, IApplicationSettingsPr
         blankXmlDocument.AppendChild(blankXmlDocument.CreateElement(_rootNodeName));
 
         return blankXmlDocument;
-    }
-
-    public void Reset(SettingsContext context)
-    {
-        _localSettingsNode.RemoveAll();
-        _globalSettingsNode.RemoveAll();
-
-        _xmlDocument.Save(_filePath);
-    }
-
-    public SettingsPropertyValue GetPreviousVersion(SettingsContext context, SettingsProperty property)
-    {
-        // do nothing
-        return new SettingsPropertyValue(property);
-    }
-
-    public void Upgrade(SettingsContext context, SettingsPropertyCollection properties)
-    {
     }
 }

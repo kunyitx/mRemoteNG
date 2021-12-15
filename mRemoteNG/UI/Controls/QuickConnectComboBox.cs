@@ -93,6 +93,32 @@ public class QuickConnectComboBox : ToolStripComboBox
         e.DrawFocusRectangle();
     }
 
+    private bool Exists(HistoryItem searchItem)
+    {
+        foreach (var item in _comboBox.Items)
+        {
+            if (!(item is HistoryItem)) continue;
+
+            var historyItem = (HistoryItem)item;
+            if (historyItem.Equals(searchItem)) return true;
+        }
+
+        return false;
+    }
+
+    public void Add(ConnectionInfo connectionInfo)
+    {
+        try
+        {
+            var historyItem = new HistoryItem { ConnectionInfo = connectionInfo };
+            if (!Exists(historyItem)) _comboBox.Items.Insert(0, historyItem);
+        }
+        catch (Exception ex)
+        {
+            Runtime.MessageCollector.AddExceptionMessage(Language.QuickConnectAddFailed, ex);
+        }
+    }
+
     private struct HistoryItem : IEquatable<HistoryItem>
     {
         public ConnectionInfo ConnectionInfo { get; set; }
@@ -119,32 +145,6 @@ public class QuickConnectComboBox : ToolStripComboBox
             return includeProtocol
                 ? $"{ConnectionInfo.Hostname}{port} ({ConnectionInfo.Protocol})"
                 : $"{ConnectionInfo.Hostname}{port}";
-        }
-    }
-
-    private bool Exists(HistoryItem searchItem)
-    {
-        foreach (var item in _comboBox.Items)
-        {
-            if (!(item is HistoryItem)) continue;
-
-            var historyItem = (HistoryItem)item;
-            if (historyItem.Equals(searchItem)) return true;
-        }
-
-        return false;
-    }
-
-    public void Add(ConnectionInfo connectionInfo)
-    {
-        try
-        {
-            var historyItem = new HistoryItem { ConnectionInfo = connectionInfo };
-            if (!Exists(historyItem)) _comboBox.Items.Insert(0, historyItem);
-        }
-        catch (Exception ex)
-        {
-            Runtime.MessageCollector.AddExceptionMessage(Language.QuickConnectAddFailed, ex);
         }
     }
 

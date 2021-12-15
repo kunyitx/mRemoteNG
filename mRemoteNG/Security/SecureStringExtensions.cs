@@ -8,9 +8,10 @@ namespace mRemoteNG.Security;
 public static class SecureStringExtensions
 {
     /// <summary>
-    /// Method to marshall a SecureString out of protected memory into a standard String object that is required by most other functions.
-    /// Code initially taken from Fabio Pintos
-    /// Source: https://blogs.msdn.microsoft.com/fpintos/2009/06/12/how-to-properly-convert-securestring-to-string/
+    ///     Method to marshall a SecureString out of protected memory into a standard String object that is required by most
+    ///     other functions.
+    ///     Code initially taken from Fabio Pintos
+    ///     Source: https://blogs.msdn.microsoft.com/fpintos/2009/06/12/how-to-properly-convert-securestring-to-string/
     /// </summary>
     /// <param name="securePassword"></param>
     /// <returns></returns>

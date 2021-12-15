@@ -12,10 +12,17 @@ namespace mRemoteNG.UI.Controls;
 //
 public class MrngCheckBox : CheckBox
 {
-    private ThemeManager _themeManager;
+    public enum MouseState
+    {
+        HOVER,
+        DOWN,
+        OUT
+    }
+
     private readonly Size _checkboxSize;
     private readonly int _checkboxYCoord;
     private readonly int _textXCoord;
+    private ThemeManager _themeManager;
 
     public MrngCheckBox()
     {
@@ -25,13 +32,6 @@ public class MrngCheckBox : CheckBox
         _checkboxSize = new Size(display.ScaleWidth(11), display.ScaleHeight(11));
         _checkboxYCoord = (display.ScaleHeight(Height) - _checkboxSize.Height) / 2 - display.ScaleHeight(5);
         _textXCoord = _checkboxSize.Width + display.ScaleWidth(2);
-    }
-
-    public enum MouseState
-    {
-        HOVER,
-        DOWN,
-        OUT
     }
 
     public MouseState _mice { get; set; }

@@ -14,17 +14,15 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.MsSql;
 
 public class DataTableSerializer : ISerializer<ConnectionInfo, DataTable>
 {
-    public readonly int DELETE = 0;
+    private const string TableName = "tblCons";
     private readonly ICryptographyProvider _cryptographyProvider;
     private readonly SecureString _encryptionKey;
+    private readonly SaveFilter _saveFilter;
+    public readonly int DELETE = 0;
+    private int _currentNodeIndex;
     private DataTable _dataTable;
     private DataTable _sourceDataTable;
-    private Dictionary<string, int> sourcePrimaryKeyDict = new();
-    private const string TableName = "tblCons";
-    private readonly SaveFilter _saveFilter;
-    private int _currentNodeIndex;
-
-    public Version Version { get; } = new(2, 8);
+    private readonly Dictionary<string, int> sourcePrimaryKeyDict = new();
 
     public DataTableSerializer(SaveFilter saveFilter,
         ICryptographyProvider cryptographyProvider,
@@ -33,6 +31,19 @@ public class DataTableSerializer : ISerializer<ConnectionInfo, DataTable>
         _saveFilter = saveFilter.ThrowIfNull(nameof(saveFilter));
         _cryptographyProvider = cryptographyProvider.ThrowIfNull(nameof(cryptographyProvider));
         _encryptionKey = encryptionKey.ThrowIfNull(nameof(encryptionKey));
+    }
+
+    public Version Version { get; } = new(2, 8);
+
+    public DataTable Serialize(ConnectionInfo serializationTarget)
+    {
+        _dataTable = BuildTable();
+        _currentNodeIndex = 0;
+        // Register add or update row
+        SerializeNodesRecursive(serializationTarget);
+        var entryToDelete = sourcePrimaryKeyDict.Keys.ToList();
+        foreach (var entry in entryToDelete) _dataTable.Rows.Find(entry).Delete();
+        return _dataTable;
     }
 
     public void SetSourceDataTable(DataTable sourceDataTable)
@@ -54,17 +65,6 @@ public class DataTableSerializer : ISerializer<ConnectionInfo, DataTable>
         {
             return _dataTable;
         }
-    }
-
-    public DataTable Serialize(ConnectionInfo serializationTarget)
-    {
-        _dataTable = BuildTable();
-        _currentNodeIndex = 0;
-        // Register add or update row
-        SerializeNodesRecursive(serializationTarget);
-        var entryToDelete = sourcePrimaryKeyDict.Keys.ToList();
-        foreach (var entry in entryToDelete) _dataTable.Rows.Find(entry).Delete();
-        return _dataTable;
     }
 
     private DataTable BuildTable()

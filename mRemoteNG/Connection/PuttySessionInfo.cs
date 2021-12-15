@@ -1,18 +1,44 @@
-﻿using mRemoteNG.App;
-using mRemoteNG.Messages;
-using mRemoteNG.Tools;
-using System;
+﻿using System;
 using System.ComponentModel;
+using mRemoteNG.App;
 using mRemoteNG.Connection.Protocol;
+using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
-using mRemoteNG.Resources.Language;
-
 
 namespace mRemoteNG.Connection;
 
 public sealed class PuttySessionInfo : ConnectionInfo, IComponent
 {
+    [Command]
+    [LocalizedAttributes.LocalizedDisplayNameAttribute("strPuttySessionSettings")]
+    public void SessionSettings()
+    {
+        try
+        {
+            var puttyProcess = new PuttyProcessController();
+            if (!puttyProcess.Start()) return;
+
+            if (puttyProcess.SelectListBoxItem(PuttySession)) puttyProcess.ClickButton("&Load");
+
+            puttyProcess.SetControlText("Button", "&Cancel", "&Close");
+            puttyProcess.SetControlVisible("Button", "&Open", false);
+        }
+        catch (Exception ex)
+        {
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
+                Language.ErrorCouldNotLaunchPutty + Environment.NewLine +
+                ex.Message);
+        }
+    }
+
+    public override TreeNodeType GetTreeNodeType()
+    {
+        return TreeNodeType.PuttySession;
+    }
+
     #region Properties
 
     [Browsable(false)] public RootPuttySessionsNodeInfo RootRootPuttySessionsInfo { get; set; }
@@ -58,33 +84,6 @@ public sealed class PuttySessionInfo : ConnectionInfo, IComponent
     [ReadOnly(true)] [Browsable(false)] public override string UserField { get; set; }
 
     #endregion
-
-    [Command()]
-    [LocalizedAttributes.LocalizedDisplayName("strPuttySessionSettings")]
-    public void SessionSettings()
-    {
-        try
-        {
-            var puttyProcess = new PuttyProcessController();
-            if (!puttyProcess.Start()) return;
-
-            if (puttyProcess.SelectListBoxItem(PuttySession)) puttyProcess.ClickButton("&Load");
-
-            puttyProcess.SetControlText("Button", "&Cancel", "&Close");
-            puttyProcess.SetControlVisible("Button", "&Open", false);
-        }
-        catch (Exception ex)
-        {
-            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
-                Language.ErrorCouldNotLaunchPutty + Environment.NewLine +
-                ex.Message);
-        }
-    }
-
-    public override TreeNodeType GetTreeNodeType()
-    {
-        return TreeNodeType.PuttySession;
-    }
 
     #region IComponent
 

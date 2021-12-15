@@ -3,15 +3,14 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Xml;
-using mRemoteNG.Themes;
 
 namespace mRemoteNG.Themes;
 
 //Class to extract the rest of the required theme colors for MremoteNG from the vstheme file
 public class MremoteNGPaletteManipulator
 {
-    private XmlDocument _xml;
-    private ExtendedColorPalette _defaultPalette;
+    private readonly ExtendedColorPalette _defaultPalette;
+    private readonly XmlDocument _xml;
 
 
     //warning, defaultpalette should always contain all the values, because when is loaded there is no default palette (parameter is null
@@ -45,7 +44,7 @@ public class MremoteNGPaletteManipulator
 
 
     /// <summary>
-    /// Takes a palette from memory and update the xml elements in disk
+    ///     Takes a palette from memory and update the xml elements in disk
     /// </summary>
     /// <param name="colorPalette"></param>
     /// <returns></returns>

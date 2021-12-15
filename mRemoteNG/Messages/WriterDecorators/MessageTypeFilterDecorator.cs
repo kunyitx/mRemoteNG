@@ -6,8 +6,8 @@ namespace mRemoteNG.Messages.WriterDecorators;
 
 public class MessageTypeFilterDecorator : IMessageWriter
 {
-    private readonly IMessageTypeFilteringOptions _filter;
     private readonly IMessageWriter _decoratedWriter;
+    private readonly IMessageTypeFilteringOptions _filter;
 
     public MessageTypeFilterDecorator(IMessageTypeFilteringOptions filter, IMessageWriter decoratedWriter)
     {

@@ -2,7 +2,6 @@
 using mRemoteNG.Container;
 using mRemoteNG.UI.Controls.ConnectionTree;
 
-
 namespace mRemoteNG.Tree;
 
 public class PreviouslyOpenedFolderExpander : IConnectionTreeDelegate

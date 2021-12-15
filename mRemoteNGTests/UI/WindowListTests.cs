@@ -1,15 +1,13 @@
 ﻿using System;
 using mRemoteNG.UI;
-using NUnit.Framework;
 using mRemoteNG.UI.Window;
+using NUnit.Framework;
 
 namespace mRemoteNGTests.UI;
 
 [TestFixture]
 public class WindowListTests
 {
-    private WindowList _windowList;
-
     [SetUp]
     public void Setup()
     {
@@ -21,6 +19,8 @@ public class WindowListTests
     {
         _windowList = null;
     }
+
+    private WindowList _windowList;
 
     [Test]
     public void EmptyWhenInitialized()
@@ -42,7 +42,7 @@ public class WindowListTests
         var window1 = new BaseWindow();
         var window2 = new BaseWindow();
         var window3 = new BaseWindow();
-        var windowArray = new BaseWindow[] { window1, window2, window3 };
+        var windowArray = new[] { window1, window2, window3 };
         _windowList.AddRange(windowArray);
         Assert.That(_windowList, Contains.Item(window1));
         Assert.That(_windowList, Contains.Item(window2));

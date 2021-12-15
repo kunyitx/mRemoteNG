@@ -13,8 +13,8 @@ namespace mRemoteNGTests.Config.Serializers.ConnectionSerializers.Xml;
 
 public class XmlConnectionsDeserializerTests
 {
-    private XmlConnectionsDeserializer _xmlConnectionsDeserializer;
     private ConnectionTreeModel _connectionTreeModel;
+    private XmlConnectionsDeserializer _xmlConnectionsDeserializer;
 
     public void Setup(string confCons, string password)
     {
@@ -161,15 +161,15 @@ public class Datagram
 {
     private readonly string _testName;
 
-    public string ConfCons { get; set; }
-    public string Password { get; set; }
-
     public Datagram(string testName, string confCons, string password)
     {
         _testName = testName;
         ConfCons = confCons;
         Password = password;
     }
+
+    public string ConfCons { get; set; }
+    public string Password { get; set; }
 
     public override string ToString()
     {

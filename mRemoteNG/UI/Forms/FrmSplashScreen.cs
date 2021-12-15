@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -6,13 +7,24 @@ namespace mRemoteNG.UI.Forms;
 
 public partial class FrmSplashScreen : Form
 {
-    private static FrmSplashScreen instance = null;
+    private static FrmSplashScreen instance;
 
     private FrmSplashScreen()
     {
         InitializeComponent();
 
-        Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
+        Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
+    }
+
+    protected override CreateParams CreateParams
+    {
+        get
+        {
+            var cp = base.CreateParams;
+            // turn on WS_EX_TOOLWINDOW style bit
+            cp.ExStyle |= 0x80;
+            return cp;
+        }
     }
 
     [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
@@ -31,16 +43,5 @@ public partial class FrmSplashScreen : Form
         if (instance == null)
             instance = new FrmSplashScreen();
         return instance;
-    }
-
-    protected override CreateParams CreateParams
-    {
-        get
-        {
-            var cp = base.CreateParams;
-            // turn on WS_EX_TOOLWINDOW style bit
-            cp.ExStyle |= 0x80;
-            return cp;
-        }
     }
 }

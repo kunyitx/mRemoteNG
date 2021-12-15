@@ -4,15 +4,14 @@ using mRemoteNG.Security.SymmetricEncryption;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
-
 namespace mRemoteNGTests.Security;
 
 public class LegacyRijndaelCryptographyProviderTests
 {
-    private ICryptographyProvider _rijndaelCryptographyProvider;
+    private const string CipherText = "RmV7zw/a7ZRRzZdcTkrLDgBfyEmeh8OFMgg2OKFJnwg=";
     private SecureString _encryptionKey;
     private string _plainText;
-    private const string CipherText = "RmV7zw/a7ZRRzZdcTkrLDgBfyEmeh8OFMgg2OKFJnwg=";
+    private ICryptographyProvider _rijndaelCryptographyProvider;
 
 
     [SetUp]

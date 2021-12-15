@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using mRemoteNG.Themes;
@@ -12,8 +13,8 @@ namespace mRemoteNG.UI.Controls;
 internal class MrngNumericUpDown : NumericUpDown
 {
     private readonly ThemeManager _themeManager;
-    private MrngButton Up;
     private MrngButton Down;
+    private MrngButton Up;
 
     public MrngNumericUpDown()
     {
@@ -113,14 +114,14 @@ internal class MrngNumericUpDown : NumericUpDown
 
     private void InitializeComponent()
     {
-        ((System.ComponentModel.ISupportInitialize)this).BeginInit();
+        ((ISupportInitialize)this).BeginInit();
         SuspendLayout();
         // 
         // NGNumericUpDown
         // 
         Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
-            GraphicsUnit.Point, (byte)0);
-        ((System.ComponentModel.ISupportInitialize)this).EndInit();
+            GraphicsUnit.Point, 0);
+        ((ISupportInitialize)this).EndInit();
         ResumeLayout(false);
     }
 }

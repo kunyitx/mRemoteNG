@@ -7,9 +7,9 @@ using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Container;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Config.Serializers.MiscSerializers;
 

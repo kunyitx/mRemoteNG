@@ -14,14 +14,6 @@ public class XmlConnectionsDecryptor
     private readonly ICryptographyProvider _cryptographyProvider;
     private readonly RootNodeInfo _rootNodeInfo;
 
-    public Func<Optional<SecureString>> AuthenticationRequestor { get; set; }
-
-    public int KeyDerivationIterations
-    {
-        get => _cryptographyProvider.KeyDerivationIterations;
-        set => _cryptographyProvider.KeyDerivationIterations = value;
-    }
-
 
     public XmlConnectionsDecryptor(RootNodeInfo rootNodeInfo)
     {
@@ -35,6 +27,14 @@ public class XmlConnectionsDecryptor
     {
         _cryptographyProvider = new CryptoProviderFactory(blockCipherEngine, blockCipherMode).Build();
         _rootNodeInfo = rootNodeInfo;
+    }
+
+    public Func<Optional<SecureString>> AuthenticationRequestor { get; set; }
+
+    public int KeyDerivationIterations
+    {
+        get => _cryptographyProvider.KeyDerivationIterations;
+        set => _cryptographyProvider.KeyDerivationIterations = value;
     }
 
     public string Decrypt(string plainText)

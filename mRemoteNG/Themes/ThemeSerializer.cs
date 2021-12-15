@@ -1,14 +1,14 @@
 using System.IO;
-using WeifenLuo.WinFormsUI.Docking;
 using System.Linq;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.Themes;
 
 public static class ThemeSerializer
 {
     /// <summary>
-    /// Save the theme to file, name property is used as filename
-    /// The baseTheme is used as a template, by copy that file and rewrite the extpalette values
+    ///     Save the theme to file, name property is used as filename
+    ///     The baseTheme is used as a template, by copy that file and rewrite the extpalette values
     /// </summary>
     /// <param name="themeToSave"></param>
     /// <param name="baseTheme"></param>
@@ -27,7 +27,7 @@ public static class ThemeSerializer
     }
 
     /// <summary>
-    /// Takes a theme in memory and update the color values that the user might have changed
+    ///     Takes a theme in memory and update the color values that the user might have changed
     /// </summary>
     /// <param name="themeToUpdate"></param>
     public static void UpdateThemeXMLValues(ThemeInfo themeToUpdate)
@@ -39,7 +39,7 @@ public static class ThemeSerializer
     }
 
     /// <summary>
-    /// Load a theme form an xml file
+    ///     Load a theme form an xml file
     /// </summary>
     /// <param name="filename"></param>
     /// <param name="defaultTheme"></param>

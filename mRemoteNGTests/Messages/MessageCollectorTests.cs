@@ -2,7 +2,6 @@
 using NSubstitute;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Messages;
 
 public class MessageCollectorTests

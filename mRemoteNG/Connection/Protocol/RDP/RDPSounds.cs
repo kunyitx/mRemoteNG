@@ -1,16 +1,16 @@
-﻿using mRemoteNG.Tools;
-using mRemoteNG.Resources.Language;
+﻿using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.Connection.Protocol.RDP;
 
 public enum RDPSounds
 {
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.RdpSoundBringToThisComputer))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.RdpSoundBringToThisComputer))]
     BringToThisComputer = 0,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.RdpSoundLeaveAtRemoteComputer))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.RdpSoundLeaveAtRemoteComputer))]
     LeaveAtRemoteComputer = 1,
 
-    [LocalizedAttributes.LocalizedDescription(nameof(Language.DoNotPlay))]
+    [LocalizedAttributes.LocalizedDescriptionAttribute(nameof(Language.DoNotPlay))]
     DoNotPlay = 2
 }

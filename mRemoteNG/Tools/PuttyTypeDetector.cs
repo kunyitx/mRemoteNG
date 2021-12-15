@@ -1,12 +1,21 @@
 using System;
 using System.Diagnostics;
-using mRemoteNG.Connection.Protocol;
 using System.IO;
+using mRemoteNG.Connection.Protocol;
 
 namespace mRemoteNG.Tools;
 
 public class PuttyTypeDetector
 {
+    public enum PuttyType
+    {
+        Unknown = 0,
+        Putty,
+        PuttyNg,
+        Kitty,
+        Xming
+    }
+
     public static PuttyType GetPuttyType()
     {
         return GetPuttyType(PuttyBase.PuttyPath);
@@ -62,14 +71,5 @@ public class PuttyTypeDetector
                 .GetVersionInfo(filename)
                 .ProductVersion
                 .Contains("Xming"));
-    }
-
-    public enum PuttyType
-    {
-        Unknown = 0,
-        Putty,
-        PuttyNg,
-        Kitty,
-        Xming
     }
 }

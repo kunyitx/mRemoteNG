@@ -12,9 +12,9 @@ namespace mRemoteNGTests.Config.Serializers.ConnectionSerializers.Xml;
 
 public class XmlRootNodeSerializerTests
 {
-    private XmlRootNodeSerializer _rootNodeSerializer;
     private ICryptographyProvider _cryptographyProvider;
     private RootNodeInfo _rootNodeInfo;
+    private XmlRootNodeSerializer _rootNodeSerializer;
     private Version _version;
 
     [SetUp]

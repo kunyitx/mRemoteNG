@@ -4,25 +4,26 @@ using System.Windows.Forms;
 using BrightIdeasSoftware;
 using mRemoteNG.App;
 using mRemoteNG.Config.Settings;
-using mRemoteNG.Tools;
-using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.UI.Forms;
-using mRemoteNG.Themes;
-using mRemoteNG.Tools.CustomCollections;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
+using mRemoteNG.Tools;
+using mRemoteNG.Tools.CustomCollections;
+using mRemoteNG.UI.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.UI.Window;
 
 public partial class ExternalToolsWindow
 {
+    private readonly FullyObservableCollection<ExternalTool> _currentlySelectedExternalTools;
     private readonly ExternalAppsSaver _externalAppsSaver;
     private readonly ThemeManager _themeManager;
-    private readonly FullyObservableCollection<ExternalTool> _currentlySelectedExternalTools;
 
     public ExternalToolsWindow()
     {
         InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Console_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.Console_16x);
         WindowType = WindowType.ExternalApps;
         DockPnl = new DockContent();
         _themeManager = ThemeManager.getInstance();

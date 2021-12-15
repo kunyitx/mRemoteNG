@@ -11,8 +11,8 @@ namespace mRemoteNG.Config.Settings;
 
 public class DockPanelLayoutSaver
 {
-    private readonly ISerializer<DockPanel, string> _dockPanelSerializer;
     private readonly IDataProvider<string> _dataProvider;
+    private readonly ISerializer<DockPanel, string> _dockPanelSerializer;
 
     public DockPanelLayoutSaver(ISerializer<DockPanel, string> dockPanelSerializer,
         IDataProvider<string> dataProvider)

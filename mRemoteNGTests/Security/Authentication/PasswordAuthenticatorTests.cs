@@ -5,15 +5,14 @@ using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tools;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Security.Authentication;
 
 public class PasswordAuthenticatorTests
 {
-    private ICryptographyProvider _cryptographyProvider;
-    private string _cipherText;
     private readonly SecureString _correctPassword = "9theCorrectPass#5".ConvertToSecureString();
     private readonly SecureString _wrongPassword = "wrongPassword".ConvertToSecureString();
+    private string _cipherText;
+    private ICryptographyProvider _cryptographyProvider;
 
     [SetUp]
     public void Setup()

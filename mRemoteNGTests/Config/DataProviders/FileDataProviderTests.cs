@@ -9,8 +9,8 @@ namespace mRemoteNGTests.Config.DataProviders;
 public class FileDataProviderTests
 {
     private FileDataProvider _dataProvider;
-    private string _testFilePath;
     private string _testFileDirectory;
+    private string _testFilePath;
 
     [SetUp]
     public void Setup()

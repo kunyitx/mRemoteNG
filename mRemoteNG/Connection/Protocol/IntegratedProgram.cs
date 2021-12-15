@@ -6,13 +6,31 @@ using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
-using mRemoteNG.Tools;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Tools;
 
 namespace mRemoteNG.Connection.Protocol;
 
 public class IntegratedProgram : ProtocolBase
 {
+    #region Enumerations
+
+    public enum Defaults
+    {
+        Port = 0
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void ProcessExited(object sender, EventArgs e)
+    {
+        Event_Closed(this);
+    }
+
+    #endregion
+
     #region Private Fields
 
     private ExternalTool _externalTool;
@@ -171,24 +189,6 @@ public class IntegratedProgram : ProtocolBase
         }
 
         base.Close();
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void ProcessExited(object sender, EventArgs e)
-    {
-        Event_Closed(this);
-    }
-
-    #endregion
-
-    #region Enumerations
-
-    public enum Defaults
-    {
-        Port = 0
     }
 
     #endregion

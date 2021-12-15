@@ -4,7 +4,6 @@ using mRemoteNG.Container;
 using mRemoteNG.Tree.Root;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.IntegrationTests;
 
 public class ConnectionInheritanceIntegrationTests

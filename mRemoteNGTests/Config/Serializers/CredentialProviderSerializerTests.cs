@@ -4,7 +4,6 @@ using mRemoteNG.Credential;
 using NSubstitute;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Config.Serializers;
 
 public class CredentialProviderSerializerTests

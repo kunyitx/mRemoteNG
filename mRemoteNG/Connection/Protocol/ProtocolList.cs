@@ -23,6 +23,8 @@ public class ProtocolList : CollectionBase, INotifyCollectionChanged
 
     public new int Count => List.Count;
 
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
+
 
     public void Add(ProtocolBase cProt)
     {
@@ -65,8 +67,6 @@ public class ProtocolList : CollectionBase, INotifyCollectionChanged
         RaiseCollectionChangedEvent(this,
             new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
-
-    public event NotifyCollectionChangedEventHandler CollectionChanged;
 
     private void RaiseCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs args)
     {

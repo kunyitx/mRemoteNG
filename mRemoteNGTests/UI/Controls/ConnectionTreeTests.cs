@@ -13,8 +13,8 @@ namespace mRemoteNGTests.UI.Controls;
 
 public class ConnectionTreeTests
 {
-    private ConnectionTreeSearchTextFilter _filter;
     private ConnectionTree _connectionTree;
+    private ConnectionTreeSearchTextFilter _filter;
 
     [SetUp]
     public void Setup()

@@ -24,13 +24,13 @@ public static class Extensions
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if the given value is
-    /// null. Otherwise, return the value.
+    ///     Throws an <see cref="ArgumentNullException" /> if the given value is
+    ///     null. Otherwise, return the value.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="value"></param>
     /// <param name="argName">
-    /// The name of the argument
+    ///     The name of the argument
     /// </param>
     public static T ThrowIfNull<T>(this T value, string argName)
     {
@@ -40,8 +40,8 @@ public static class Extensions
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException"/> if the value
-    /// is null or an empty string. Otherwise, returns the value.
+    ///     Throws an <see cref="ArgumentException" /> if the value
+    ///     is null or an empty string. Otherwise, returns the value.
     /// </summary>
     /// <param name="value"></param>
     /// <param name="argName"></param>
@@ -53,8 +53,8 @@ public static class Extensions
     }
 
     /// <summary>
-    /// Perform an action for each item in the given collection. The item
-    /// is the pass along the processing chain.
+    ///     Perform an action for each item in the given collection. The item
+    ///     is the pass along the processing chain.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="collection"></param>

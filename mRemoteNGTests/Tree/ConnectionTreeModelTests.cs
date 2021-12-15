@@ -3,7 +3,6 @@ using mRemoteNG.Container;
 using mRemoteNG.Tree;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class ConnectionTreeModelTests

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using mRemoteNG.Themes;
 
@@ -6,15 +7,15 @@ namespace mRemoteNG.UI.Controls.PageSequence;
 
 public class SequencedControl : UserControl, ISequenceChangingNotifier
 {
-    public event EventHandler Next;
-    public event EventHandler Previous;
-    public event SequencedPageReplcementRequestHandler PageReplacementRequested;
-
     public SequencedControl()
     {
         ThemeManager.getInstance().ThemeChanged += ApplyTheme;
         InitializeComponent();
     }
+
+    public event EventHandler Next;
+    public event EventHandler Previous;
+    public event SequencedPageReplcementRequestHandler PageReplacementRequested;
 
     protected virtual void RaiseNextPageEvent()
     {
@@ -44,8 +45,8 @@ public class SequencedControl : UserControl, ISequenceChangingNotifier
         // 
         // SequencedControl
         // 
-        Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
+        Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
         Name = "SequencedControl";
         ResumeLayout(false);
     }

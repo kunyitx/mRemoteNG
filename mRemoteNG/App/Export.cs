@@ -14,7 +14,6 @@ using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.UI.Forms;
 
-
 namespace mRemoteNG.App;
 
 public static class Export

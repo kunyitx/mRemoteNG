@@ -1,16 +1,17 @@
-﻿using mRemoteNG.App;
-using mRemoteNG.Messages;
-using mRemoteNG.Security.SymmetricEncryption;
-using mRemoteNG.Tools;
-using mRemoteNG.Tools.Cmdline;
-using mRemoteNG.UI;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using ExternalConnectors.TSS;
+using mRemoteNG.App;
+using mRemoteNG.Messages;
 using mRemoteNG.Properties;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Security.SymmetricEncryption;
+using mRemoteNG.Tools;
+using mRemoteNG.Tools.Cmdline;
+using mRemoteNG.UI;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -19,8 +20,17 @@ namespace mRemoteNG.Connection.Protocol;
 public class PuttyBase : ProtocolBase
 {
     private const int IDM_RECONF = 0x50; // PuTTY Settings Menu ID
-    private bool _isPuttyNg;
     private readonly DisplayProperties _display = new();
+    private bool _isPuttyNg;
+
+    #region Private Events & Handlers
+
+    private void ProcessExited(object sender, EventArgs e)
+    {
+        Event_Closed(this);
+    }
+
+    #endregion
 
     #region Public Properties
 
@@ -35,15 +45,6 @@ public class PuttyBase : ProtocolBase
     public static string PuttyPath { get; set; }
 
     public bool Focused => NativeMethods.GetForegroundWindow() == PuttyHandle;
-
-    #endregion
-
-    #region Private Events & Handlers
-
-    private void ProcessExited(object sender, EventArgs e)
-    {
-        Event_Closed(this);
-    }
 
     #endregion
 
@@ -116,7 +117,7 @@ public class PuttyBase : ProtocolBase
                         var domain = ""; // dummy
                         try
                         {
-                            ExternalConnectors.TSS.SecretServerInterface.FetchSecretFromServer(username, out username,
+                            SecretServerInterface.FetchSecretFromServer(username, out username,
                                 out password, out domain);
                         }
                         catch (Exception ex)

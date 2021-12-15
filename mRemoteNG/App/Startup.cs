@@ -14,16 +14,17 @@ using mRemoteNG.Tools.Cmdline;
 using mRemoteNG.UI;
 using mRemoteNG.UI.Forms;
 
-
 namespace mRemoteNG.App;
 
 public class Startup
 {
-    private AppUpdater _appUpdate;
     private readonly ConnectionIconLoader _connectionIconLoader;
     private readonly FrmMain _frmMain = FrmMain.Default;
+    private AppUpdater _appUpdate;
 
-    public static Startup Instance { get; } = new();
+    static Startup()
+    {
+    }
 
     private Startup()
     {
@@ -31,9 +32,7 @@ public class Startup
         _connectionIconLoader = new ConnectionIconLoader(GeneralAppInfo.HomePath + "\\Icons\\");
     }
 
-    static Startup()
-    {
-    }
+    public static Startup Instance { get; } = new();
 
     public void InitializeProgram(MessageCollector messageCollector)
     {

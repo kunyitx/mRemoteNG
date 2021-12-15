@@ -4,7 +4,6 @@ using mRemoteNG.Connection;
 using mRemoteNGTests.TestHelpers;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Connection;
 
 public class DefaultConnectionInfoTests

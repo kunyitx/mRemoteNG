@@ -5,9 +5,6 @@ namespace mRemoteNG.Tools.CustomCollections;
 
 public class CollectionUpdatedEventArgs<T> : EventArgs
 {
-    public IEnumerable<T> ChangedItems { get; }
-    public ActionType Action { get; }
-
     public CollectionUpdatedEventArgs(ActionType action, IEnumerable<T> changedItems)
     {
         if (changedItems == null)
@@ -16,6 +13,9 @@ public class CollectionUpdatedEventArgs<T> : EventArgs
         Action = action;
         ChangedItems = changedItems;
     }
+
+    public IEnumerable<T> ChangedItems { get; }
+    public ActionType Action { get; }
 }
 
 public enum ActionType

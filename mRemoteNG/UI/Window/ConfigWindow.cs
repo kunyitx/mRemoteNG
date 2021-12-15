@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Net.NetworkInformation;
@@ -10,35 +11,35 @@ using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Themes;
-using mRemoteNG.Tree.Root;
 using mRemoteNG.UI.Controls.ConnectionInfoPropertyGrid;
 using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.Resources.Language;
-
+using ImageConverter = mRemoteNG.Resources.ImageConverter;
+using Message = System.Windows.Forms.Message;
 
 namespace mRemoteNG.UI.Window;
 
 public class ConfigWindow : BaseWindow
 {
-    private bool _originalPropertyGridToolStripItemCountValid;
-    private int _originalPropertyGridToolStripItemCount;
-    private System.ComponentModel.Container _components;
-    private ToolStripButton _btnShowProperties;
+    private ToolStripButton _btnHostStatus;
+    private ToolStripButton _btnIcon;
+    private ToolStripButton _btnShowDefaultInheritance;
     private ToolStripButton _btnShowDefaultProperties;
     private ToolStripButton _btnShowInheritance;
-    private ToolStripButton _btnShowDefaultInheritance;
-    private ToolStripButton _btnIcon;
-    private ToolStripButton _btnHostStatus;
-    internal ContextMenuStrip CMenIcons;
-    internal ContextMenuStrip PropertyGridContextMenu;
-    private ToolStripMenuItem _propertyGridContextMenuShowHelpText;
-    private ToolStripMenuItem _propertyGridContextMenuReset;
-    private ToolStripSeparator _toolStripSeparator1;
+    private ToolStripButton _btnShowProperties;
+    private System.ComponentModel.Container _components;
+    private int _originalPropertyGridToolStripItemCount;
+    private bool _originalPropertyGridToolStripItemCountValid;
     private ConnectionInfoPropertyGrid _pGrid;
-    private ThemeManager _themeManager;
+    private ToolStripMenuItem _propertyGridContextMenuReset;
+    private ToolStripMenuItem _propertyGridContextMenuShowHelpText;
 
     private ConnectionInfo _selectedTreeNode;
+    private ThemeManager _themeManager;
+    private ToolStripSeparator _toolStripSeparator1;
+    internal ContextMenuStrip CMenIcons;
+    internal ContextMenuStrip PropertyGridContextMenu;
 
     public ConnectionInfo SelectedTreeNode
     {
@@ -219,7 +220,7 @@ public class ConfigWindow : BaseWindow
     public bool CanShowDefaultInheritance => true;
 
     /// <summary>
-    /// A list of properties being shown for the current object.
+    ///     A list of properties being shown for the current object.
     /// </summary>
     public IEnumerable<string> VisibleObjectProperties => _pGrid.VisibleProperties;
 
@@ -236,7 +237,7 @@ public class ConfigWindow : BaseWindow
         WindowType = WindowType.Config;
         DockPnl = panel;
         InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Settings_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.Settings_16x);
         ApplyLanguage();
     }
 
@@ -268,7 +269,7 @@ public class ConfigWindow : BaseWindow
         UpdateTopRow();
     }
 
-    protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     {
         // Main form handle command key events
         // Adapted from http://kiwigis.blogspot.com/2009/05/adding-tab-key-support-to-propertygrid.html
@@ -670,7 +671,7 @@ public class ConfigWindow : BaseWindow
 
     #region Event Handlers
 
-    private void propertyGridContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+    private void propertyGridContextMenu_Opening(object sender, CancelEventArgs e)
     {
         try
         {

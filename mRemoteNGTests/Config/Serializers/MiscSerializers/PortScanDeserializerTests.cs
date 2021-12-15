@@ -9,11 +9,11 @@ namespace mRemoteNGTests.Config.Serializers.MiscSerializers;
 
 public class PortScanDeserializerTests
 {
-    private PortScanDeserializer _deserializer;
-    private ConnectionInfo _importedConnectionInfo;
     private const string ExpectedHostName = "server1.domain.com";
     private const string ExpectedDisplayName = "server1";
     private const ProtocolType ExpectedProtocolType = ProtocolType.SSH2;
+    private PortScanDeserializer _deserializer;
+    private ConnectionInfo _importedConnectionInfo;
 
 
     [OneTimeSetUp]

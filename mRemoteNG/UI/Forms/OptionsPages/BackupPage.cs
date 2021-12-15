@@ -1,12 +1,12 @@
-﻿using mRemoteNG.Config;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Config.Connections;
-using mRemoteNG.Security;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Security;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
 
@@ -19,7 +19,7 @@ public sealed partial class BackupPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.DocumentsFolder_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.DocumentsFolder_16x);
     }
 
     public override string PageName
@@ -36,26 +36,16 @@ public sealed partial class BackupPage
 
         _connectionBackup = new List<DropdownList>
         {
-            {
-                new((int)ConnectionsBackupFrequencyEnum.Never,
-                    Language.ConnectionsBackupFrequencyNever)
-            },
-            {
-                new((int)ConnectionsBackupFrequencyEnum.OnEdit,
-                    Language.ConnectionsBackupFrequencyOnEdit)
-            },
-            {
-                new((int)ConnectionsBackupFrequencyEnum.OnExit,
-                    Language.ConnectionsBackupFrequencyOnExit)
-            },
-            {
-                new((int)ConnectionsBackupFrequencyEnum.Daily,
-                    Language.ConnectionsBackupFrequencyDaily)
-            },
-            {
-                new((int)ConnectionsBackupFrequencyEnum.Weekly,
-                    Language.ConnectionsBackupFrequencyWeekly)
-            }
+            new((int)ConnectionsBackupFrequencyEnum.Never,
+                Language.ConnectionsBackupFrequencyNever),
+            new((int)ConnectionsBackupFrequencyEnum.OnEdit,
+                Language.ConnectionsBackupFrequencyOnEdit),
+            new((int)ConnectionsBackupFrequencyEnum.OnExit,
+                Language.ConnectionsBackupFrequencyOnExit),
+            new((int)ConnectionsBackupFrequencyEnum.Daily,
+                Language.ConnectionsBackupFrequencyDaily),
+            new((int)ConnectionsBackupFrequencyEnum.Weekly,
+                Language.ConnectionsBackupFrequencyWeekly)
             //{ new DropdownList( (int)ConnectionsBackupFrequencyEnum.Custom, Language.ConnectionsBackupFrequencyCustom)}
         };
 

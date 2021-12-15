@@ -9,9 +9,10 @@ using System.Security;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
-using mRemoteNG.UI.Forms;
-using MySql.Data.Types;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.UI.Forms;
+using mRemoteNG.UI.Tabs;
+using MySql.Data.Types;
 using static System.String;
 
 namespace mRemoteNG.Tools;
@@ -115,7 +116,7 @@ public static class MiscTools
     }
 
 
-    public static Image TakeScreenshot(UI.Tabs.ConnectionTab sender)
+    public static Image TakeScreenshot(ConnectionTab sender)
     {
         try
         {

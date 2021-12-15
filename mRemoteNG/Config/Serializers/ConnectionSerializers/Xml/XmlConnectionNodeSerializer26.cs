@@ -14,8 +14,6 @@ public class XmlConnectionNodeSerializer26 : ISerializer<ConnectionInfo, XElemen
     private readonly SecureString _encryptionKey;
     private readonly SaveFilter _saveFilter;
 
-    public Version Version { get; } = new(2, 6);
-
     public XmlConnectionNodeSerializer26(ICryptographyProvider cryptographyProvider, SecureString encryptionKey,
         SaveFilter saveFilter)
     {
@@ -30,6 +28,8 @@ public class XmlConnectionNodeSerializer26 : ISerializer<ConnectionInfo, XElemen
         _encryptionKey = encryptionKey;
         _saveFilter = saveFilter;
     }
+
+    public Version Version { get; } = new(2, 6);
 
     public XElement Serialize(ConnectionInfo connectionInfo)
     {

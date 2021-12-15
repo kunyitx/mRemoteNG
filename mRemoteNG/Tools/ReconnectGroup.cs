@@ -6,12 +6,18 @@ namespace mRemoteNG.Tools;
 
 public partial class ReconnectGroup
 {
+    public delegate void CloseClickedEventHandler();
+
+    private bool _ReconnectWhenReady;
+
+    private bool _ServerReady;
+
+    private CloseClickedEventHandler CloseClickedEvent;
+
     public ReconnectGroup()
     {
         InitializeComponent();
     }
-
-    private bool _ServerReady;
 
     public bool ServerReady
     {
@@ -24,14 +30,22 @@ public partial class ReconnectGroup
         }
     }
 
-    private delegate void SetStatusImageCB(Image Img);
+    public bool ReconnectWhenReady
+    {
+        get => _ReconnectWhenReady;
+        set
+        {
+            _ReconnectWhenReady = value;
+            SetCheckbox(value);
+        }
+    }
 
     private void SetStatusImage(Image Img)
     {
         if (pbServerStatus.InvokeRequired)
         {
             var d = new SetStatusImageCB(SetStatusImage);
-            ParentForm?.Invoke(d, new object[] { Img });
+            ParentForm?.Invoke(d, Img);
         }
         else
         {
@@ -44,36 +58,18 @@ public partial class ReconnectGroup
         _ReconnectWhenReady = chkReconnectWhenReady.Checked;
     }
 
-    private bool _ReconnectWhenReady;
-
-    public bool ReconnectWhenReady
-    {
-        get => _ReconnectWhenReady;
-        set
-        {
-            _ReconnectWhenReady = value;
-            SetCheckbox(value);
-        }
-    }
-
-    private delegate void SetCheckboxCB(bool Val);
-
     private void SetCheckbox(bool Val)
     {
         if (chkReconnectWhenReady.InvokeRequired)
         {
             var d = new SetCheckboxCB(SetCheckbox);
-            ParentForm?.Invoke(d, new object[] { Val });
+            ParentForm?.Invoke(d, Val);
         }
         else
         {
             chkReconnectWhenReady.Checked = Val;
         }
     }
-
-    public delegate void CloseClickedEventHandler();
-
-    private CloseClickedEventHandler CloseClickedEvent;
 
     public event CloseClickedEventHandler CloseClicked
     {
@@ -106,8 +102,6 @@ public partial class ReconnectGroup
         }
     }
 
-    private delegate void DisposeReconnectGroupCB();
-
     public void DisposeReconnectGroup()
     {
         if (InvokeRequired)
@@ -133,4 +127,10 @@ public partial class ReconnectGroup
         lblServerStatus.Text = Language.ServerStatus;
         chkReconnectWhenReady.Text = Language.CheckboxReconnectWhenReady;
     }
+
+    private delegate void SetStatusImageCB(Image Img);
+
+    private delegate void SetCheckboxCB(bool Val);
+
+    private delegate void DisposeReconnectGroupCB();
 }

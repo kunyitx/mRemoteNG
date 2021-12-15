@@ -5,12 +5,12 @@ using System.ComponentModel;
 namespace mRemoteNG.UI.Controls.FilteredPropertyGrid;
 
 /// <summary>
-/// This class is a wrapper. It contains the object the PropertyGrid has to display.
+///     This class is a wrapper. It contains the object the PropertyGrid has to display.
 /// </summary>
 internal class ObjectWrapper : ICustomTypeDescriptor
 {
     /// <summary>
-    /// Creates a new instance of an <see cref="ObjectWrapper"/> with the given object to be wrapped.
+    ///     Creates a new instance of an <see cref="ObjectWrapper" /> with the given object to be wrapped.
     /// </summary>
     /// <param name="obj">A reference to the selected object that will linked to the parent PropertyGrid.</param>
     internal ObjectWrapper(object obj)
@@ -19,12 +19,12 @@ internal class ObjectWrapper : ICustomTypeDescriptor
     }
 
     /// <summary>
-    /// Get or set a reference to the selected objet that will linked to the parent PropertyGrid.
+    ///     Get or set a reference to the selected objet that will linked to the parent PropertyGrid.
     /// </summary>
     public object SelectedObject { get; set; }
 
     /// <summary>
-    /// Get or set a reference to the collection of properties to show in the parent PropertyGrid
+    ///     Get or set a reference to the collection of properties to show in the parent PropertyGrid
     /// </summary>
     public List<PropertyDescriptor> PropertyDescriptors { get; set; } = new();
 
@@ -41,7 +41,7 @@ internal class ObjectWrapper : ICustomTypeDescriptor
     }
 
     /// <summary>
-    /// GetAttributes
+    ///     GetAttributes
     /// </summary>
     /// <returns>AttributeCollection</returns>
     public AttributeCollection GetAttributes()
@@ -50,7 +50,7 @@ internal class ObjectWrapper : ICustomTypeDescriptor
     }
 
     /// <summary>
-    /// Get Class Name
+    ///     Get Class Name
     /// </summary>
     /// <returns>String</returns>
     public string GetClassName()
@@ -59,7 +59,7 @@ internal class ObjectWrapper : ICustomTypeDescriptor
     }
 
     /// <summary>
-    /// GetComponentName
+    ///     GetComponentName
     /// </summary>
     /// <returns>String</returns>
     public string GetComponentName()
@@ -68,7 +68,7 @@ internal class ObjectWrapper : ICustomTypeDescriptor
     }
 
     /// <summary>
-    /// GetConverter
+    ///     GetConverter
     /// </summary>
     /// <returns>TypeConverter</returns>
     public TypeConverter GetConverter()
@@ -77,7 +77,7 @@ internal class ObjectWrapper : ICustomTypeDescriptor
     }
 
     /// <summary>
-    /// GetDefaultEvent
+    ///     GetDefaultEvent
     /// </summary>
     /// <returns>EventDescriptor</returns>
     public EventDescriptor GetDefaultEvent()
@@ -86,7 +86,7 @@ internal class ObjectWrapper : ICustomTypeDescriptor
     }
 
     /// <summary>
-    /// GetDefaultProperty
+    ///     GetDefaultProperty
     /// </summary>
     /// <returns>PropertyDescriptor</returns>
     public PropertyDescriptor GetDefaultProperty()
@@ -95,7 +95,7 @@ internal class ObjectWrapper : ICustomTypeDescriptor
     }
 
     /// <summary>
-    /// GetEditor
+    ///     GetEditor
     /// </summary>
     /// <param name="editorBaseType">editorBaseType</param>
     /// <returns>object</returns>

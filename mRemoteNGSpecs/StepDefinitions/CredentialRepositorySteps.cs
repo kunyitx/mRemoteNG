@@ -10,8 +10,8 @@ namespace mRemoteNGSpecs.StepDefinitions;
 [Binding]
 public class CredentialRepositorySteps
 {
-    private ICredentialRepository _credentialRepository;
     private readonly SecureString _key = "somePassword".ConvertToSecureString();
+    private ICredentialRepository _credentialRepository;
 
     [Given(@"I have a credential repository")]
     public void GivenIHaveACredentialRepository()

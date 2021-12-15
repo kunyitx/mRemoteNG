@@ -1,29 +1,28 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.ComponentModel;
-using System.Threading;
-using System.Reflection;
-using mRemoteNG.App.Info;
-using mRemoteNG.Security.SymmetricEncryption;
-using System.Security.Cryptography;
-using mRemoteNG.Properties;
-#if !PORTABLE
+﻿#if !PORTABLE
 using mRemoteNG.Tools;
-
 #else
 using System.Windows.Forms;
-
 #endif
+using System;
+using System.ComponentModel;
+using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Threading;
+using mRemoteNG.App.Info;
+using mRemoteNG.Properties;
+using mRemoteNG.Security.SymmetricEncryption;
+
 // ReSharper disable ArrangeAccessorOwnerBody
 
 namespace mRemoteNG.App.Update
 {
     public class AppUpdater
     {
-        private WebProxy _webProxy;
-        private Thread _getUpdateInfoThread;
         private Thread _getChangeLogThread;
+        private Thread _getUpdateInfoThread;
+        private WebProxy _webProxy;
 
         #region Public Properties
 
@@ -137,13 +136,9 @@ namespace mRemoteNG.App.Update
                 RestoreDirectory = true
             };
             if (sfd.ShowDialog() == DialogResult.OK)
-            {
                 CurrentUpdateInfo.UpdateFilePath = sfd.FileName;
-            }
             else
-            {
                 return;
-            }
 #endif
             DownloadUpdateWebClient.DownloadFileAsync(CurrentUpdateInfo.DownloadAddress,
                 CurrentUpdateInfo.UpdateFilePath);

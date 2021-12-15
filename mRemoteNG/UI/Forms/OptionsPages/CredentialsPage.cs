@@ -1,8 +1,9 @@
 ﻿using System;
 using mRemoteNG.App;
 using mRemoteNG.Properties;
-using mRemoteNG.Security.SymmetricEncryption;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Security.SymmetricEncryption;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
 
@@ -12,7 +13,7 @@ public sealed partial class CredentialsPage : OptionsPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Key_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.Key_16x);
     }
 
     public override string PageName

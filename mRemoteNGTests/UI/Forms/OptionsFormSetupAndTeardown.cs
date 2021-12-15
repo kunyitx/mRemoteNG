@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using mRemoteNG.UI.Forms;
+﻿using mRemoteNG.UI.Forms;
+using NUnit.Framework;
 
 namespace mRemoteNGTests.UI.Forms;
 

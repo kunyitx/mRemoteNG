@@ -5,7 +5,6 @@ using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
 using mRemoteNG.Tools;
 
-
 namespace mRemoteNG.Config.Import;
 
 public class PortScanImporter : IConnectionImporter<IEnumerable<ScanHost>>

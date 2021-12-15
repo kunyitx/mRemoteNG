@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 using mRemoteNG.App;
 using mRemoteNG.Container;
-using mRemoteNG.Themes;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.UI.Window;
 
@@ -17,7 +18,7 @@ public partial class ActiveDirectoryImportWindow : BaseWindow
     {
         WindowType = WindowType.ActiveDirectoryImport;
         DockPnl = new DockContent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Schema_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.Schema_16x);
         InitializeComponent();
         FontOverrider.FontOverride(this);
         ApplyTheme();

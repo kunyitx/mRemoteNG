@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace mRemoteNG.Config.DatabaseConnectors;
 
 /// <summary>
-/// A helper class for testing database connectivity
+///     A helper class for testing database connectivity
 /// </summary>
 public class DatabaseConnectionTester
 {

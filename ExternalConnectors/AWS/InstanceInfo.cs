@@ -1,16 +1,9 @@
 ﻿using Amazon.EC2.Model;
-using System;
 
 namespace ExternalConnectors.AWS;
 
 public class InstanceInfo
 {
-    public string InstanceId { get; }
-    public string Name { get; }
-    public string Status { get; }
-    public string PublicIP { get; }
-    public string PrivateIP { get; }
-
     public InstanceInfo(Instance instance, string name)
     {
         InstanceId = instance.InstanceId;
@@ -46,4 +39,10 @@ public class InstanceInfo
         PublicIP = instance.PublicIpAddress;
         PrivateIP = instance.PrivateIpAddress;
     }
+
+    public string InstanceId { get; }
+    public string Name { get; }
+    public string Status { get; }
+    public string PublicIP { get; }
+    public string PrivateIP { get; }
 }

@@ -10,13 +10,13 @@ using System;
 using System.IO;
 using System.Security;
 using System.Text;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security.KeyDerivation;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
-using mRemoteNG.Resources.Language;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -27,40 +27,6 @@ public class AeadCryptographyProvider : ICryptographyProvider
     private readonly IAeadBlockCipher _aeadBlockCipher;
     private readonly Encoding _encoding;
     private readonly SecureRandom _random = new();
-
-    //Preconfigured Encryption Parameters
-    protected virtual int NonceBitSize { get; set; } = 128;
-    protected virtual int MacBitSize { get; set; } = 128;
-    protected virtual int KeyBitSize { get; set; } = 256;
-
-    //Preconfigured Password Key Derivation Parameters
-    protected virtual int SaltBitSize { get; set; } = 128;
-    public virtual int KeyDerivationIterations { get; set; } = 1000;
-    protected virtual int MinPasswordLength { get; set; } = 1;
-
-
-    public int BlockSizeInBytes
-    {
-        get { return _aeadBlockCipher.GetBlockSize(); }
-    }
-
-    public BlockCipherEngines CipherEngine
-    {
-        get
-        {
-            var cipherEngine = _aeadBlockCipher.AlgorithmName.Split('/')[0];
-            return (BlockCipherEngines)Enum.Parse(typeof(BlockCipherEngines), cipherEngine);
-        }
-    }
-
-    public BlockCipherModes CipherMode
-    {
-        get
-        {
-            var cipherMode = _aeadBlockCipher.AlgorithmName.Split('/')[1];
-            return (BlockCipherModes)Enum.Parse(typeof(BlockCipherModes), cipherMode);
-        }
-    }
 
     public AeadCryptographyProvider()
     {
@@ -88,17 +54,58 @@ public class AeadCryptographyProvider : ICryptographyProvider
         SetNonceForCcm();
     }
 
-    private void SetNonceForCcm()
+    //Preconfigured Encryption Parameters
+    protected virtual int NonceBitSize { get; set; } = 128;
+    protected virtual int MacBitSize { get; set; } = 128;
+    protected virtual int KeyBitSize { get; set; } = 256;
+
+    //Preconfigured Password Key Derivation Parameters
+    protected virtual int SaltBitSize { get; set; } = 128;
+    protected virtual int MinPasswordLength { get; set; } = 1;
+    public virtual int KeyDerivationIterations { get; set; } = 1000;
+
+
+    public int BlockSizeInBytes
     {
-        var ccm = _aeadBlockCipher as CcmBlockCipher;
-        if (ccm != null)
-            NonceBitSize = 88;
+        get { return _aeadBlockCipher.GetBlockSize(); }
+    }
+
+    public BlockCipherEngines CipherEngine
+    {
+        get
+        {
+            var cipherEngine = _aeadBlockCipher.AlgorithmName.Split('/')[0];
+            return (BlockCipherEngines)Enum.Parse(typeof(BlockCipherEngines), cipherEngine);
+        }
+    }
+
+    public BlockCipherModes CipherMode
+    {
+        get
+        {
+            var cipherMode = _aeadBlockCipher.AlgorithmName.Split('/')[1];
+            return (BlockCipherModes)Enum.Parse(typeof(BlockCipherModes), cipherMode);
+        }
     }
 
     public string Encrypt(string plainText, SecureString encryptionKey)
     {
         var encryptedText = SimpleEncryptWithPassword(plainText, encryptionKey.ConvertToUnsecureString());
         return encryptedText;
+    }
+
+
+    public string Decrypt(string cipherText, SecureString decryptionKey)
+    {
+        var decryptedText = SimpleDecryptWithPassword(cipherText, decryptionKey);
+        return decryptedText;
+    }
+
+    private void SetNonceForCcm()
+    {
+        var ccm = _aeadBlockCipher as CcmBlockCipher;
+        if (ccm != null)
+            NonceBitSize = 88;
     }
 
     private string SimpleEncryptWithPassword(string secretMessage, string password, byte[] nonSecretPayload = null)
@@ -175,13 +182,6 @@ public class AeadCryptographyProvider : ICryptographyProvider
         }
 
         return combinedStream.ToArray();
-    }
-
-
-    public string Decrypt(string cipherText, SecureString decryptionKey)
-    {
-        var decryptedText = SimpleDecryptWithPassword(cipherText, decryptionKey);
-        return decryptedText;
     }
 
     private string SimpleDecryptWithPassword(string encryptedMessage,

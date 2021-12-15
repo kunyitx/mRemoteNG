@@ -9,9 +9,6 @@ public class CompositeRepositoryUnlocker
 {
     private readonly List<ICredentialRepository> _repositories = new();
 
-    public IEnumerable<ICredentialRepository> Repositories => _repositories;
-    public ICredentialRepository SelectedRepository { get; set; }
-
     public CompositeRepositoryUnlocker(IEnumerable<ICredentialRepository> repositories)
     {
         if (repositories == null)
@@ -20,6 +17,9 @@ public class CompositeRepositoryUnlocker
         _repositories.AddRange(repositories);
         SelectNextLockedRepository();
     }
+
+    public IEnumerable<ICredentialRepository> Repositories => _repositories;
+    public ICredentialRepository SelectedRepository { get; set; }
 
     public void Unlock(SecureString key)
     {

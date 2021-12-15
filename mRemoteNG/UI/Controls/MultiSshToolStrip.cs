@@ -1,28 +1,26 @@
-﻿using System.ComponentModel;
-using System.Windows.Forms;
-using mRemoteNG.Themes;
-using System;
+﻿using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.Controls;
 
-public partial class MultiSshToolStrip : ToolStrip
+public class MultiSshToolStrip : ToolStrip
 {
-    private IContainer components;
-    private ToolStripLabel lblMultiSsh;
-    private ToolStripTextBox txtMultiSsh;
-    private int previousCommandIndex = 0;
+    private readonly ThemeManager _themeManager;
+    private readonly ArrayList previousCommands = new();
     private readonly ArrayList processHandlers = new();
     private readonly ArrayList quickConnectConnections = new();
-    private readonly ArrayList previousCommands = new();
-    private readonly ThemeManager _themeManager;
-
-    private int CommandHistoryLength { get; set; } = 100;
+    private IContainer components;
+    private ToolStripLabel lblMultiSsh;
+    private int previousCommandIndex;
+    private ToolStripTextBox txtMultiSsh;
 
     public MultiSshToolStrip()
     {
@@ -31,6 +29,8 @@ public partial class MultiSshToolStrip : ToolStrip
         _themeManager.ThemeChanged += ApplyTheme;
         ApplyTheme();
     }
+
+    private int CommandHistoryLength { get; } = 100;
 
     private void ApplyTheme()
     {
@@ -57,6 +57,51 @@ public partial class MultiSshToolStrip : ToolStrip
         foreach (PuttyBase proc in processHandlers)
             NativeMethods.PostMessage(proc.PuttyHandle, keyType, new IntPtr(keyData), new IntPtr(0));
     }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+            if (components != null)
+                components.Dispose();
+
+        base.Dispose(disposing);
+    }
+
+    #region Component Designer generated code
+
+    /// Required method for Designer support - do not modify 
+    /// the contents of this method with the code editor.
+    private void InitializeComponent()
+    {
+        this.components = new System.ComponentModel.Container();
+        this.lblMultiSsh = new ToolStripLabel();
+        this.txtMultiSsh = new ToolStripTextBox();
+        this.SuspendLayout();
+        // 
+        // lblMultiSSH
+        // 
+        this.lblMultiSsh.Name = "_lblMultiSsh";
+        this.lblMultiSsh.Size = new System.Drawing.Size(77, 22);
+        this.lblMultiSsh.Text = Language.MultiSsh;
+        // 
+        // txtMultiSsh
+        // 
+        this.txtMultiSsh.Name = "_txtMultiSsh";
+        this.txtMultiSsh.Size = new System.Drawing.Size(new DisplayProperties().ScaleWidth(300), 25);
+        this.txtMultiSsh.ToolTipText = Language.MultiSshToolTip;
+        this.txtMultiSsh.Enter += RefreshActiveConnections;
+        this.txtMultiSsh.KeyDown += ProcessKeyPress;
+        this.txtMultiSsh.KeyUp += ProcessKeyRelease;
+
+        this.Items.AddRange(new ToolStripItem[]
+        {
+            lblMultiSsh,
+            txtMultiSsh
+        });
+        this.ResumeLayout(false);
+    }
+
+    #endregion
 
     #region Key Event Handler
 
@@ -121,51 +166,6 @@ public partial class MultiSshToolStrip : ToolStrip
 
         previousCommandIndex = previousCommands.Count - 1;
         txtMultiSsh.Clear();
-    }
-
-    #endregion
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-            if (components != null)
-                components.Dispose();
-
-        base.Dispose(disposing);
-    }
-
-    #region Component Designer generated code
-
-    /// Required method for Designer support - do not modify 
-    /// the contents of this method with the code editor.
-    private void InitializeComponent()
-    {
-        this.components = new System.ComponentModel.Container();
-        this.lblMultiSsh = new ToolStripLabel();
-        this.txtMultiSsh = new ToolStripTextBox();
-        this.SuspendLayout();
-        // 
-        // lblMultiSSH
-        // 
-        this.lblMultiSsh.Name = "_lblMultiSsh";
-        this.lblMultiSsh.Size = new System.Drawing.Size(77, 22);
-        this.lblMultiSsh.Text = Language.MultiSsh;
-        // 
-        // txtMultiSsh
-        // 
-        this.txtMultiSsh.Name = "_txtMultiSsh";
-        this.txtMultiSsh.Size = new System.Drawing.Size(new DisplayProperties().ScaleWidth(300), 25);
-        this.txtMultiSsh.ToolTipText = Language.MultiSshToolTip;
-        this.txtMultiSsh.Enter += RefreshActiveConnections;
-        this.txtMultiSsh.KeyDown += ProcessKeyPress;
-        this.txtMultiSsh.KeyUp += ProcessKeyRelease;
-
-        this.Items.AddRange(new ToolStripItem[]
-        {
-            lblMultiSsh,
-            txtMultiSsh
-        });
-        this.ResumeLayout(false);
     }
 
     #endregion

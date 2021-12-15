@@ -7,22 +7,21 @@ using mRemoteNG.App;
 using mRemoteNG.Messages;
 using mRemoteNG.Resources.Language;
 
-
 namespace mRemoteNG.Security.SymmetricEncryption;
 
 public class LegacyRijndaelCryptographyProvider : ICryptographyProvider
 {
+    public LegacyRijndaelCryptographyProvider()
+    {
+        BlockSizeInBytes = 16;
+    }
+
     public int BlockSizeInBytes { get; }
 
     public BlockCipherEngines CipherEngine { get; }
 
     public BlockCipherModes CipherMode { get; }
     public int KeyDerivationIterations { get; set; }
-
-    public LegacyRijndaelCryptographyProvider()
-    {
-        BlockSizeInBytes = 16;
-    }
 
     public string Encrypt(string strToEncrypt, SecureString strSecret)
     {

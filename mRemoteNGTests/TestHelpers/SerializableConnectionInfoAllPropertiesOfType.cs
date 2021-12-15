@@ -1,8 +1,8 @@
 ﻿namespace mRemoteNGTests.TestHelpers;
 
 /// <summary>
-/// A ConnectionInfo that has only the serializable properties as string types.
-/// Only used for testing.
+///     A ConnectionInfo that has only the serializable properties as string types.
+///     Only used for testing.
 /// </summary>
 internal class SerializableConnectionInfoAllPropertiesOfType<TType>
 {

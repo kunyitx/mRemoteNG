@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using mRemoteNG.Tools;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -12,12 +13,14 @@ public class MessageCollector : INotifyCollectionChanged
 {
     private readonly IList<IMessage> _messageList;
 
-    public IEnumerable<IMessage> Messages => _messageList;
-
     public MessageCollector()
     {
         _messageList = new List<IMessage>();
     }
+
+    public IEnumerable<IMessage> Messages => _messageList;
+
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
 
     public void AddMessage(MessageClass messageClass, string messageText, bool onlyLog = false)
     {
@@ -49,7 +52,7 @@ public class MessageCollector : INotifyCollectionChanged
         MessageClass msgClass = MessageClass.ErrorMsg,
         bool logOnly = true)
     {
-        AddMessage(msgClass, message + Environment.NewLine + Tools.MiscTools.GetExceptionMessageRecursive(ex),
+        AddMessage(msgClass, message + Environment.NewLine + MiscTools.GetExceptionMessageRecursive(ex),
             logOnly);
     }
 
@@ -66,8 +69,6 @@ public class MessageCollector : INotifyCollectionChanged
     {
         _messageList.Clear();
     }
-
-    public event NotifyCollectionChangedEventHandler CollectionChanged;
 
     private void RaiseCollectionChangedEvent(NotifyCollectionChangedAction action, IList items)
     {

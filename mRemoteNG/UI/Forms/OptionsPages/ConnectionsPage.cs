@@ -1,8 +1,9 @@
-﻿using mRemoteNG.Config;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using mRemoteNG.Config;
 using mRemoteNG.Config.Connections;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
@@ -16,7 +17,7 @@ public sealed partial class ConnectionsPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.ASPWebSite_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.ASPWebSite_16x);
     }
 
     public override string PageName
@@ -31,10 +32,10 @@ public sealed partial class ConnectionsPage
 
         _connectionWarning = new List<DropdownList>
         {
-            { new((int)ConfirmCloseEnum.Never, Language.RadioCloseWarnMultiple) },
-            { new((int)ConfirmCloseEnum.Exit, Language.RadioCloseWarnExit) },
-            { new((int)ConfirmCloseEnum.Multiple, Language.RadioCloseWarnMultiple) },
-            { new((int)ConfirmCloseEnum.All, Language._CloseWarnAll) }
+            new((int)ConfirmCloseEnum.Never, Language.RadioCloseWarnMultiple),
+            new((int)ConfirmCloseEnum.Exit, Language.RadioCloseWarnExit),
+            new((int)ConfirmCloseEnum.Multiple, Language.RadioCloseWarnMultiple),
+            new((int)ConfirmCloseEnum.All, Language._CloseWarnAll)
         };
 
         //comboBoxConnectionWarning.DataSource = _connectionWarning;

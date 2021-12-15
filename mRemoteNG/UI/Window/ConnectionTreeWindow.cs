@@ -9,6 +9,7 @@ using mRemoteNG.Config.Connections;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Themes;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.ClickHandlers;
@@ -16,7 +17,7 @@ using mRemoteNG.Tree.Root;
 using mRemoteNG.UI.Controls.ConnectionTree;
 using mRemoteNG.UI.TaskDialog;
 using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.Resources.Language;
+using ImageConverter = mRemoteNG.Resources.ImageConverter;
 
 // ReSharper disable ArrangeAccessorOwnerBody
 
@@ -25,12 +26,8 @@ namespace mRemoteNG.UI.Window;
 public partial class ConnectionTreeWindow
 {
     private readonly IConnectionInitiator _connectionInitiator = new ConnectionInitiator();
-    private ThemeManager _themeManager;
     private bool _sortedAz = true;
-
-    public ConnectionInfo SelectedNode => ConnectionTree.SelectedNode;
-
-    public ConnectionTree ConnectionTree { get; set; }
+    private ThemeManager _themeManager;
 
     public ConnectionTreeWindow() : this(new DockContent())
     {
@@ -40,13 +37,17 @@ public partial class ConnectionTreeWindow
     {
         WindowType = WindowType.Tree;
         DockPnl = panel;
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.ASPWebSite_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.ASPWebSite_16x);
         InitializeComponent();
         SetMenuEventHandlers();
         SetConnectionTreeEventHandlers();
         Settings.Default.PropertyChanged += OnAppSettingsChanged;
         ApplyLanguage();
     }
+
+    public ConnectionInfo SelectedNode => ConnectionTree.SelectedNode;
+
+    public ConnectionTree ConnectionTree { get; set; }
 
     private void OnAppSettingsChanged(object o, PropertyChangedEventArgs propertyChangedEventArgs)
     {

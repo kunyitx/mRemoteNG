@@ -1,4 +1,14 @@
-﻿using Microsoft.Win32;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
+using Microsoft.Win32;
 using mRemoteNG.App;
 using mRemoteNG.App.Info;
 using mRemoteNG.App.Initialization;
@@ -10,27 +20,18 @@ using mRemoteNG.Config.Settings;
 using mRemoteNG.Connection;
 using mRemoteNG.Messages;
 using mRemoteNG.Messages.MessageWriters;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Themes;
 using mRemoteNG.Tools;
+using mRemoteNG.UI.Controls;
 using mRemoteNG.UI.Menu;
+using mRemoteNG.UI.Panels;
 using mRemoteNG.UI.Tabs;
 using mRemoteNG.UI.TaskDialog;
 using mRemoteNG.UI.Window;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
-using mRemoteNG.UI.Panels;
 using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.UI.Controls;
+using Message = System.Windows.Forms.Message;
 using Settings = mRemoteNG.Properties.Settings;
-using mRemoteNG.Resources.Language;
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -38,25 +39,21 @@ namespace mRemoteNG.UI.Forms;
 
 public partial class FrmMain
 {
-    public static FrmMain Default { get; } = new();
-
     private static ClipboardchangeEventHandler _clipboardChangedEvent;
-    private bool _inSizeMove;
-    private bool _inMouseActivate;
-    private IntPtr _fpChainedWindowHandle;
-    private bool _usingSqlServer;
-    private string _connectionsFileName;
-    private bool _showFullPathInTitle;
     private readonly AdvancedWindowMenu _advancedWindowMenu;
-    private ConnectionInfo _selectedConnection;
+    private readonly FileBackupPruner _backupPruner = new();
     private readonly IList<IMessageWriter> _messageWriters = new List<IMessageWriter>();
     private readonly ThemeManager _themeManager;
-    private readonly FileBackupPruner _backupPruner = new();
-
-    internal FullscreenHandler Fullscreen { get; set; }
 
     //Added theming support
     private readonly ToolStripRenderer _toolStripProfessionalRenderer = new ToolStripProfessionalRenderer();
+    private string _connectionsFileName;
+    private IntPtr _fpChainedWindowHandle;
+    private bool _inMouseActivate;
+    private bool _inSizeMove;
+    private ConnectionInfo _selectedConnection;
+    private bool _showFullPathInTitle;
+    private bool _usingSqlServer;
 
     private FrmMain()
     {
@@ -70,6 +67,25 @@ public partial class FrmMain
         ApplyTheme();
 
         _advancedWindowMenu = new AdvancedWindowMenu(this);
+    }
+
+    public static FrmMain Default { get; } = new();
+
+    internal FullscreenHandler Fullscreen { get; set; }
+
+    #region Timer
+
+    private void tmrAutoSave_Tick(object sender, EventArgs e)
+    {
+        Runtime.MessageCollector.AddMessage(MessageClass.DebugMsg, "Doing AutoSave");
+        Runtime.ConnectionsService.SaveConnectionsAsync();
+    }
+
+    #endregion
+
+    private void ViewMenu_Opening(object sender, EventArgs e)
+    {
+        viewMenu.mMenView_DropDownOpening(sender, e);
     }
 
     #region Properties
@@ -436,16 +452,6 @@ public partial class FrmMain
 
     #endregion
 
-    #region Timer
-
-    private void tmrAutoSave_Tick(object sender, EventArgs e)
-    {
-        Runtime.MessageCollector.AddMessage(MessageClass.DebugMsg, "Doing AutoSave");
-        Runtime.ConnectionsService.SaveConnectionsAsync();
-    }
-
-    #endregion
-
     #region Window Overrides and DockPanel Stuff
 
     private void FrmMain_ResizeBegin(object sender, EventArgs e)
@@ -475,7 +481,7 @@ public partial class FrmMain
         ActivateConnection();
     }
 
-    protected override void WndProc(ref System.Windows.Forms.Message m)
+    protected override void WndProc(ref Message m)
     {
         // Listen for and handle operating system messages
         try
@@ -717,7 +723,7 @@ public partial class FrmMain
     {
         pnlDock.Visible = false;
 
-        if (Settings.Default.ViewMenuMessages == true)
+        if (Settings.Default.ViewMenuMessages)
         {
             Windows.ErrorsForm.Show(pnlDock, DockState.DockBottomAutoHide);
             viewMenu._mMenViewErrorsAndInfos.Checked = true;
@@ -728,7 +734,7 @@ public partial class FrmMain
         }
 
 
-        if (Settings.Default.ViewMenuExternalTools == true)
+        if (Settings.Default.ViewMenuExternalTools)
         {
             viewMenu.TsExternalTools.Visible = true;
             viewMenu._mMenViewExtAppsToolbar.Checked = true;
@@ -739,7 +745,7 @@ public partial class FrmMain
             viewMenu._mMenViewExtAppsToolbar.Checked = false;
         }
 
-        if (Settings.Default.ViewMenuMultiSSH == true)
+        if (Settings.Default.ViewMenuMultiSSH)
         {
             viewMenu.TsMultiSsh.Visible = true;
             viewMenu._mMenViewMultiSshToolbar.Checked = true;
@@ -750,7 +756,7 @@ public partial class FrmMain
             viewMenu._mMenViewMultiSshToolbar.Checked = false;
         }
 
-        if (Settings.Default.ViewMenuQuickConnect == true)
+        if (Settings.Default.ViewMenuQuickConnect)
         {
             viewMenu.TsQuickConnect.Visible = true;
             viewMenu._mMenViewQuickConnectToolbar.Checked = true;
@@ -761,7 +767,7 @@ public partial class FrmMain
             viewMenu._mMenViewQuickConnectToolbar.Checked = false;
         }
 
-        if (Settings.Default.LockToolbars == true)
+        if (Settings.Default.LockToolbars)
         {
             Settings.Default.LockToolbars = true;
             viewMenu._mMenViewLockToolbars.Checked = true;
@@ -797,9 +803,4 @@ public partial class FrmMain
     }
 
     #endregion
-
-    private void ViewMenu_Opening(object sender, EventArgs e)
-    {
-        viewMenu.mMenView_DropDownOpening(sender, e);
-    }
 }

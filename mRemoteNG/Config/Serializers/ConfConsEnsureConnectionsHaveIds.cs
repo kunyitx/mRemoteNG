@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml.Linq;
 
-
 namespace mRemoteNG.Config.Serializers;
 
 public class ConfConsEnsureConnectionsHaveIds

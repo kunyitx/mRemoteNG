@@ -1,23 +1,24 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
 using mRemoteNG.App.Info;
-using mRemoteNG.Themes;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
 
 namespace mRemoteNG.UI.Forms;
 
 public partial class FrmAbout : Form
 {
-    public static FrmAbout Instance { get; set; } = new();
-
     private FrmAbout()
     {
         InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.UIAboutBox_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.UIAboutBox_16x);
         ThemeManager.getInstance().ThemeChanged += ApplyTheme;
         ApplyLanguage();
         ApplyTheme();
     }
+
+    public static FrmAbout Instance { get; set; } = new();
 
     private void ApplyLanguage()
     {

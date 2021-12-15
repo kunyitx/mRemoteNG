@@ -8,9 +8,10 @@ using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.App.Update;
 using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Themes;
 using WeifenLuo.WinFormsUI.Docking;
-using mRemoteNG.Resources.Language;
+using ImageConverter = mRemoteNG.Resources.ImageConverter;
 
 namespace mRemoteNG.UI.Window;
 
@@ -30,7 +31,7 @@ public partial class UpdateWindow : BaseWindow
         WindowType = WindowType.Update;
         DockPnl = panel;
         InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.RunUpdate_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.RunUpdate_16x);
         FontOverrider.FontOverride(this);
     }
 

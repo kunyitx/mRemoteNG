@@ -11,14 +11,14 @@ internal class MrngListView : ObjectListView
 {
     private CellBorderDecoration deco;
 
-    //Control if the gridlines are styled, must be set before the OnCreateControl is fired
-    public bool DecorateLines { get; set; } = true;
-
     public MrngListView()
     {
         InitializeComponent();
         ThemeManager.getInstance().ThemeChanged += OnCreateControl;
     }
+
+    //Control if the gridlines are styled, must be set before the OnCreateControl is fired
+    public bool DecorateLines { get; set; } = true;
 
     protected override void OnCreateControl()
     {

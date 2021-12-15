@@ -1,22 +1,22 @@
-﻿using mRemoteNG.App.Info;
+﻿using System;
+using System.IO;
+using System.Security;
+using System.Threading;
+using System.Windows.Forms;
+using mRemoteNG.App.Info;
 using mRemoteNG.Config.Putty;
 using mRemoteNG.Connection;
 using mRemoteNG.Credential;
 using mRemoteNG.Credential.Repositories;
 using mRemoteNG.Messages;
+using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.UI;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.TaskDialog;
-using System;
-using System.IO;
-using System.Security;
-using System.Threading;
-using System.Windows.Forms;
-using mRemoteNG.Properties;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.App;
 
@@ -27,7 +27,7 @@ public static class Runtime
         get
         {
 #if PORTABLE
-                return true;
+            return true;
 #else
             return false;
 #endif
@@ -35,7 +35,7 @@ public static class Runtime
     }
 
     /// <summary>
-    /// Feature flag to enable the credential manager feature
+    ///     Feature flag to enable the credential manager feature
     /// </summary>
     public static bool UseCredentialManager => false;
 
@@ -66,11 +66,10 @@ public static class Runtime
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="withDialog">
-    /// Should we show the file selection dialog to allow the user to select
-    /// a connection file
+    ///     Should we show the file selection dialog to allow the user to select
+    ///     a connection file
     /// </param>
     public static void LoadConnections(bool withDialog = false)
     {

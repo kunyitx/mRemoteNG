@@ -5,19 +5,18 @@ using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Tree;
 
 public class NodeSearcherTests
 {
-    private NodeSearcher _nodeSearcher;
-    private ContainerInfo _folder1;
-    private ContainerInfo _folder2;
     private ConnectionInfo _con1;
     private ConnectionInfo _con2;
     private ConnectionInfo _con3;
     private ConnectionInfo _con4;
     private ConnectionInfo _con5;
+    private ContainerInfo _folder1;
+    private ContainerInfo _folder2;
+    private NodeSearcher _nodeSearcher;
 
     [OneTimeSetUp]
     public void OnetimeSetup()

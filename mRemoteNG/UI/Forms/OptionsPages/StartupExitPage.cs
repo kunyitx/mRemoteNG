@@ -1,5 +1,6 @@
 ﻿using System;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
@@ -10,7 +11,7 @@ public sealed partial class StartupExitPage
     {
         InitializeComponent();
         ApplyTheme();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.StartupProject_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.StartupProject_16x);
     }
 
     public override string PageName

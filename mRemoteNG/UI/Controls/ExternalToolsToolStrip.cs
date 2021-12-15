@@ -1,19 +1,21 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.UI.Controls;
 
 public class ExternalToolsToolStrip : ToolStrip
 {
-    private IContainer components;
     private ContextMenuStrip _cMenExtAppsToolbar;
     internal ToolStripMenuItem CMenToolbarShowText;
+    private IContainer components;
 
     public ExternalToolsToolStrip()
     {
@@ -33,25 +35,41 @@ public class ExternalToolsToolStrip : ToolStrip
         // 
         ContextMenuStrip = _cMenExtAppsToolbar;
         Dock = DockStyle.None;
-        Location = new System.Drawing.Point(39, 49);
+        Location = new Point(39, 49);
         Name = "tsExternalTools";
-        Size = new System.Drawing.Size(111, 25);
+        Size = new Size(111, 25);
         TabIndex = 17;
         // 
         // cMenExtAppsToolbar
         // 
         _cMenExtAppsToolbar.Items.Add(CMenToolbarShowText);
         _cMenExtAppsToolbar.Name = "cMenToolbar";
-        _cMenExtAppsToolbar.Size = new System.Drawing.Size(129, 26);
+        _cMenExtAppsToolbar.Size = new Size(129, 26);
         // 
         // cMenToolbarShowText
         // 
         CMenToolbarShowText.Checked = true;
         CMenToolbarShowText.CheckState = CheckState.Checked;
         CMenToolbarShowText.Name = "cMenToolbarShowText";
-        CMenToolbarShowText.Size = new System.Drawing.Size(128, 22);
+        CMenToolbarShowText.Size = new Size(128, 22);
         CMenToolbarShowText.Text = Language.ShowText;
         CMenToolbarShowText.Click += cMenToolbarShowText_Click;
+    }
+
+    // CodeAyalysis doesn't like null propagation
+    [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed",
+        MessageId = "components")]
+    protected override void Dispose(bool disposing)
+    {
+        try
+        {
+            if (!disposing) return;
+            components?.Dispose();
+        }
+        finally
+        {
+            base.Dispose(disposing);
+        }
     }
 
     #region Ext Apps Toolbar
@@ -128,20 +146,4 @@ public class ExternalToolsToolStrip : ToolStrip
     }
 
     #endregion
-
-    // CodeAyalysis doesn't like null propagation
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed",
-        MessageId = "components")]
-    protected override void Dispose(bool disposing)
-    {
-        try
-        {
-            if (!disposing) return;
-            components?.Dispose();
-        }
-        finally
-        {
-            base.Dispose(disposing);
-        }
-    }
 }

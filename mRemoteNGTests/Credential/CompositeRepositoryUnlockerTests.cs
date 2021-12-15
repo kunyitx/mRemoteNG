@@ -9,8 +9,8 @@ namespace mRemoteNGTests.Credential;
 
 public class CompositeRepositoryUnlockerTests
 {
-    private CompositeRepositoryUnlocker _repositoryUnlocker;
     private IList<ICredentialRepository> _repos;
+    private CompositeRepositoryUnlocker _repositoryUnlocker;
 
     [SetUp]
     public void Setup()

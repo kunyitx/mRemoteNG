@@ -6,9 +6,9 @@ namespace mRemoteNG.Config.DatabaseConnectors;
 
 public interface IDatabaseConnector : IDisposable
 {
+    bool IsConnected { get; }
     DbConnection DbConnection();
     DbCommand DbCommand(string dbCommand);
-    bool IsConnected { get; }
     void Connect();
     Task ConnectAsync();
     void Disconnect();

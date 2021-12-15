@@ -2,15 +2,31 @@
 using System.ComponentModel;
 using System.Security;
 
-
 namespace mRemoteNG.Credential;
 
 public class CredentialRecord : ICredentialRecord
 {
+    private string _domain = "";
+    private SecureString _password = new();
     private string _title = "New Credential";
     private string _username = "";
-    private SecureString _password = new();
-    private string _domain = "";
+
+
+    public CredentialRecord()
+    {
+    }
+
+    public CredentialRecord(ICredentialRecord otherCredential)
+    {
+        Username = otherCredential.Username;
+        Password = otherCredential.Password;
+        Domain = otherCredential.Domain;
+    }
+
+    public CredentialRecord(Guid customGuid)
+    {
+        Id = customGuid;
+    }
 
     public Guid Id { get; } = Guid.NewGuid();
 
@@ -54,29 +70,12 @@ public class CredentialRecord : ICredentialRecord
         }
     }
 
-
-    public CredentialRecord()
-    {
-    }
-
-    public CredentialRecord(ICredentialRecord otherCredential)
-    {
-        Username = otherCredential.Username;
-        Password = otherCredential.Password;
-        Domain = otherCredential.Domain;
-    }
-
-    public CredentialRecord(Guid customGuid)
-    {
-        Id = customGuid;
-    }
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public override string ToString()
     {
         return Title;
     }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void RaisePropertyChangedEvent(string propertyName)
     {

@@ -2,7 +2,6 @@
 using mRemoteNG.Connection;
 using NUnit.Framework;
 
-
 namespace mRemoteNGTests.Connection;
 
 public class ConnectionInfoComparerTests

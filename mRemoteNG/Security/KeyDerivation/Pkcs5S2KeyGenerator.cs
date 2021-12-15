@@ -3,7 +3,6 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 
-
 namespace mRemoteNG.Security.KeyDerivation;
 
 public class Pkcs5S2KeyGenerator : IKeyDerivationFunction

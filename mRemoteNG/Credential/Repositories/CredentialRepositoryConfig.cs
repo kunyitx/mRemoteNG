@@ -6,11 +6,30 @@ namespace mRemoteNG.Credential.Repositories;
 
 public class CredentialRepositoryConfig : ICredentialRepositoryConfig
 {
-    private string _title = "New Credential Repository";
-    private string _source = "";
     private SecureString _key = new();
-    private string _typeName = "";
     private bool _loaded;
+    private string _source = "";
+    private string _title = "New Credential Repository";
+    private string _typeName = "";
+
+    public CredentialRepositoryConfig() : this(Guid.NewGuid())
+    {
+    }
+
+    public CredentialRepositoryConfig(Guid id)
+    {
+        Id = id;
+    }
+
+    public bool Loaded
+    {
+        get => _loaded;
+        set
+        {
+            _loaded = value;
+            RaisePropertyChangedEvent(nameof(Loaded));
+        }
+    }
 
     public Guid Id { get; }
 
@@ -52,25 +71,6 @@ public class CredentialRepositoryConfig : ICredentialRepositoryConfig
             _key = value;
             RaisePropertyChangedEvent(nameof(Key));
         }
-    }
-
-    public bool Loaded
-    {
-        get => _loaded;
-        set
-        {
-            _loaded = value;
-            RaisePropertyChangedEvent(nameof(Loaded));
-        }
-    }
-
-    public CredentialRepositoryConfig() : this(Guid.NewGuid())
-    {
-    }
-
-    public CredentialRepositoryConfig(Guid id)
-    {
-        Id = id;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

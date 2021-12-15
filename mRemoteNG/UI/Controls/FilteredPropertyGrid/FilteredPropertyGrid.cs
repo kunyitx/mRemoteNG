@@ -7,38 +7,38 @@ using System.Windows.Forms;
 namespace mRemoteNG.UI.Controls.FilteredPropertyGrid;
 
 /// <summary>
-/// This class overrides the standard PropertyGrid provided by Microsoft.
-/// It also allows to hide (or filter) the properties of the SelectedObject displayed by the PropertyGrid.
+///     This class overrides the standard PropertyGrid provided by Microsoft.
+///     It also allows to hide (or filter) the properties of the SelectedObject displayed by the PropertyGrid.
 /// </summary>
 public partial class FilteredPropertyGrid : PropertyGrid
 {
     /// <summary>
-    /// Contain a reference to the collection of properties to show in the parent PropertyGrid.
+    ///     Contain a reference to the collection of properties to show in the parent PropertyGrid.
     /// </summary>
     /// <remarks>By default, m_PropertyDescriptors contain all the properties of the object. </remarks>
     private readonly List<PropertyDescriptor> _propertyDescriptors = new();
 
-    /// <summary>
-    /// Contain a reference to the array of properties to display in the PropertyGrid.
-    /// </summary>
-    private AttributeCollection _hiddenAttributes;
-
     private AttributeCollection _browsableAttributes;
 
     /// <summary>
-    /// Contain references to the arrays of properties or categories to hide.
+    ///     Contain a reference to the array of properties to display in the PropertyGrid.
+    /// </summary>
+    private AttributeCollection _hiddenAttributes;
+
+    /// <summary>
+    ///     Contain references to the arrays of properties or categories to hide.
     /// </summary>
     private string[] _mBrowsableProperties;
 
     private string[] _mHiddenProperties;
 
     /// <summary>
-    /// Contain a reference to the wrapper that contains the object to be displayed into the PropertyGrid.
+    ///     Contain a reference to the wrapper that contains the object to be displayed into the PropertyGrid.
     /// </summary>
     private ObjectWrapper _mWrapper;
 
     /// <summary>
-    /// Public constructor.
+    ///     Public constructor.
     /// </summary>
     public FilteredPropertyGrid()
     {
@@ -47,7 +47,7 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// A list of all currently properties being shown by the property grid.
+    ///     A list of all currently properties being shown by the property grid.
     /// </summary>
     public IEnumerable<string> VisibleProperties => _propertyDescriptors.Select(p => p.Name);
 
@@ -64,7 +64,7 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Get or set the categories to hide.
+    ///     Get or set the categories to hide.
     /// </summary>
     public AttributeCollection HiddenAttributes
     {
@@ -79,7 +79,7 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Get or set the properties to show.
+    ///     Get or set the properties to show.
     /// </summary>
     /// <exception cref="ArgumentException">if one or several properties don't exist.</exception>
     public string[] BrowsableProperties
@@ -106,7 +106,7 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Overwrite the PropertyGrid.SelectedObject property.
+    ///     Overwrite the PropertyGrid.SelectedObject property.
     /// </summary>
     /// <remarks>The object passed to the base PropertyGrid is the wrapper.</remarks>
     public new object SelectedObject
@@ -235,9 +235,9 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Selects the next grid item in the property grid
-    /// using the currently selected grid item as a reference.
-    /// Does nothing if there is no next item.
+    ///     Selects the next grid item in the property grid
+    ///     using the currently selected grid item as a reference.
+    ///     Does nothing if there is no next item.
     /// </summary>
     public void SelectNextGridItem()
     {
@@ -247,9 +247,9 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Selects the previous grid item in the property grid
-    /// using the currently selected grid item as a reference.
-    /// Does nothing if there is no previous item.
+    ///     Selects the previous grid item in the property grid
+    ///     using the currently selected grid item as a reference.
+    ///     Does nothing if there is no previous item.
     /// </summary>
     public void SelectPreviousGridItem()
     {
@@ -259,8 +259,8 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Select the grid item whose backing property name
-    /// matches the given <see cref="propertyName"/>.
+    ///     Select the grid item whose backing property name
+    ///     matches the given <see cref="propertyName" />.
     /// </summary>
     /// <param name="propertyName"></param>
     public void SelectGridItem(string propertyName)
@@ -280,7 +280,8 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Build the list of the properties to be displayed in the PropertyGrid, following the filters defined the Browsable and Hidden properties.
+    ///     Build the list of the properties to be displayed in the PropertyGrid, following the filters defined the Browsable
+    ///     and Hidden properties.
     /// </summary>
     private void RefreshProperties()
     {
@@ -342,8 +343,8 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Predicate to determine if a property has a Browsable(false) attribute
-    /// attatched to it. If so, it should not be shown.
+    ///     Predicate to determine if a property has a Browsable(false) attribute
+    ///     attatched to it. If so, it should not be shown.
     /// </summary>
     /// <param name="propertyDescriptor"></param>
     /// <returns></returns>
@@ -353,7 +354,7 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Allows to hide a set of properties to the parent PropertyGrid.
+    ///     Allows to hide a set of properties to the parent PropertyGrid.
     /// </summary>
     /// <param name="attribute">A set of attributes that filter the original collection of properties.</param>
     /// <remarks>For better performance, include the BrowsableAttribute with true value.</remarks>
@@ -369,7 +370,7 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Add all the properties that match an attribute to the list of properties to be displayed in the PropertyGrid.
+    ///     Add all the properties that match an attribute to the list of properties to be displayed in the PropertyGrid.
     /// </summary>
     /// <param name="attribute">The attribute to be added.</param>
     private void ShowAttribute(Attribute attribute)
@@ -384,7 +385,7 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Add a property to the list of properties to be displayed in the PropertyGrid.
+    ///     Add a property to the list of properties to be displayed in the PropertyGrid.
     /// </summary>
     /// <param name="property">The property to be added.</param>
     private void ShowProperty(PropertyDescriptor property)
@@ -394,7 +395,7 @@ public partial class FilteredPropertyGrid : PropertyGrid
     }
 
     /// <summary>
-    /// Allows to hide a property to the parent PropertyGrid.
+    ///     Allows to hide a property to the parent PropertyGrid.
     /// </summary>
     /// <param name="property">The name of the property to be hidden.</param>
     private void HideProperty(PropertyDescriptor property)

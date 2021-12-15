@@ -1,25 +1,23 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using mRemoteNG.Properties;
-using mRemoteNG.UI.Forms;
 using mRemoteNG.Resources.Language;
-
+using mRemoteNG.UI.Forms;
 
 namespace mRemoteNG.Tools;
 
 public class NotificationAreaIcon
 {
-    private readonly NotifyIcon _nI;
+    private static readonly FrmMain FrmMain = FrmMain.Default;
     private readonly ContextMenuStrip _cMen;
     private readonly ToolStripMenuItem _cMenCons;
     private readonly IConnectionInitiator _connectionInitiator = new ConnectionInitiator();
-    private static readonly FrmMain FrmMain = FrmMain.Default;
-
-    public bool Disposed { get; private set; }
+    private readonly NotifyIcon _nI;
 
     public NotificationAreaIcon()
     {
@@ -38,8 +36,8 @@ public class NotificationAreaIcon
 
             _cMen = new ContextMenuStrip
             {
-                Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-                    System.Drawing.GraphicsUnit.Point, Convert.ToByte(0)),
+                Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+                    GraphicsUnit.Point, Convert.ToByte(0)),
                 RenderMode = ToolStripRenderMode.Professional
             };
             _cMen.Items.AddRange(new ToolStripItem[] { _cMenCons, cMenSep1, cMenExit });
@@ -61,6 +59,8 @@ public class NotificationAreaIcon
             Runtime.MessageCollector.AddExceptionStackTrace("Creating new SysTrayIcon failed", ex);
         }
     }
+
+    public bool Disposed { get; private set; }
 
     public void Dispose()
     {

@@ -1,10 +1,11 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace mRemoteNG.UI.Controls;
 
 public class MrngToolStripSplitButton : ToolStripSplitButton
 {
+    private bool _dropDownVisibleOnMouseDown;
+
     public new ToolStripDropDown DropDown
     {
         get => base.DropDown;
@@ -43,6 +44,4 @@ public class MrngToolStripSplitButton : ToolStripSplitButton
         else
             base.OnMouseUp(e);
     }
-
-    private bool _dropDownVisibleOnMouseDown;
 }

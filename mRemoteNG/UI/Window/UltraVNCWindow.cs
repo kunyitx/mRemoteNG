@@ -1,8 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 using mRemoteNG.App;
-using WeifenLuo.WinFormsUI.Docking;
+using mRemoteNG.Messages;
 using mRemoteNG.Resources.Language;
-
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.UI.Window;
 
@@ -10,68 +13,68 @@ public class UltraVNCWindow : BaseWindow
 {
     #region Form Init
 
-    internal System.Windows.Forms.ToolStrip tsMain;
-    internal System.Windows.Forms.Panel pnlContainer;
-    internal System.Windows.Forms.ToolStripButton btnDisconnect;
+    internal ToolStrip tsMain;
+    internal Panel pnlContainer;
+    internal ToolStripButton btnDisconnect;
 
     private void InitializeComponent()
     {
         var resources =
-            new System.ComponentModel.ComponentResourceManager(typeof(UltraVNCWindow));
-        tsMain = new System.Windows.Forms.ToolStrip();
-        btnDisconnect = new System.Windows.Forms.ToolStripButton();
-        pnlContainer = new System.Windows.Forms.Panel();
+            new ComponentResourceManager(typeof(UltraVNCWindow));
+        tsMain = new ToolStrip();
+        btnDisconnect = new ToolStripButton();
+        pnlContainer = new Panel();
         tsMain.SuspendLayout();
         SuspendLayout();
         // 
         // tsMain
         // 
-        tsMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-        tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+        tsMain.GripStyle = ToolStripGripStyle.Hidden;
+        tsMain.Items.AddRange(new ToolStripItem[]
         {
             btnDisconnect
         });
-        tsMain.Location = new System.Drawing.Point(0, 0);
+        tsMain.Location = new Point(0, 0);
         tsMain.Name = "tsMain";
-        tsMain.Size = new System.Drawing.Size(446, 25);
+        tsMain.Size = new Size(446, 25);
         tsMain.TabIndex = 0;
         tsMain.Text = "ToolStrip1";
         // 
         // btnDisconnect
         // 
-        btnDisconnect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-        btnDisconnect.Image = (System.Drawing.Image)resources.GetObject("btnDisconnect.Image");
-        btnDisconnect.ImageTransparentColor = System.Drawing.Color.Magenta;
+        btnDisconnect.DisplayStyle = ToolStripItemDisplayStyle.Text;
+        btnDisconnect.Image = (Image)resources.GetObject("btnDisconnect.Image");
+        btnDisconnect.ImageTransparentColor = Color.Magenta;
         btnDisconnect.Name = "btnDisconnect";
-        btnDisconnect.Size = new System.Drawing.Size(70, 22);
+        btnDisconnect.Size = new Size(70, 22);
         btnDisconnect.Text = "Disconnect";
-        btnDisconnect.Click += new EventHandler(btnDisconnect_Click);
+        btnDisconnect.Click += btnDisconnect_Click;
         // 
         // pnlContainer
         // 
         pnlContainer.Anchor =
-            (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top |
-                                                System.Windows.Forms.AnchorStyles.Bottom
-                                                | System.Windows.Forms.AnchorStyles.Left
-                                                | System.Windows.Forms.AnchorStyles.Right);
-        pnlContainer.Location = new System.Drawing.Point(0, 27);
+            AnchorStyles.Top |
+            AnchorStyles.Bottom
+            | AnchorStyles.Left
+            | AnchorStyles.Right;
+        pnlContainer.Location = new Point(0, 27);
         pnlContainer.Name = "pnlContainer";
-        pnlContainer.Size = new System.Drawing.Size(446, 335);
+        pnlContainer.Size = new Size(446, 335);
         pnlContainer.TabIndex = 1;
         // 
         // UltraVNCWindow
         // 
-        AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-        ClientSize = new System.Drawing.Size(446, 362);
+        AutoScaleDimensions = new SizeF(96F, 96F);
+        AutoScaleMode = AutoScaleMode.Dpi;
+        ClientSize = new Size(446, 362);
         Controls.Add(pnlContainer);
         Controls.Add(tsMain);
-        Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular,
-            System.Drawing.GraphicsUnit.Point, (byte)0);
+        Font = new Font("Segoe UI", 8.25F, FontStyle.Regular,
+            GraphicsUnit.Point, 0);
         Name = "UltraVNCWindow";
         TabText = "UltraVNC SC";
         Text = "UltraVNC SC";
-        Load += new EventHandler(UltraVNCSC_Load);
+        Load += UltraVNCSC_Load;
         tsMain.ResumeLayout(false);
         tsMain.PerformLayout();
         ResumeLayout(false);
@@ -134,7 +137,7 @@ public class UltraVNCWindow : BaseWindow
         }
         catch (Exception ex)
         {
-            Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg,
+            Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg,
                 "StartListening (UI.Window.UltraVNCSC) failed" +
                 Environment.NewLine + ex.Message);
             Close();

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace mRemoteNG.UI.GraphicsUtilities;
 
 /// <summary>
-/// Gets environment graphics information using the Windows GDI+ API.
+///     Gets environment graphics information using the Windows GDI+ API.
 /// </summary>
 public class GdiPlusGraphicsProvider : IGraphicsProvider
 {

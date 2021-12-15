@@ -9,6 +9,15 @@ namespace mRemoteNG.Connection.Protocol.PowerShell;
 
 public class ProtocolPowerShell : ProtocolBase
 {
+    #region Enumerations
+
+    public enum Defaults
+    {
+        Port = 5985
+    }
+
+    #endregion
+
     #region Private Fields
 
     private IntPtr _handle;
@@ -85,15 +94,6 @@ public class ProtocolPowerShell : ProtocolBase
         {
             Runtime.MessageCollector.AddExceptionMessage(Language.IntAppResizeFailed, ex);
         }
-    }
-
-    #endregion
-
-    #region Enumerations
-
-    public enum Defaults
-    {
-        Port = 5985
     }
 
     #endregion

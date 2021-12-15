@@ -11,31 +11,31 @@ using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.TaskDialog;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml;
 
 public class XmlConnectionsDeserializer : IDeserializer<string, ConnectionTreeModel>
 {
-    private XmlDocument _xmlDocument;
-    private double _confVersion;
-    private XmlConnectionsDecryptor _decryptor;
-    private string ConnectionFileName = "";
     private const double MaxSupportedConfVersion = 2.8;
     private readonly RootNodeInfo _rootNodeInfo = new(RootNodeType.Connection);
-
-    public Func<Optional<SecureString>> AuthenticationRequestor { get; set; }
+    private double _confVersion;
+    private XmlConnectionsDecryptor _decryptor;
+    private XmlDocument _xmlDocument;
+    private readonly string ConnectionFileName = "";
 
     public XmlConnectionsDeserializer(Func<Optional<SecureString>> authenticationRequestor = null)
     {
         AuthenticationRequestor = authenticationRequestor;
     }
+
+    public Func<Optional<SecureString>> AuthenticationRequestor { get; set; }
 
     public ConnectionTreeModel Deserialize(string xml)
     {

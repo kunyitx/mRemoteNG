@@ -5,21 +5,39 @@ using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
 using AxMSTSCLib;
+using ExternalConnectors.TSS;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources.Language;
 using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tools;
 using mRemoteNG.UI;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.Tabs;
 using MSTSCLib;
-using mRemoteNG.Resources.Language;
 
 namespace mRemoteNG.Connection.Protocol.RDP;
 
 public class RdpProtocol6 : ProtocolBase, ISupportsViewOnly
 {
+    #region Enums
+
+    public enum Defaults
+    {
+        Colors = RDPColors.Colors16Bit,
+        Sounds = RDPSounds.DoNotPlay,
+        Resolution = RDPResolutions.FitToWindow,
+        Port = 3389
+    }
+
+    #endregion
+
+    private readonly DisplayProperties _displayProperties;
+    private readonly FrmMain _frmMain = FrmMain.Default;
+
+    private bool _alertOnIdleDisconnect;
+
     /* RDP v8 requires Windows 7 with:
      * https://support.microsoft.com/en-us/kb/2592687
      * OR
@@ -28,15 +46,59 @@ public class RdpProtocol6 : ProtocolBase, ISupportsViewOnly
      * Windows 8+ support RDP v8 out of the box.
      */
     private MsRdpClient6NotSafeForScripting _rdpClient;
-    protected ConnectionInfo connectionInfo;
-    protected bool loginComplete;
     private Version _rdpVersion;
     private bool _redirectKeys;
-    private bool _alertOnIdleDisconnect;
-    private readonly DisplayProperties _displayProperties;
-    private readonly FrmMain _frmMain = FrmMain.Default;
+    protected ConnectionInfo connectionInfo;
+    protected bool loginComplete;
+
+    #region Constructors
+
+    public RdpProtocol6()
+    {
+        _displayProperties = new DisplayProperties();
+        tmrReconnect.Elapsed += tmrReconnect_Elapsed;
+    }
+
+    #endregion
+
     protected virtual RdpVersion RdpProtocolVersion => RdpVersion.Rdc6;
     private AxHost AxHost => (AxHost)Control;
+
+    #region Reconnect Stuff
+
+    public void tmrReconnect_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        try
+        {
+            var srvReady = PortScanner.IsPortOpen(connectionInfo.Hostname, Convert.ToString(connectionInfo.Port));
+
+            ReconnectGroup.ServerReady = srvReady;
+
+            if (!ReconnectGroup.ReconnectWhenReady || !srvReady) return;
+            tmrReconnect.Enabled = false;
+            ReconnectGroup.DisposeReconnectGroup();
+            //SetProps()
+            _rdpClient.Connect();
+        }
+        catch (Exception ex)
+        {
+            Runtime.MessageCollector.AddExceptionMessage(
+                string.Format(Language.AutomaticReconnectError, connectionInfo.Hostname),
+                ex, MessageClass.WarningMsg, false);
+        }
+    }
+
+    #endregion
+
+    public static class Versions
+    {
+        public static readonly Version RDC60 = new(6, 0, 6000);
+        public static readonly Version RDC61 = new(6, 0, 6001);
+        public static readonly Version RDC70 = new(6, 1, 7600);
+        public static readonly Version RDC80 = new(6, 2, 9200);
+        public static readonly Version RDC81 = new(6, 3, 9600);
+        public static readonly Version RDC100 = new(10, 0, 0);
+    }
 
     #region Properties
 
@@ -84,16 +146,6 @@ public class RdpProtocol6 : ProtocolBase, ISupportsViewOnly
     {
         get => !AxHost.Enabled;
         set => AxHost.Enabled = !value;
-    }
-
-    #endregion
-
-    #region Constructors
-
-    public RdpProtocol6()
-    {
-        _displayProperties = new DisplayProperties();
-        tmrReconnect.Elapsed += tmrReconnect_Elapsed;
     }
 
     #endregion
@@ -217,8 +269,8 @@ public class RdpProtocol6 : ProtocolBase, ISupportsViewOnly
     }
 
     /// <summary>
-    /// Toggles whether the RDP ActiveX control will capture and send input events to the remote host.
-    /// The local host will continue to receive data from the remote host regardless of this setting.
+    ///     Toggles whether the RDP ActiveX control will capture and send input events to the remote host.
+    ///     The local host will continue to receive data from the remote host regardless of this setting.
     /// </summary>
     public void ToggleViewOnly()
     {
@@ -246,8 +298,8 @@ public class RdpProtocol6 : ProtocolBase, ISupportsViewOnly
     }
 
     /// <summary>
-    /// Determines if this version of the RDP client
-    /// is supported on this machine.
+    ///     Determines if this version of the RDP client
+    ///     is supported on this machine.
     /// </summary>
     /// <returns></returns>
     public bool RdpVersionSupported()
@@ -449,7 +501,7 @@ public class RdpProtocol6 : ProtocolBase, ISupportsViewOnly
             if (userName.StartsWith("SSAPI:"))
                 try
                 {
-                    ExternalConnectors.TSS.SecretServerInterface.FetchSecretFromServer(userName, out userName,
+                    SecretServerInterface.FetchSecretFromServer(userName, out userName,
                         out password, out domain);
                 }
                 catch (Exception ex)
@@ -744,54 +796,6 @@ public class RdpProtocol6 : ProtocolBase, ISupportsViewOnly
         add => _leaveFullscreenEvent = (LeaveFullscreenEventHandler)Delegate.Combine(_leaveFullscreenEvent, value);
         remove =>
             _leaveFullscreenEvent = (LeaveFullscreenEventHandler)Delegate.Remove(_leaveFullscreenEvent, value);
-    }
-
-    #endregion
-
-    #region Enums
-
-    public enum Defaults
-    {
-        Colors = RDPColors.Colors16Bit,
-        Sounds = RDPSounds.DoNotPlay,
-        Resolution = RDPResolutions.FitToWindow,
-        Port = 3389
-    }
-
-    #endregion
-
-    public static class Versions
-    {
-        public static readonly Version RDC60 = new(6, 0, 6000);
-        public static readonly Version RDC61 = new(6, 0, 6001);
-        public static readonly Version RDC70 = new(6, 1, 7600);
-        public static readonly Version RDC80 = new(6, 2, 9200);
-        public static readonly Version RDC81 = new(6, 3, 9600);
-        public static readonly Version RDC100 = new(10, 0, 0);
-    }
-
-    #region Reconnect Stuff
-
-    public void tmrReconnect_Elapsed(object sender, ElapsedEventArgs e)
-    {
-        try
-        {
-            var srvReady = PortScanner.IsPortOpen(connectionInfo.Hostname, Convert.ToString(connectionInfo.Port));
-
-            ReconnectGroup.ServerReady = srvReady;
-
-            if (!ReconnectGroup.ReconnectWhenReady || !srvReady) return;
-            tmrReconnect.Enabled = false;
-            ReconnectGroup.DisposeReconnectGroup();
-            //SetProps()
-            _rdpClient.Connect();
-        }
-        catch (Exception ex)
-        {
-            Runtime.MessageCollector.AddExceptionMessage(
-                string.Format(Language.AutomaticReconnectError, connectionInfo.Hostname),
-                ex, MessageClass.WarningMsg, false);
-        }
     }
 
     #endregion

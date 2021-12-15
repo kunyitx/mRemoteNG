@@ -8,14 +8,14 @@ namespace mRemoteNGTests.TestHelpers;
 public class ConnectionTreeModelBuilder
 {
     /// <summary>
-    /// Builds a tree which looks like:
-    /// Root
-    /// |- folder1
-    /// |   |- con1
-    /// |- con2
-    /// |- folder2
+    ///     Builds a tree which looks like:
+    ///     Root
+    ///     |- folder1
+    ///     |   |- con1
+    ///     |- con2
+    ///     |- folder2
     ///     |- folder3
-    ///         |- con3
+    ///     |- con3
     /// </summary>
     /// <returns></returns>
     public ConnectionTreeModel Build()

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using static System.Environment;
+using Version = System.Version;
 
 
 namespace mRemoteNG.App.Info;
@@ -52,7 +53,7 @@ public static class GeneralAppInfo
 
     public static Version GetApplicationVersion()
     {
-        System.Version.TryParse(ApplicationVersion, out var v);
+        Version.TryParse(ApplicationVersion, out var v);
         return v;
     }
 }

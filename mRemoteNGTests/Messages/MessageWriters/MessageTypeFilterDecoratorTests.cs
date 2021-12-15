@@ -9,10 +9,10 @@ namespace mRemoteNGTests.Messages.MessageWriters;
 
 public class MessageTypeFilterDecoratorTests
 {
-    private MessageTypeFilterDecorator _sut;
-    private IMessageWriter _mockWriter;
     private IMessageTypeFilteringOptions _filter;
     private IMessage _message;
+    private IMessageWriter _mockWriter;
+    private MessageTypeFilterDecorator _sut;
 
     [SetUp]
     public void Setup()

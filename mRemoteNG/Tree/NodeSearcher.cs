@@ -2,21 +2,20 @@
 using System.Linq;
 using mRemoteNG.Connection;
 
-
 namespace mRemoteNG.Tree;
 
 public class NodeSearcher
 {
     private readonly ConnectionTreeModel _connectionTreeModel;
 
-    private List<ConnectionInfo> Matches { get; set; }
-    public ConnectionInfo CurrentMatch { get; private set; }
-
 
     public NodeSearcher(ConnectionTreeModel connectionTreeModel)
     {
         _connectionTreeModel = connectionTreeModel;
     }
+
+    private List<ConnectionInfo> Matches { get; set; }
+    public ConnectionInfo CurrentMatch { get; private set; }
 
     public IEnumerable<ConnectionInfo> SearchByName(string searchText)
     {

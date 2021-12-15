@@ -18,85 +18,14 @@ namespace mRemoteNG.Tools;
 public class ExternalTool : INotifyPropertyChanged
 {
     private readonly IConnectionInitiator _connectionInitiator = new ConnectionInitiator();
+    private string _arguments;
     private string _displayName;
     private string _fileName;
-    private bool _waitForExit;
-    private string _arguments;
-    private string _workingDir;
-    private bool _tryIntegrate;
-    private bool _showOnToolbar = true;
     private bool _runElevated;
-
-    #region Public Properties
-
-    public string DisplayName
-    {
-        get => _displayName;
-        set => SetField(ref _displayName, value, nameof(DisplayName));
-    }
-
-    public string FileName
-    {
-        get => _fileName;
-        set => SetField(ref _fileName, value, nameof(FileName));
-    }
-
-    public bool WaitForExit
-    {
-        get => _waitForExit;
-        set
-        {
-            // WaitForExit cannot be turned on when TryIntegrate is true
-            if (TryIntegrate)
-                return;
-            SetField(ref _waitForExit, value, nameof(WaitForExit));
-        }
-    }
-
-    public string Arguments
-    {
-        get => _arguments;
-        set => SetField(ref _arguments, value, nameof(Arguments));
-    }
-
-    public string WorkingDir
-    {
-        get => _workingDir;
-        set => SetField(ref _workingDir, value, nameof(WorkingDir));
-    }
-
-    public bool TryIntegrate
-    {
-        get => _tryIntegrate;
-        set
-        {
-            // WaitForExit cannot be turned on when TryIntegrate is true
-            if (value)
-                WaitForExit = false;
-            SetField(ref _tryIntegrate, value, nameof(TryIntegrate));
-        }
-    }
-
-    public bool ShowOnToolbar
-    {
-        get => _showOnToolbar;
-        set => SetField(ref _showOnToolbar, value, nameof(ShowOnToolbar));
-    }
-
-    public bool RunElevated
-    {
-        get => _runElevated;
-        set => SetField(ref _runElevated, value, nameof(RunElevated));
-    }
-
-    public ConnectionInfo ConnectionInfo { get; set; }
-
-    public Icon Icon =>
-        File.Exists(FileName) ? MiscTools.GetIconFromFile(FileName) : Properties.Resources.mRemoteNG_Icon;
-
-    public Image Image => Icon?.ToBitmap() ?? Properties.Resources.mRemoteNG_Icon.ToBitmap();
-
-    #endregion
+    private bool _showOnToolbar = true;
+    private bool _tryIntegrate;
+    private bool _waitForExit;
+    private string _workingDir;
 
     public ExternalTool(string displayName = "",
         string fileName = "",
@@ -110,6 +39,8 @@ public class ExternalTool : INotifyPropertyChanged
         WorkingDir = workingDir;
         RunElevated = runElevated;
     }
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public void Start(ConnectionInfo startConnectionInfo = null)
     {
@@ -193,8 +124,6 @@ public class ExternalTool : INotifyPropertyChanged
         newConnectionInfo.Panel = Language._Tools;
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
     protected virtual void RaisePropertyChangedEvent(object sender, string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -207,4 +136,75 @@ public class ExternalTool : INotifyPropertyChanged
         RaisePropertyChangedEvent(this, propertyName);
         return true;
     }
+
+    #region Public Properties
+
+    public string DisplayName
+    {
+        get => _displayName;
+        set => SetField(ref _displayName, value, nameof(DisplayName));
+    }
+
+    public string FileName
+    {
+        get => _fileName;
+        set => SetField(ref _fileName, value, nameof(FileName));
+    }
+
+    public bool WaitForExit
+    {
+        get => _waitForExit;
+        set
+        {
+            // WaitForExit cannot be turned on when TryIntegrate is true
+            if (TryIntegrate)
+                return;
+            SetField(ref _waitForExit, value, nameof(WaitForExit));
+        }
+    }
+
+    public string Arguments
+    {
+        get => _arguments;
+        set => SetField(ref _arguments, value, nameof(Arguments));
+    }
+
+    public string WorkingDir
+    {
+        get => _workingDir;
+        set => SetField(ref _workingDir, value, nameof(WorkingDir));
+    }
+
+    public bool TryIntegrate
+    {
+        get => _tryIntegrate;
+        set
+        {
+            // WaitForExit cannot be turned on when TryIntegrate is true
+            if (value)
+                WaitForExit = false;
+            SetField(ref _tryIntegrate, value, nameof(TryIntegrate));
+        }
+    }
+
+    public bool ShowOnToolbar
+    {
+        get => _showOnToolbar;
+        set => SetField(ref _showOnToolbar, value, nameof(ShowOnToolbar));
+    }
+
+    public bool RunElevated
+    {
+        get => _runElevated;
+        set => SetField(ref _runElevated, value, nameof(RunElevated));
+    }
+
+    public ConnectionInfo ConnectionInfo { get; set; }
+
+    public Icon Icon =>
+        File.Exists(FileName) ? MiscTools.GetIconFromFile(FileName) : Properties.Resources.mRemoteNG_Icon;
+
+    public Image Image => Icon?.ToBitmap() ?? Properties.Resources.mRemoteNG_Icon.ToBitmap();
+
+    #endregion
 }

@@ -6,10 +6,10 @@ namespace mRemoteNG.UI.Controls;
 
 public class MrngSearchBox : MrngTextBox
 {
-    private bool _showDefaultText = true;
-    private bool _settingDefaultText = true;
-    private readonly PictureBox _pbClear = new();
     private readonly ToolTip _btClearToolTip = new();
+    private readonly PictureBox _pbClear = new();
+    private bool _settingDefaultText = true;
+    private bool _showDefaultText = true;
 
     public MrngSearchBox()
     {

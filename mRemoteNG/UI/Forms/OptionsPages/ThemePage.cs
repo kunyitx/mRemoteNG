@@ -1,29 +1,22 @@
 ﻿using System;
-using System.Windows.Forms;
-using mRemoteNG.Themes;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using BrightIdeasSoftware;
 using mRemoteNG.Properties;
-using mRemoteNG.UI.TaskDialog;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
+using mRemoteNG.UI.TaskDialog;
 
 namespace mRemoteNG.UI.Forms.OptionsPages;
 
 public sealed partial class ThemePage
 {
-    #region Private Fields
-
-    private readonly ThemeManager _themeManager;
-    private readonly bool _oriActiveTheming;
-    private readonly List<ThemeInfo> modifiedThemes = new();
-
-    #endregion
-
     public ThemePage()
     {
         InitializeComponent();
-        PageIcon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.AppearanceEditor_16x);
+        PageIcon = ImageConverter.GetImageAsIcon(Properties.Resources.AppearanceEditor_16x);
         _themeManager = ThemeManager.getInstance();
         if (!_themeManager.ThemingActive) return;
         _themeManager = ThemeManager.getInstance();
@@ -105,6 +98,14 @@ public sealed partial class ThemePage
         _themeManager.ThemingActive = _oriActiveTheming;
     }
 
+    #region Private Fields
+
+    private readonly ThemeManager _themeManager;
+    private readonly bool _oriActiveTheming;
+    private readonly List<ThemeInfo> modifiedThemes = new();
+
+    #endregion
+
     #region Private Methods
 
     #region Event Handlers
@@ -141,8 +142,9 @@ public sealed partial class ThemePage
     }
 
     /// <summary>
-    /// Edit an object, since KeyValuePair value cannot be set without creating a new object, a parallel object model exist in the list
-    /// besides the one in the active theme, so any modification must be done to the two models
+    ///     Edit an object, since KeyValuePair value cannot be set without creating a new object, a parallel object model exist
+    ///     in the list
+    ///     besides the one in the active theme, so any modification must be done to the two models
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>

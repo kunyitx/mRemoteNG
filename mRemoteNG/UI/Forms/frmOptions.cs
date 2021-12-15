@@ -1,13 +1,14 @@
-﻿using mRemoteNG.UI.Forms.OptionsPages;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
-using mRemoteNG.Themes;
-using System.Configuration;
 using mRemoteNG.Properties;
+using mRemoteNG.Resources;
 using mRemoteNG.Resources.Language;
+using mRemoteNG.Themes;
+using mRemoteNG.UI.Forms.OptionsPages;
 
 namespace mRemoteNG.UI.Forms;
 
@@ -26,7 +27,7 @@ public partial class FrmOptions : Form
         Cursor.Current = Cursors.WaitCursor;
         Application.DoEvents();
         InitializeComponent();
-        Icon = Resources.ImageConverter.GetImageAsIcon(Properties.Resources.Settings_16x);
+        Icon = ImageConverter.GetImageAsIcon(Properties.Resources.Settings_16x);
         _pageName = pn;
         Cursor.Current = Cursors.Default;
     }

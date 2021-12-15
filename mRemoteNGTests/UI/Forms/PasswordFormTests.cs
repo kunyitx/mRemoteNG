@@ -10,8 +10,6 @@ namespace mRemoteNGTests.UI.Forms;
 [Apartment(ApartmentState.STA)]
 public class PasswordFormTests
 {
-    private FrmPassword _passwordForm;
-
     [SetUp]
     public void Setup()
     {
@@ -29,6 +27,8 @@ public class PasswordFormTests
 
         _passwordForm = null;
     }
+
+    private FrmPassword _passwordForm;
 
     [Test]
     [SetUICulture("en-US")]

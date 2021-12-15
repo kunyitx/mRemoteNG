@@ -1,11 +1,13 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace mRemoteNG.Tools;
 
 public class EnumWindows
 {
+    private readonly List<List<IntPtr>> HandleLists = new();
+
     public List<IntPtr> EnumWindows_Renamed()
     {
         var handleList = new List<IntPtr>();
@@ -29,8 +31,6 @@ public class EnumWindows
 
         return handleList;
     }
-
-    private readonly List<List<IntPtr>> HandleLists = new();
 
     private bool EnumCallback(int hwnd, int lParam)
     {
