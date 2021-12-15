@@ -760,14 +760,12 @@ namespace mRemoteNG.UI.Window
             {
                 var interfaceControl = GetInterfaceControl();
                 if (interfaceControl == null) return;
-                using (var frmInputBox = new FrmInputBox(Language.NewTitle, Language.NewTitle,
-                                                         ((ConnectionTab)interfaceControl.Parent).TabText))
-                {
-                    var dr = frmInputBox.ShowDialog();
-                    if (dr != DialogResult.OK) return;
-                    if (!string.IsNullOrEmpty(frmInputBox.returnValue))
-                        ((ConnectionTab)interfaceControl.Parent).TabText = frmInputBox.returnValue.Replace("&", "&&");
-                }
+                using var frmInputBox = new FrmInputBox(Language.NewTitle, Language.NewTitle,
+                    ((ConnectionTab)interfaceControl.Parent).TabText);
+                var dr = frmInputBox.ShowDialog();
+                if (dr != DialogResult.OK) return;
+                if (!string.IsNullOrEmpty(frmInputBox.returnValue))
+                    ((ConnectionTab)interfaceControl.Parent).TabText = frmInputBox.returnValue.Replace("&", "&&");
             }
             catch (Exception ex)
             {

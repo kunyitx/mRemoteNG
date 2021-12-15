@@ -17,33 +17,31 @@ namespace mRemoteNG.App
         {
             try
             {
-                using (var openFileDialog = new OpenFileDialog())
-                {
-                    openFileDialog.CheckFileExists = true;
-                    openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                    openFileDialog.Multiselect = true;
+                using var openFileDialog = new OpenFileDialog();
+                openFileDialog.CheckFileExists = true;
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                openFileDialog.Multiselect = true;
 
-                    var fileTypes = new List<string>();
-                    fileTypes.AddRange(new[] {Language.FilterAllImportable, "*.xml;*.rdp;*.rdg;*.dat;*.csv"});
-                    fileTypes.AddRange(new[] {Language.FiltermRemoteXML, "*.xml"});
-                    fileTypes.AddRange(new[] {Language.FiltermRemoteCSV, "*.csv"});
-                    fileTypes.AddRange(new[] {Language.FilterRDP, "*.rdp"});
-                    fileTypes.AddRange(new[] {Language.FilterRdgFiles, "*.rdg"});
-                    fileTypes.AddRange(new[] {Language.FilterPuttyConnectionManager, "*.dat"});
-                    fileTypes.AddRange(new[] {Language.FilterAll, "*.*"});
+                var fileTypes = new List<string>();
+                fileTypes.AddRange(new[] {Language.FilterAllImportable, "*.xml;*.rdp;*.rdg;*.dat;*.csv"});
+                fileTypes.AddRange(new[] {Language.FiltermRemoteXML, "*.xml"});
+                fileTypes.AddRange(new[] {Language.FiltermRemoteCSV, "*.csv"});
+                fileTypes.AddRange(new[] {Language.FilterRDP, "*.rdp"});
+                fileTypes.AddRange(new[] {Language.FilterRdgFiles, "*.rdg"});
+                fileTypes.AddRange(new[] {Language.FilterPuttyConnectionManager, "*.dat"});
+                fileTypes.AddRange(new[] {Language.FilterAll, "*.*"});
 
-                    openFileDialog.Filter = string.Join("|", fileTypes.ToArray());
+                openFileDialog.Filter = string.Join("|", fileTypes.ToArray());
 
-                    if (openFileDialog.ShowDialog() != DialogResult.OK)
-                        return;
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                    return;
 
-					HeadlessFileImport(
-						openFileDialog.FileNames, 
-						importDestinationContainer, 
-						Runtime.ConnectionsService,
-						fileName => MessageBox.Show(string.Format(Language.ImportFileFailedContent, fileName), Language.AskUpdatesMainInstruction,
-							MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1));
-                }
+                HeadlessFileImport(
+                    openFileDialog.FileNames, 
+                    importDestinationContainer, 
+                    Runtime.ConnectionsService,
+                    fileName => MessageBox.Show(string.Format(Language.ImportFileFailedContent, fileName), Language.AskUpdatesMainInstruction,
+                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1));
             }
             catch (Exception ex)
             {

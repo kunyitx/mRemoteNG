@@ -109,17 +109,15 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 
         private void btnBrowseCustomPuttyPath_Click(object sender, EventArgs e)
         {
-            using (var openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = $@"{Language.FilterApplication}|*.exe|{Language.FilterAll}|*.*";
-                openFileDialog.FileName = Path.GetFileName(GeneralAppInfo.PuttyPath);
-                openFileDialog.CheckFileExists = true;
-                openFileDialog.Multiselect = false;
+            using var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = $@"{Language.FilterApplication}|*.exe|{Language.FilterAll}|*.*";
+            openFileDialog.FileName = Path.GetFileName(GeneralAppInfo.PuttyPath);
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.Multiselect = false;
 
-                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
-                txtCustomPuttyPath.Text = openFileDialog.FileName;
-                SetPuttyLaunchButtonEnabled();
-            }
+            if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+            txtCustomPuttyPath.Text = openFileDialog.FileName;
+            SetPuttyLaunchButtonEnabled();
         }
 
         private void btnLaunchPutty_Click(object sender, EventArgs e)

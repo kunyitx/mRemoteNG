@@ -261,11 +261,9 @@ namespace mRemoteNG.Connection.Protocol.RDP
         {
             try
             {
-                using (var control = CreateActiveXRdpClientControl())
-                {
-                    control.CreateControl();
-                    return true;
-                }
+                using var control = CreateActiveXRdpClientControl();
+                control.CreateControl();
+                return true;
             }
             catch
             {

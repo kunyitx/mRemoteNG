@@ -17,14 +17,12 @@ namespace mRemoteNG.Tools
         {
             if (Environment.Is64BitOperatingSystem)
             {
-                using (var key = Registry.CurrentUser.CreateSubKey(
-                                                                   string
-                                                                       .Concat("Software\\Wow6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\",
-                                                                               feature),
-                                                                   RegistryKeyPermissionCheck.ReadWriteSubTree))
-                {
-                    key?.SetValue(appName, value, RegistryValueKind.DWord);
-                }
+                using var key = Registry.CurrentUser.CreateSubKey(
+                    string
+                        .Concat("Software\\Wow6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\",
+                            feature),
+                    RegistryKeyPermissionCheck.ReadWriteSubTree);
+                key?.SetValue(appName, value, RegistryValueKind.DWord);
             }
 
 

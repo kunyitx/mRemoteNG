@@ -108,9 +108,9 @@ namespace mRemoteNG.UI.Panels
             {
                 var conW = (ConnectionWindow)((ToolStripMenuItem)sender).Tag;
 
-                using (var newTitle = new FrmInputBox(Language.NewTitle, Language.NewTitle + ":", ""))
-                    if (newTitle.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(newTitle.returnValue))
-                        conW.SetFormText(newTitle.returnValue.Replace("&", "&&"));
+                using var newTitle = new FrmInputBox(Language.NewTitle, Language.NewTitle + ":", "");
+                if (newTitle.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(newTitle.returnValue))
+                    conW.SetFormText(newTitle.returnValue.Replace("&", "&&"));
             }
             catch (Exception ex)
             {

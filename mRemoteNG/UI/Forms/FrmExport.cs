@@ -162,25 +162,23 @@ namespace mRemoteNG.UI.Forms
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            using (var saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.CheckPathExists = true;
-                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                saveFileDialog.OverwritePrompt = true;
+            using var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.CheckPathExists = true;
+            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            saveFileDialog.OverwritePrompt = true;
 
-                var fileTypes = new List<string>();
-                fileTypes.AddRange(new[] {Language.FiltermRemoteXML, "*.xml"});
-                fileTypes.AddRange(new[] {Language.FiltermRemoteCSV, "*.csv"});
-                fileTypes.AddRange(new[] {Language.FilterAll, "*.*"});
+            var fileTypes = new List<string>();
+            fileTypes.AddRange(new[] {Language.FiltermRemoteXML, "*.xml"});
+            fileTypes.AddRange(new[] {Language.FiltermRemoteCSV, "*.csv"});
+            fileTypes.AddRange(new[] {Language.FilterAll, "*.*"});
 
-                saveFileDialog.Filter = string.Join("|", fileTypes.ToArray());
-                SelectFileTypeBasedOnSaveFormat(saveFileDialog);
+            saveFileDialog.Filter = string.Join("|", fileTypes.ToArray());
+            SelectFileTypeBasedOnSaveFormat(saveFileDialog);
 
-                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                    return;
+            if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                return;
 
-                txtFileName.Text = saveFileDialog.FileName;
-            }
+            txtFileName.Text = saveFileDialog.FileName;
         }
 
         private void SelectFileTypeBasedOnSaveFormat(FileDialog saveFileDialog)

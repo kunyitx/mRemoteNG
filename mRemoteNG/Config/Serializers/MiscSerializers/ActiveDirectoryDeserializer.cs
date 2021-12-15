@@ -51,31 +51,27 @@ namespace mRemoteNG.Config.Serializers.MiscSerializers
             try
             {
                 const string ldapFilter = "(|(objectClass=computer)(objectClass=organizationalUnit))";
-                using (var ldapSearcher = new DirectorySearcher())
+                using var ldapSearcher = new DirectorySearcher();
+                ldapSearcher.SearchRoot = new DirectoryEntry(ldapPath);
+                ldapSearcher.Filter = ldapFilter;
+                ldapSearcher.SearchScope = SearchScope.OneLevel;
+                ldapSearcher.PropertiesToLoad.AddRange(new[] {"securityEquals", "cn", "objectClass"});
+
+                var ldapResults = ldapSearcher.FindAll();
+                foreach (SearchResult ldapResult in ldapResults)
                 {
-                    ldapSearcher.SearchRoot = new DirectoryEntry(ldapPath);
-                    ldapSearcher.Filter = ldapFilter;
-                    ldapSearcher.SearchScope = SearchScope.OneLevel;
-                    ldapSearcher.PropertiesToLoad.AddRange(new[] {"securityEquals", "cn", "objectClass"});
-
-                    var ldapResults = ldapSearcher.FindAll();
-                    foreach (SearchResult ldapResult in ldapResults)
+                    using var directoryEntry = ldapResult.GetDirectoryEntry();
+                    if (directoryEntry.Properties["objectClass"].Contains("organizationalUnit"))
                     {
-                        using (var directoryEntry = ldapResult.GetDirectoryEntry())
-                        {
-                            if (directoryEntry.Properties["objectClass"].Contains("organizationalUnit"))
-                            {
-                                // check/continue here so we don't create empty connection objects
-                                if (!_importSubOu) continue;
+                        // check/continue here so we don't create empty connection objects
+                        if (!_importSubOu) continue;
 
-                                // TODO - this is a circular call. A deserializer should not call an importer
-                                ActiveDirectoryImporter.Import(ldapResult.Path, parentContainer, _importSubOu);
-                                continue;
-                            }
-
-                            DeserializeConnection(directoryEntry, parentContainer);
-                        }
+                        // TODO - this is a circular call. A deserializer should not call an importer
+                        ActiveDirectoryImporter.Import(ldapResult.Path, parentContainer, _importSubOu);
+                        continue;
                     }
+
+                    DeserializeConnection(directoryEntry, parentContainer);
                 }
             }
             catch (Exception ex)

@@ -63,14 +63,12 @@ namespace mRemoteNG.Config.Serializers.ConnectionSerializers.Xml
             var xmlWriterSettings = new XmlWriterSettings
                 {Indent = true, IndentChars = "    ", Encoding = Encoding.UTF8};
             var memoryStream = new MemoryStream();
-            using (var xmlTextWriter = XmlWriter.Create(memoryStream, xmlWriterSettings))
-            {
-                xmlDocument.WriteTo(xmlTextWriter);
-                xmlTextWriter.Flush();
-                var streamReader = new StreamReader(memoryStream, Encoding.UTF8, true);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                xmlString = streamReader.ReadToEnd();
-            }
+            using var xmlTextWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
+            xmlDocument.WriteTo(xmlTextWriter);
+            xmlTextWriter.Flush();
+            var streamReader = new StreamReader(memoryStream, Encoding.UTF8, true);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            xmlString = streamReader.ReadToEnd();
 
             return xmlString;
         }

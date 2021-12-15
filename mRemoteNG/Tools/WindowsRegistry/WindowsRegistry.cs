@@ -10,12 +10,10 @@ namespace mRemoteNG.Tools.WindowsRegistry
         {
             keyPath.ThrowIfNull(nameof(keyPath));
 
-            using (var key = OpenSubKey(hive, keyPath))
-            {
-                return key.Any()
-                    ? key.First().GetSubKeyNames()
-                    : new string[0];
-            }
+            using var key = OpenSubKey(hive, keyPath);
+            return key.Any()
+                ? key.First().GetSubKeyNames()
+                : new string[0];
         }
 
         public Optional<string> GetKeyValue(RegistryHive hive, string keyPath, string propertyName)
@@ -23,13 +21,11 @@ namespace mRemoteNG.Tools.WindowsRegistry
             keyPath.ThrowIfNull(nameof(keyPath));
             propertyName.ThrowIfNull(nameof(propertyName));
 
-            using (var key = OpenSubKey(hive, keyPath))
-            {
-                if (!key.Any())
-                    return Optional<string>.Empty;
+            using var key = OpenSubKey(hive, keyPath);
+            if (!key.Any())
+                return Optional<string>.Empty;
 
-                return key.First().GetValue(propertyName) as string;
-            }
+            return key.First().GetValue(propertyName) as string;
         }
 
         private DisposableOptional<RegistryKey> OpenSubKey(RegistryHive hive, string keyPath)

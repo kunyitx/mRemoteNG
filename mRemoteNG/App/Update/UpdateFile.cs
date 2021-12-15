@@ -34,28 +34,26 @@ namespace mRemoteNG.App.Update
             // no separators means no valid update data...
             if (content.Trim().IndexOfAny(keyValueSeparators) == -1) return;
 
-            using (var sr = new StringReader(content))
+            using var sr = new StringReader(content);
+            string line;
+            while ((line = sr.ReadLine()) != null)
             {
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    var trimmedLine = line.Trim();
-                    if (trimmedLine.Length == 0)
-                        continue;
+                var trimmedLine = line.Trim();
+                if (trimmedLine.Length == 0)
+                    continue;
 
-                    if (trimmedLine.Substring(0, 1).IndexOfAny(commentCharacters) != -1)
-                        continue;
+                if (trimmedLine.Substring(0, 1).IndexOfAny(commentCharacters) != -1)
+                    continue;
 
-                    var parts = trimmedLine.Split(keyValueSeparators, 2);
-                    if (parts.Length != 2)
-                        continue;
+                var parts = trimmedLine.Split(keyValueSeparators, 2);
+                if (parts.Length != 2)
+                    continue;
 
-                    // make sure we have valid data in both parts before adding to the collection. If either part is empty, then it's not valid data.
-                    if (string.IsNullOrEmpty(parts[0].Trim()) || string.IsNullOrEmpty(parts[1].Trim()))
-                        continue;
+                // make sure we have valid data in both parts before adding to the collection. If either part is empty, then it's not valid data.
+                if (string.IsNullOrEmpty(parts[0].Trim()) || string.IsNullOrEmpty(parts[1].Trim()))
+                    continue;
 
-                    Items.Add(parts[0].Trim(), parts[1].Trim());
-                }
+                Items.Add(parts[0].Trim(), parts[1].Trim());
             }
         }
 

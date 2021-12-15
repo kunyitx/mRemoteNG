@@ -180,24 +180,22 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 
         private void btnThemeNew_Click(object sender, EventArgs e)
         {
-            using (var frmInputBox = new FrmInputBox(Language.OptionsThemeNewThemeCaption,
-                                                     Language.OptionsThemeNewThemeText,
-                                                     _themeManager.ActiveTheme.Name))
+            using var frmInputBox = new FrmInputBox(Language.OptionsThemeNewThemeCaption,
+                Language.OptionsThemeNewThemeText,
+                _themeManager.ActiveTheme.Name);
+            var dr = frmInputBox.ShowDialog();
+            if (dr != DialogResult.OK) return;
+            if (_themeManager.isThemeNameOk(frmInputBox.returnValue))
             {
-                var dr = frmInputBox.ShowDialog();
-                if (dr != DialogResult.OK) return;
-                if (_themeManager.isThemeNameOk(frmInputBox.returnValue))
-                {
-                    var addedTheme = _themeManager.addTheme(_themeManager.ActiveTheme, frmInputBox.returnValue);
-                    _themeManager.ActiveTheme = addedTheme;
-                    LoadSettings();
-                }
-                else
-                {
-                    CTaskDialog.ShowTaskDialogBox(this, Language.Errors, Language.OptionsThemeNewThemeError, "",
-                                                  "", "", "", "", "", ETaskDialogButtons.Ok, ESysIcons.Error,
-                                                  ESysIcons.Information, 0);
-                }
+                var addedTheme = _themeManager.addTheme(_themeManager.ActiveTheme, frmInputBox.returnValue);
+                _themeManager.ActiveTheme = addedTheme;
+                LoadSettings();
+            }
+            else
+            {
+                CTaskDialog.ShowTaskDialogBox(this, Language.Errors, Language.OptionsThemeNewThemeError, "",
+                    "", "", "", "", "", ETaskDialogButtons.Ok, ESysIcons.Error,
+                    ESysIcons.Information, 0);
             }
         }
 

@@ -307,16 +307,12 @@ namespace mRemoteNG.App.Update
                     }
 #endif
 
-                    using (var cksum = SHA512.Create())
-                    {
-                        using (var stream = File.OpenRead(CurrentUpdateInfo.UpdateFilePath))
-                        {
-                            var hash = cksum.ComputeHash(stream);
-                            var hashString = BitConverter.ToString(hash).Replace("-", "").ToUpperInvariant();
-                            if (!hashString.Equals(CurrentUpdateInfo.Checksum))
-                                throw new Exception("SHA512 Hashes didn't match!");
-                        }
-                    }
+                    using var cksum = SHA512.Create();
+                    using var stream = File.OpenRead(CurrentUpdateInfo.UpdateFilePath);
+                    var hash = cksum.ComputeHash(stream);
+                    var hashString = BitConverter.ToString(hash).Replace("-", "").ToUpperInvariant();
+                    if (!hashString.Equals(CurrentUpdateInfo.Checksum))
+                        throw new Exception("SHA512 Hashes didn't match!");
                 }
                 catch (Exception ex)
                 {

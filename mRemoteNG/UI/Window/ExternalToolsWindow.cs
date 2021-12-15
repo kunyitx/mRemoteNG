@@ -290,17 +290,15 @@ namespace mRemoteNG.UI.Window
         {
             try
             {
-                using (var browseDialog = new OpenFileDialog())
-                {
-                    browseDialog.Filter = string.Join("|", Language.FilterApplication, "*.exe",
-                                                      Language.FilterAll, "*.*");
-                    if (browseDialog.ShowDialog() != DialogResult.OK)
-                        return;
-                    var selectedItem = _currentlySelectedExternalTools.FirstOrDefault();
-                    if (selectedItem == null)
-                        return;
-                    selectedItem.FileName = browseDialog.FileName;
-                }
+                using var browseDialog = new OpenFileDialog();
+                browseDialog.Filter = string.Join("|", Language.FilterApplication, "*.exe",
+                    Language.FilterAll, "*.*");
+                if (browseDialog.ShowDialog() != DialogResult.OK)
+                    return;
+                var selectedItem = _currentlySelectedExternalTools.FirstOrDefault();
+                if (selectedItem == null)
+                    return;
+                selectedItem.FileName = browseDialog.FileName;
             }
             catch (Exception ex)
             {
@@ -313,15 +311,13 @@ namespace mRemoteNG.UI.Window
         {
             try
             {
-                using (var browseDialog = new FolderBrowserDialog())
-                {
-                    if (browseDialog.ShowDialog() != DialogResult.OK)
-                        return;
-                    var selectedItem = _currentlySelectedExternalTools.FirstOrDefault();
-                    if (selectedItem == null)
-                        return;
-                    selectedItem.WorkingDir = browseDialog.SelectedPath;
-                }
+                using var browseDialog = new FolderBrowserDialog();
+                if (browseDialog.ShowDialog() != DialogResult.OK)
+                    return;
+                var selectedItem = _currentlySelectedExternalTools.FirstOrDefault();
+                if (selectedItem == null)
+                    return;
+                selectedItem.WorkingDir = browseDialog.SelectedPath;
             }
             catch (Exception ex)
             {

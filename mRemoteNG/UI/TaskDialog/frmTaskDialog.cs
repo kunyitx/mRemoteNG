@@ -409,11 +409,9 @@ namespace mRemoteNG.UI.TaskDialog
             var h = (int)(srcImg.Height * resizePercent);
             var b = new Bitmap(w, h);
 
-            using (var g = Graphics.FromImage(b))
-            {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.DrawImage(srcImg, 0, 0, w, h);
-            }
+            using var g = Graphics.FromImage(b);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            g.DrawImage(srcImg, 0, 0, w, h);
 
             return b;
         }
@@ -426,11 +424,9 @@ namespace mRemoteNG.UI.TaskDialog
             var textFont = lb.Font;
             var layoutSize = new SizeF(lb.ClientSize.Width, 5000.0F);
 
-            using (var g = Graphics.FromHwnd(lb.Handle))
-            {
-                var stringSize = g.MeasureString(text, textFont, layoutSize);
-                lb.Height = (int)stringSize.Height + 4;
-            }
+            using var g = Graphics.FromHwnd(lb.Handle);
+            var stringSize = g.MeasureString(text, textFont, layoutSize);
+            lb.Height = (int)stringSize.Height + 4;
         }
 
         #endregion

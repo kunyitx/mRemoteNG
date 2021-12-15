@@ -136,15 +136,13 @@ namespace mRemoteNG.UI.Menu
 
         private void mMenFileNew_Click(object sender, EventArgs e)
         {
-            using (var saveFileDialog = DialogFactory.ConnectionsSaveAsDialog())
+            using var saveFileDialog = DialogFactory.ConnectionsSaveAsDialog();
+            if (saveFileDialog.ShowDialog() != DialogResult.OK)
             {
-                if (saveFileDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-
-                Runtime.ConnectionsService.NewConnectionsFile(saveFileDialog.FileName);
+                return;
             }
+
+            Runtime.ConnectionsService.NewConnectionsFile(saveFileDialog.FileName);
         }
 
         private void mMenFileLoad_Click(object sender, EventArgs e)
@@ -174,25 +172,23 @@ namespace mRemoteNG.UI.Menu
 
         private void mMenFileSaveAs_Click(object sender, EventArgs e)
         {
-            using (var saveFileDialog = DialogFactory.ConnectionsSaveAsDialog())
+            using var saveFileDialog = DialogFactory.ConnectionsSaveAsDialog();
+            if (saveFileDialog.ShowDialog(FrmMain.Default) != DialogResult.OK)
+                return;
+
+            var newFileName = saveFileDialog.FileName;
+
+            Runtime.ConnectionsService.SaveConnections(Runtime.ConnectionsService.ConnectionTreeModel, false,
+                new SaveFilter(), newFileName);
+
+            if (newFileName == Runtime.ConnectionsService.GetDefaultStartupConnectionFileName())
             {
-                if (saveFileDialog.ShowDialog(FrmMain.Default) != DialogResult.OK)
-                    return;
-
-                var newFileName = saveFileDialog.FileName;
-
-                Runtime.ConnectionsService.SaveConnections(Runtime.ConnectionsService.ConnectionTreeModel, false,
-                                                           new SaveFilter(), newFileName);
-
-                if (newFileName == Runtime.ConnectionsService.GetDefaultStartupConnectionFileName())
-                {
-                    Settings.Default.LoadConsFromCustomLocation = false;
-                }
-                else
-                {
-                    Settings.Default.LoadConsFromCustomLocation = true;
-                    Settings.Default.CustomConsPath = newFileName;
-                }
+                Settings.Default.LoadConsFromCustomLocation = false;
+            }
+            else
+            {
+                Settings.Default.LoadConsFromCustomLocation = true;
+                Settings.Default.CustomConsPath = newFileName;
             }
         }
 

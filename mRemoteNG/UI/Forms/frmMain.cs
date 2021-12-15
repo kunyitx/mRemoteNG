@@ -368,10 +368,8 @@ namespace mRemoteNG.UI.Forms
 
             if (CTaskDialog.CommandButtonResult != 1) return;
 
-            using (var optionsForm = new FrmOptions(Language.Updates))
-            {
-                optionsForm.ShowDialog(this);
-            }
+            using var optionsForm = new FrmOptions(Language.Updates);
+            optionsForm.ShowDialog(this);
         }
 
         private void CheckForUpdates()

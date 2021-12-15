@@ -15,27 +15,25 @@ namespace mRemoteNG.Config.DatabaseConnectors
                                                                  string username,
                                                                  string password)
         {
-            using (var dbConnector = DatabaseConnectorFactory.DatabaseConnector(type, server, database, username, password))
+            using var dbConnector = DatabaseConnectorFactory.DatabaseConnector(type, server, database, username, password);
+            try
             {
-                try
-                {
-                    await dbConnector.ConnectAsync();
-                    return ConnectionTestResult.ConnectionSucceded;
-                }
-                catch (SqlException sqlException)
-                {
-                    if (sqlException.Message.Contains("The server was not found"))
-                        return ConnectionTestResult.ServerNotAccessible;
-                    if (sqlException.Message.Contains("Cannot open database"))
-                        return ConnectionTestResult.UnknownDatabase;
-                    if (sqlException.Message.Contains("Login failed for user"))
-                        return ConnectionTestResult.CredentialsRejected;
-                    return ConnectionTestResult.UnknownError;
-                }
-                catch (Exception)
-                {
-                    return ConnectionTestResult.UnknownError;
-                }
+                await dbConnector.ConnectAsync();
+                return ConnectionTestResult.ConnectionSucceded;
+            }
+            catch (SqlException sqlException)
+            {
+                if (sqlException.Message.Contains("The server was not found"))
+                    return ConnectionTestResult.ServerNotAccessible;
+                if (sqlException.Message.Contains("Cannot open database"))
+                    return ConnectionTestResult.UnknownDatabase;
+                if (sqlException.Message.Contains("Login failed for user"))
+                    return ConnectionTestResult.CredentialsRejected;
+                return ConnectionTestResult.UnknownError;
+            }
+            catch (Exception)
+            {
+                return ConnectionTestResult.UnknownError;
             }
         }
     }

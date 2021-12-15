@@ -25,42 +25,40 @@ namespace mRemoteNG.App
             {
                 var saveFilter = new SaveFilter();
 
-                using (var exportForm = new FrmExport())
+                using var exportForm = new FrmExport();
+                if (selectedNode?.GetTreeNodeType() == TreeNodeType.Container)
+                    exportForm.SelectedFolder = selectedNode as ContainerInfo;
+                else if (selectedNode?.GetTreeNodeType() == TreeNodeType.Connection)
                 {
-                    if (selectedNode?.GetTreeNodeType() == TreeNodeType.Container)
-                        exportForm.SelectedFolder = selectedNode as ContainerInfo;
-                    else if (selectedNode?.GetTreeNodeType() == TreeNodeType.Connection)
-                    {
-                        if (selectedNode.Parent.GetTreeNodeType() == TreeNodeType.Container)
-                            exportForm.SelectedFolder = selectedNode.Parent;
-                        exportForm.SelectedConnection = selectedNode;
-                    }
-
-                    if (exportForm.ShowDialog(FrmMain.Default) != DialogResult.OK)
-                        return;
-
-                    ConnectionInfo exportTarget;
-                    switch (exportForm.Scope)
-                    {
-                        case FrmExport.ExportScope.SelectedFolder:
-                            exportTarget = exportForm.SelectedFolder;
-                            break;
-                        case FrmExport.ExportScope.SelectedConnection:
-                            exportTarget = exportForm.SelectedConnection;
-                            break;
-                        default:
-                            exportTarget = connectionTreeModel.RootNodes.First(node => node is RootNodeInfo);
-                            break;
-                    }
-
-                    saveFilter.SaveUsername = exportForm.IncludeUsername;
-                    saveFilter.SavePassword = exportForm.IncludePassword;
-                    saveFilter.SaveDomain = exportForm.IncludeDomain;
-                    saveFilter.SaveInheritance = exportForm.IncludeInheritance;
-                    saveFilter.SaveCredentialId = exportForm.IncludeAssignedCredential;
-
-                    SaveExportFile(exportForm.FileName, exportForm.SaveFormat, saveFilter, exportTarget);
+                    if (selectedNode.Parent.GetTreeNodeType() == TreeNodeType.Container)
+                        exportForm.SelectedFolder = selectedNode.Parent;
+                    exportForm.SelectedConnection = selectedNode;
                 }
+
+                if (exportForm.ShowDialog(FrmMain.Default) != DialogResult.OK)
+                    return;
+
+                ConnectionInfo exportTarget;
+                switch (exportForm.Scope)
+                {
+                    case FrmExport.ExportScope.SelectedFolder:
+                        exportTarget = exportForm.SelectedFolder;
+                        break;
+                    case FrmExport.ExportScope.SelectedConnection:
+                        exportTarget = exportForm.SelectedConnection;
+                        break;
+                    default:
+                        exportTarget = connectionTreeModel.RootNodes.First(node => node is RootNodeInfo);
+                        break;
+                }
+
+                saveFilter.SaveUsername = exportForm.IncludeUsername;
+                saveFilter.SavePassword = exportForm.IncludePassword;
+                saveFilter.SaveDomain = exportForm.IncludeDomain;
+                saveFilter.SaveInheritance = exportForm.IncludeInheritance;
+                saveFilter.SaveCredentialId = exportForm.IncludeAssignedCredential;
+
+                SaveExportFile(exportForm.FileName, exportForm.SaveFormat, saveFilter, exportTarget);
             }
             catch (Exception ex)
             {

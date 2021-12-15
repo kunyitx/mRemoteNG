@@ -73,16 +73,14 @@ namespace mRemoteNG.UI.Forms
 
         private void btnNew_Click(object sender, System.EventArgs e)
         {
-            using (var frmInputBox =
-                new FrmInputBox(Language.NewPanel, Language.PanelName + ":", Language.NewPanel))
-            {
-                var dr = frmInputBox.ShowDialog();
-                if (dr != DialogResult.OK || string.IsNullOrEmpty(frmInputBox.returnValue)) return;
-                _panelAdder.AddPanel(frmInputBox.returnValue);
-                AddAvailablePanels();
-                cbPanels.SelectedItem = frmInputBox.returnValue;
-                cbPanels.Focus();
-            }
+            using var frmInputBox =
+                new FrmInputBox(Language.NewPanel, Language.PanelName + ":", Language.NewPanel);
+            var dr = frmInputBox.ShowDialog();
+            if (dr != DialogResult.OK || string.IsNullOrEmpty(frmInputBox.returnValue)) return;
+            _panelAdder.AddPanel(frmInputBox.returnValue);
+            AddAvailablePanels();
+            cbPanels.SelectedItem = frmInputBox.returnValue;
+            cbPanels.Focus();
         }
 
         private void btnOK_Click(object sender, System.EventArgs e)

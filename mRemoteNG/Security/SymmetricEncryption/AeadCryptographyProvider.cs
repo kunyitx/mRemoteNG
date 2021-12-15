@@ -230,34 +230,32 @@ namespace mRemoteNG.Security.SymmetricEncryption
                 throw new ArgumentException(@"Encrypted Message Required!", nameof(encryptedMessage));
 
             var cipherStream = new MemoryStream(encryptedMessage);
-            using (var cipherReader = new BinaryReader(cipherStream))
+            using var cipherReader = new BinaryReader(cipherStream);
+            //Grab Payload
+            var nonSecretPayload = cipherReader.ReadBytes(nonSecretPayloadLength);
+
+            //Grab Nonce
+            var nonce = cipherReader.ReadBytes(NonceBitSize / 8);
+
+            var parameters = new AeadParameters(new KeyParameter(key), MacBitSize, nonce, nonSecretPayload);
+            _aeadBlockCipher.Init(false, parameters);
+
+            //Decrypt Cipher Text
+            var cipherText =
+                cipherReader.ReadBytes(encryptedMessage.Length - nonSecretPayloadLength - nonce.Length);
+            var plainText = new byte[_aeadBlockCipher.GetOutputSize(cipherText.Length)];
+
+            try
             {
-                //Grab Payload
-                var nonSecretPayload = cipherReader.ReadBytes(nonSecretPayloadLength);
-
-                //Grab Nonce
-                var nonce = cipherReader.ReadBytes(NonceBitSize / 8);
-
-                var parameters = new AeadParameters(new KeyParameter(key), MacBitSize, nonce, nonSecretPayload);
-                _aeadBlockCipher.Init(false, parameters);
-
-                //Decrypt Cipher Text
-                var cipherText =
-                    cipherReader.ReadBytes(encryptedMessage.Length - nonSecretPayloadLength - nonce.Length);
-                var plainText = new byte[_aeadBlockCipher.GetOutputSize(cipherText.Length)];
-
-                try
-                {
-                    var len = _aeadBlockCipher.ProcessBytes(cipherText, 0, cipherText.Length, plainText, 0);
-                    _aeadBlockCipher.DoFinal(plainText, len);
-                }
-                catch (InvalidCipherTextException e)
-                {
-                    throw new EncryptionException(Language.ErrorDecryptionFailed, e);
-                }
-
-                return plainText;
+                var len = _aeadBlockCipher.ProcessBytes(cipherText, 0, cipherText.Length, plainText, 0);
+                _aeadBlockCipher.DoFinal(plainText, len);
             }
+            catch (InvalidCipherTextException e)
+            {
+                throw new EncryptionException(Language.ErrorDecryptionFailed, e);
+            }
+
+            return plainText;
         }
 
         private byte[] GenerateSalt()

@@ -286,62 +286,58 @@ namespace mRemoteNG.UI.Tabs
             g.DrawPath(PenTabBorder, path);
 
             // Set no rotate for drawing icon and text
-            using (var matrixRotate = g.Transform)
+            using var matrixRotate = g.Transform;
+            g.Transform = MatrixIdentity;
+
+            // Draw the icon
+            var rectImage = rectTabOrigin;
+            rectImage.X += ImageGapLeft;
+            rectImage.Y += ImageGapTop;
+            var imageHeight = rectTabOrigin.Height - ImageGapTop - ImageGapBottom;
+            var imageWidth = ImageWidth;
+            if (imageHeight > ImageHeight)
+                imageWidth = ImageWidth * (imageHeight / ImageHeight);
+            rectImage.Height = imageHeight;
+            rectImage.Width = imageWidth;
+            rectImage = GetTransformedRectangle(dockState, rectImage);
+
+            if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
             {
-                g.Transform = MatrixIdentity;
-
-                // Draw the icon
-                var rectImage = rectTabOrigin;
-                rectImage.X += ImageGapLeft;
-                rectImage.Y += ImageGapTop;
-                var imageHeight = rectTabOrigin.Height - ImageGapTop - ImageGapBottom;
-                var imageWidth = ImageWidth;
-                if (imageHeight > ImageHeight)
-                    imageWidth = ImageWidth * (imageHeight / ImageHeight);
-                rectImage.Height = imageHeight;
-                rectImage.Width = imageWidth;
-                rectImage = GetTransformedRectangle(dockState, rectImage);
-
-                if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
+                // The DockState is DockLeftAutoHide or DockRightAutoHide, so rotate the image 90 degrees to the right. 
+                var rectTransform = RtlTransform(rectImage, dockState);
+                Point[] rotationPoints =
                 {
-                    // The DockState is DockLeftAutoHide or DockRightAutoHide, so rotate the image 90 degrees to the right. 
-                    var rectTransform = RtlTransform(rectImage, dockState);
-                    Point[] rotationPoints =
-                    {
-                        new Point(rectTransform.X + rectTransform.Width, rectTransform.Y),
-                        new Point(rectTransform.X + rectTransform.Width, rectTransform.Y + rectTransform.Height),
-                        new Point(rectTransform.X, rectTransform.Y)
-                    };
+                    new Point(rectTransform.X + rectTransform.Width, rectTransform.Y),
+                    new Point(rectTransform.X + rectTransform.Width, rectTransform.Y + rectTransform.Height),
+                    new Point(rectTransform.X, rectTransform.Y)
+                };
 
-                    using (var rotatedIcon = new Icon(((Form)content).Icon, 16, 16))
-                    {
-                        g.DrawImage(rotatedIcon.ToBitmap(), rotationPoints);
-                    }
-                }
-                else
-                {
-                    // Draw the icon normally without any rotation.
-                    g.DrawIcon(((Form)content).Icon, RtlTransform(rectImage, dockState));
-                }
-
-                // Draw the text
-                var rectText = rectTabOrigin;
-                rectText.X += ImageGapLeft + imageWidth + ImageGapRight + TextGapLeft;
-                rectText.Width -= ImageGapLeft + imageWidth + ImageGapRight + TextGapLeft;
-                rectText = RtlTransform(GetTransformedRectangle(dockState, rectText), dockState);
-
-                var textColor = DockPanel.Theme.Skin.AutoHideStripSkin.TabGradient.TextColor;
-
-                if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
-                    g.DrawString(content.DockHandler.TabText, TextFont, new SolidBrush(textColor), rectText,
-                                 StringFormatTabVertical);
-                else
-                    g.DrawString(content.DockHandler.TabText, TextFont, new SolidBrush(textColor), rectText,
-                                 StringFormatTabHorizontal);
-
-                // Set rotate back
-                g.Transform = matrixRotate;
+                using var rotatedIcon = new Icon(((Form)content).Icon, 16, 16);
+                g.DrawImage(rotatedIcon.ToBitmap(), rotationPoints);
             }
+            else
+            {
+                // Draw the icon normally without any rotation.
+                g.DrawIcon(((Form)content).Icon, RtlTransform(rectImage, dockState));
+            }
+
+            // Draw the text
+            var rectText = rectTabOrigin;
+            rectText.X += ImageGapLeft + imageWidth + ImageGapRight + TextGapLeft;
+            rectText.Width -= ImageGapLeft + imageWidth + ImageGapRight + TextGapLeft;
+            rectText = RtlTransform(GetTransformedRectangle(dockState, rectText), dockState);
+
+            var textColor = DockPanel.Theme.Skin.AutoHideStripSkin.TabGradient.TextColor;
+
+            if (dockState == DockState.DockLeftAutoHide || dockState == DockState.DockRightAutoHide)
+                g.DrawString(content.DockHandler.TabText, TextFont, new SolidBrush(textColor), rectText,
+                    StringFormatTabVertical);
+            else
+                g.DrawString(content.DockHandler.TabText, TextFont, new SolidBrush(textColor), rectText,
+                    StringFormatTabHorizontal);
+
+            // Set rotate back
+            g.Transform = matrixRotate;
         }
 
         private Rectangle GetLogicalTabStripRectangle(DockState dockState)
