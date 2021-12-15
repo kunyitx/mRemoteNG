@@ -42,6 +42,6 @@ Format-Table -AutoSize -Wrap -InputObject @{
 & "$PSScriptRoot\verify_binary_signatures.ps1" -TargetDir $TargetDir -ConfigurationName $ConfigurationName -CertificatePath $CertificatePath -SolutionDir $SolutionDir
 & "$PSScriptRoot\rename_and_copy_installer.ps1" -SolutionDir $SolutionDir
 
-Write-Output "+===========================================================================================+"
-Write-Output "|                             End mRemoteNG Installer Post Build                            |"
 Write-Output "+-------------------------------------------------------------------------------------------+"
+Write-Output "|                             End mRemoteNG Installer Post Build                            |"
+Write-Output "+===========================================================================================+"
