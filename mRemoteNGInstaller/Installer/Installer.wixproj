@@ -10,20 +10,20 @@
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>HarvestPath=..\mRemoteNG\bin\Debug;</DefineConstants>
+    <DefineConstants>HarvestPath=..\mRemoteNG\bin\%(Platform)\$(Configuration);</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DefineConstants>HarvestPath=..\mRemoteNG\bin\Release;</DefineConstants>
+    <DefineConstants>HarvestPath=..\mRemoteNG\bin\%(Platform)\$(Configuration);</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug Portable' ">
-    <DefineConstants>HarvestPath=..\mRemoteNG\bin\Debug Portable;</DefineConstants>
+    <DefineConstants>HarvestPath=..\mRemoteNG\bin\%(Platform)\$(Configuration);</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release Portable' ">
-    <DefineConstants>HarvestPath=..\mRemoteNG\bin\Release Portable;</DefineConstants>
+    <DefineConstants>HarvestPath=..\mRemoteNG\bin\%(Platform)\$(Configuration);</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CustomActions\CheckForInstalledWindowsUpdates.wxs" />
@@ -86,20 +86,19 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <LinkerAdditionalOptions>
     </LinkerAdditionalOptions>
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Release</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressPdbOutput>True</SuppressPdbOutput>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <Cultures>en-US</Cultures>
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Debug</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Portable|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Debug Portable</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Portable|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Release Portable</DefineConstants>
-    <OutputPath>bin\x64\$(Platform)\$(Configuration)\</OutputPath>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>:: When passing paths to powershell scripts, check if the path ends with a backslash "\"
@@ -115,25 +114,25 @@ powershell.exe -ExecutionPolicy Bypass -File "$(SolutionDir)Tools\postbuild_inst
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <Cultures>en-US</Cultures>
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Debug</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <LinkerAdditionalOptions />
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Release</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressPdbOutput>True</SuppressPdbOutput>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Portable|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Debug Portable</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Portable|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Release Portable</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
     <SuppressAllWarnings>True</SuppressAllWarnings>
@@ -141,45 +140,45 @@ powershell.exe -ExecutionPolicy Bypass -File "$(SolutionDir)Tools\postbuild_inst
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <Cultures>en-US</Cultures>
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Debug</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <LinkerAdditionalOptions />
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Release</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <Cultures>en-US</Cultures>
     <SuppressPdbOutput>True</SuppressPdbOutput>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Portable|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Debug Portable</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Portable|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Release Portable</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Debug</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Release</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Portable|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Debug Portable</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release Portable|x64' ">
-    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\x64\Release Portable</DefineConstants>
+    <DefineConstants>HarvestPath=$(SolutionDir)mRemoteNG\bin\$(Platform)\$(Configuration)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
