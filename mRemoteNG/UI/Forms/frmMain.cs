@@ -421,9 +421,9 @@ namespace mRemoteNG.UI.Forms
                 {
                     foreach (var dc in pnlDock.Contents)
                     {
-                        if (!(dc is ConnectionWindow cw)) continue;
+                        if (dc is not ConnectionWindow cw) continue;
                         if (cw.Controls.Count < 1) continue;
-                        if (!(cw.Controls[0] is DockPanel dp)) continue;
+                        if (cw.Controls[0] is not DockPanel dp) continue;
                         if (dp.Contents.Count > 0)
                             openConnections += dp.Contents.Count;
                     }
@@ -628,7 +628,7 @@ namespace mRemoteNG.UI.Forms
             var cw = pnlDock.ActiveDocument as ConnectionWindow;
             var dp = cw?.ActiveControl as DockPane;
 
-            if (!(dp?.ActiveContent is ConnectionTab tab)) return;
+            if (dp?.ActiveContent is not ConnectionTab tab) return;
             var ifc = InterfaceControl.FindInterfaceControl(tab);
             if (ifc == null) return;
 
@@ -698,7 +698,7 @@ namespace mRemoteNG.UI.Forms
                 foreach (var dockContent in pnlDock.Documents)
                 {
                     var document = (DockContent)dockContent;
-                    if ((closingDocument == null || document != closingDocument) && !(document is ConnectionWindow))
+                    if ((closingDocument == null || document != closingDocument) && document is not ConnectionWindow)
                     {
                         nonConnectionPanelCount++;
                     }
